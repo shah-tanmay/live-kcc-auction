@@ -41,7 +41,9 @@ export async function POST(request, { params }) {
     // 5) Update player
     player.isSold = true;
     player.isSoldTo = winningTeam._id;
-    player.isSoldFor = salePrice;
+    player.unSold = false;
+    player.soldTo = winningTeam._id;
+    player.soldFor = salePrice;
     player.isSold = true;
     await player.save({ session });
 

@@ -17,7 +17,13 @@ export async function GET(request) {
   return NextResponse.json(
     {
       count: unsoldPlayers.length,
-      players: unsoldPlayers,
+      players: unsoldPlayers.map((p) => {
+        return {
+          name: p.name,
+          role: p.role,
+          price: 2000,
+        }
+      }),
     },
     { status: 200 }
   );

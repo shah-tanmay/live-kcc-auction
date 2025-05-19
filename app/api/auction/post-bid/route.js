@@ -53,7 +53,7 @@ export async function POST(req) {
   const playersOwned = team.squad.length;
   const remainingSlots = 8 - playersOwned - 1; // -1 for current player
   const minReserve = remainingSlots * 2000;
-  const maxBidAllowed = team.budget - minReserve;
+  const maxBidAllowed = team.purseLeft - minReserve;
 
   if (bidAmount > maxBidAllowed) {
     return NextResponse.json(

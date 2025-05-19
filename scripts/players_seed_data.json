@@ -1,322 +1,322 @@
 [
-  {
-    "name": "Chirag shah",
-    "role": "AllRounder",
-    "photoUrl": "/players/chiragshah.png",
-    "basePrice": 2000,
-    "unSold": false,
-    "isSold": false,
-    "soldTo": null,
-    "soldFor": 0
-  },
-  {
-  "name": "Tanmay",
-    "role": "AllRounder",
-    "basePrice": 2000,
-    "photoUrl": "/players/chiragshah.png",
-    "unSold": false,
-    "isSold": false,
-    "soldTo": null,
-    "soldFor": 0
-  },
-  {
-    "name": "Ronit Balai",
-    "role": "Bowler",
-    "basePrice": 2000,
-    "photoUrl": "/players/chiragshah.png",
-    "unSold": false,
-    "isSold": false,
-    "soldTo": null,
-    "soldFor": 0
-  },
-  {
-    "name": "Nishant Gandhi",
-    "role": "AllRounder",
-    "basePrice": 2000,
-    "photoUrl": "/players/chiragshah.png",
-    "unSold": false,
-    "isSold": false,
-    "soldTo": null,
-    "soldFor": 0
-  },
-  {
-    "name": "AKSHAY JAIN",
-    "role": "AllRounder",
-    "basePrice": 2000,
-    "photoUrl": "/players/chiragshah.png",
-    "unSold": false,
-    "isSold": false,
-    "soldTo": null,
-    "soldFor": 0
-  },
-  {
-    "name": "Abhishek Dunakhe",
-    "role": "AllRounder",
-    "basePrice": 2000,
-    "photoUrl": "/players/chiragshah.png",
-    "unSold": false,
-    "isSold": false,
-    "soldTo": null,
-    "soldFor": 0
-  },
-  {
-    "name": "Kumar Waghresha",
-    "role": "AllRounder",
-    "basePrice": 2000,
-    "photoUrl": "/players/chiragshah.png",
-    "unSold": false,
-    "isSold": false,
-    "soldTo": null,
-    "soldFor": 0
-  },
-  {
-    "name": "Ashish Brahme",
-    "role": "Bowler",
-    "basePrice": 2000,
-    "photoUrl": "/players/chiragshah.png",
-    "unSold": false,
-    "isSold": false,
-    "soldTo": null,
-    "soldFor": 0
-  },
-  {
-    "name": "Suprit Shah",
-    "role": "AllRounder",
-    "basePrice": 2000,
-    "photoUrl": "/players/chiragshah.png",
-    "unSold": false,
-    "isSold": false,
-    "soldTo": null,
-    "soldFor": 0
-  },
-  {
-    "name": "Karan jain",
-    "role": "AllRounder",
-    "basePrice": 2000,
-    "photoUrl": "/players/chiragshah.png",
-    "unSold": false,
-    "isSold": false,
-    "soldTo": null,
-    "soldFor": 0
-  },
-  {
-    "name": "Kalpesh Oswal",
-    "role": "Batsmen",
-    "basePrice": 2000,
-    "photoUrl": "/players/chiragshah.png",
-    "unSold": false,
-    "isSold": false,
-    "soldTo": null,
-    "soldFor": 0
-  },
-  {
-    "name": "rickyjain",
-    "role": "AllRounder",
-    "basePrice": 2000,
-    "photoUrl": "/players/chiragshah.png",
-    "unSold": false,
-    "isSold": false,
-    "soldTo": null,
-    "soldFor": 0
-  },
-  {
-    "name": "Sahil gugale",
-    "role": "AllRounder",
-    "basePrice": 2000,
-    "photoUrl": "/players/chiragshah.png",
-    "unSold": false,
-    "isSold": false,
-    "soldTo": null,
-    "soldFor": 0
-  },
-  {
-    "name": "Ansh Solanki",
-    "role": "AllRounder",
-    "basePrice": 2000,
-    "photoUrl": "/players/chiragshah.png",
-    "unSold": false,
-    "isSold": false,
-    "soldTo": null,
-    "soldFor": 0
-  },
-  {
-    "name": "Sanket oswal",
-    "role": "Bowler",
-    "basePrice": 2000,
-    "photoUrl": "/players/chiragshah.png",
-    "unSold": false,
-    "isSold": false,
-    "soldTo": null,
-    "soldFor": 0
-  },
-  {
-    "name": "Nirav Mehta",
-    "role": "AllRounder",
-    "basePrice": 2000,
-    "photoUrl": "/players/chiragshah.png",
-    "unSold": false,
-    "isSold": false,
-    "soldTo": null,
-    "soldFor": 0
-  },
-  {
-    "name": "Giten Kawediya",
-    "role": "AllRounder",
-    "basePrice": 2000,
-    "photoUrl": "/players/chiragshah.png",
-    "unSold": false,
-    "isSold": false,
-    "soldTo": null,
-    "soldFor": 0
-  },
-  {
-    "name": "Bhavin m shah",
-    "role": "Bowler",
-    "basePrice": 2000,
-    "photoUrl": "/players/chiragshah.png",
-    "unSold": false,
-    "isSold": false,
-    "soldTo": null,
-    "soldFor": 0
-  },
-  {
-    "name": "Chirag oswal",
-    "role": "AllRounder",
-    "basePrice": 2000,
-    "photoUrl": "/players/chiragshah.png",
-    "unSold": false,
-    "isSold": false,
-    "soldTo": null,
-    "soldFor": 0
-  },
-  {
-    "name": "Siddhant Oswal",
-    "role": "AllRounder",
-    "basePrice": 2000,
-    "photoUrl": "/players/chiragshah.png",
-    "unSold": false,
-    "isSold": false,
-    "soldTo": null,
-    "soldFor": 0
-  },
-  {
-    "name": "Sangram",
-    "role": "AllRounder",
-    "basePrice": 2000,
-    "photoUrl": "/players/chiragshah.png",
-    "unSold": false,
-    "isSold": false,
-    "soldTo": null,
-    "soldFor": 0
-  },
-  {
-    "name": "Pratham Palresha",
-    "role": "AllRounder",
-    "basePrice": 2000,
-    "photoUrl": "/players/chiragshah.png",
-    "unSold": false,
-    "isSold": false,
-    "soldTo": null,
-    "soldFor": 0
-  },
-  {
-    "name": "Heet Mehta",
-    "role": "AllRounder",
-    "basePrice": 2000,
-    "photoUrl": "/players/chiragshah.png",
-    "unSold": false,
-    "isSold": false,
-    "soldTo": null,
-    "soldFor": 0
-  },
-  {
-    "name": "Ankush S Upadhyay",
-    "role": "AllRounder",
-    "basePrice": 2000,
-    "photoUrl": "/players/chiragshah.png",
-    "unSold": false,
-    "isSold": false,
-    "soldTo": null,
-    "soldFor": 0
-  },
-  {
-    "name": "Sudhanshu Mitkar",
-    "role": "AllRounder",
-    "basePrice": 2000,
-    "photoUrl": "/players/chiragshah.png",
-    "unSold": false,
-    "isSold": false,
-    "soldTo": null,
-    "soldFor": 0
-  },
-  {
-    "name": "Yogesh f Gandhi",
-    "role": "AllRounder",
-    "basePrice": 2000,
-    "photoUrl": "/players/chiragshah.png",
-    "unSold": false,
-    "isSold": false,
-    "soldTo": null,
-    "soldFor": 0
-  },
-  {
-    "name": "Rohan Jain",
-    "role": "Batsmen",
-    "basePrice": 2000,
-    "photoUrl": "/players/chiragshah.png",
-    "unSold": false,
-    "isSold": false,
-    "soldTo": null,
-    "soldFor": 0
-  },
-  {
-    "name": "Yash Shah",
-    "role": "AllRounder",
-    "basePrice": 2000,
-    "photoUrl": "/players/chiragshah.png",
-    "unSold": false,
-    "isSold": false,
-    "soldTo": null,
-    "soldFor": 0
-  },
-  {
-    "name": "Gaurav Jog",
-    "role": "Batsmen",
-    "basePrice": 2000,
-    "photoUrl": "/players/chiragshah.png",
-    "unSold": false,
-    "isSold": false,
-    "soldTo": null,
-    "soldFor": 0
-  },
-  {
-    "name": "Parth Rawal",
-    "role": "AllRounder",
-    "basePrice": 2000,
-    "photoUrl": "/players/chiragshah.png",
-    "unSold": false,
-    "isSold": false,
-    "soldTo": null,
-    "soldFor": 0
-  },
-  {
-    "name": "Sanket Kothari",
-    "role": "Bowler",
-    "basePrice": 2000,
-    "photoUrl": "/players/chiragshah.png",
-    "unSold": false,
-    "isSold": false,
-    "soldTo": null,
-    "soldFor": 0
-  },
-  {
-    "name": "Onkar Pasalkar",
-    "role": "AllRounder",
-    "basePrice": 2000,
-    "photoUrl": "/players/chiragshah.png",
-    "unSold": false,
-    "isSold": false,
-    "soldTo": null,
-    "soldFor": 0
-  }
+    {
+        "name": "Chirag shah",
+        "role": "AllRounder",
+        "photoUrl": "/players/chiragshah.jpg",
+        "basePrice": 2000,
+        "unSold": false,
+        "isSold": false,
+        "soldTo": null,
+        "soldFor": 0
+    },
+    {
+        "name": "Tanmay",
+        "role": "AllRounder",
+        "basePrice": 2000,
+        "photoUrl": "/players/chiragshah.jpg",
+        "unSold": false,
+        "isSold": false,
+        "soldTo": null,
+        "soldFor": 0
+    },
+    {
+        "name": "Ronit Balai",
+        "role": "Bowler",
+        "basePrice": 2000,
+        "photoUrl": "/players/chiragshah.jpg",
+        "unSold": false,
+        "isSold": false,
+        "soldTo": null,
+        "soldFor": 0
+    },
+    {
+        "name": "Nishant Gandhi",
+        "role": "AllRounder",
+        "basePrice": 2000,
+        "photoUrl": "/players/chiragshah.jpg",
+        "unSold": false,
+        "isSold": false,
+        "soldTo": null,
+        "soldFor": 0
+    },
+    {
+        "name": "AKSHAY JAIN",
+        "role": "AllRounder",
+        "basePrice": 2000,
+        "photoUrl": "/players/chiragshah.jpg",
+        "unSold": false,
+        "isSold": false,
+        "soldTo": null,
+        "soldFor": 0
+    },
+    {
+        "name": "Abhishek Dunakhe",
+        "role": "AllRounder",
+        "basePrice": 2000,
+        "photoUrl": "/players/chiragshah.jpg",
+        "unSold": false,
+        "isSold": false,
+        "soldTo": null,
+        "soldFor": 0
+    },
+    {
+        "name": "Kumar Waghresha",
+        "role": "AllRounder",
+        "basePrice": 2000,
+        "photoUrl": "/players/chiragshah.jpg",
+        "unSold": false,
+        "isSold": false,
+        "soldTo": null,
+        "soldFor": 0
+    },
+    {
+        "name": "Ashish Brahme",
+        "role": "Bowler",
+        "basePrice": 2000,
+        "photoUrl": "/players/chiragshah.jpg",
+        "unSold": false,
+        "isSold": false,
+        "soldTo": null,
+        "soldFor": 0
+    },
+    {
+        "name": "Suprit Shah",
+        "role": "AllRounder",
+        "basePrice": 2000,
+        "photoUrl": "/players/chiragshah.jpg",
+        "unSold": false,
+        "isSold": false,
+        "soldTo": null,
+        "soldFor": 0
+    },
+    {
+        "name": "Karan jain",
+        "role": "AllRounder",
+        "basePrice": 2000,
+        "photoUrl": "/players/chiragshah.jpg",
+        "unSold": false,
+        "isSold": false,
+        "soldTo": null,
+        "soldFor": 0
+    },
+    {
+        "name": "Kalpesh Oswal",
+        "role": "Batsmen",
+        "basePrice": 2000,
+        "photoUrl": "/players/chiragshah.jpg",
+        "unSold": false,
+        "isSold": false,
+        "soldTo": null,
+        "soldFor": 0
+    },
+    {
+        "name": "rickyjain",
+        "role": "AllRounder",
+        "basePrice": 2000,
+        "photoUrl": "/players/chiragshah.jpg",
+        "unSold": false,
+        "isSold": false,
+        "soldTo": null,
+        "soldFor": 0
+    },
+    {
+        "name": "Sahil gugale",
+        "role": "AllRounder",
+        "basePrice": 2000,
+        "photoUrl": "/players/chiragshah.jpg",
+        "unSold": false,
+        "isSold": false,
+        "soldTo": null,
+        "soldFor": 0
+    },
+    {
+        "name": "Ansh Solanki",
+        "role": "AllRounder",
+        "basePrice": 2000,
+        "photoUrl": "/players/chiragshah.jpg",
+        "unSold": false,
+        "isSold": false,
+        "soldTo": null,
+        "soldFor": 0
+    },
+    {
+        "name": "Sanket oswal",
+        "role": "Bowler",
+        "basePrice": 2000,
+        "photoUrl": "/players/chiragshah.jpg",
+        "unSold": false,
+        "isSold": false,
+        "soldTo": null,
+        "soldFor": 0
+    },
+    {
+        "name": "Nirav Mehta",
+        "role": "AllRounder",
+        "basePrice": 2000,
+        "photoUrl": "/players/chiragshah.jpg",
+        "unSold": false,
+        "isSold": false,
+        "soldTo": null,
+        "soldFor": 0
+    },
+    {
+        "name": "Giten Kawediya",
+        "role": "AllRounder",
+        "basePrice": 2000,
+        "photoUrl": "/players/chiragshah.jpg",
+        "unSold": false,
+        "isSold": false,
+        "soldTo": null,
+        "soldFor": 0
+    },
+    {
+        "name": "Bhavin m shah",
+        "role": "Bowler",
+        "basePrice": 2000,
+        "photoUrl": "/players/chiragshah.jpg",
+        "unSold": false,
+        "isSold": false,
+        "soldTo": null,
+        "soldFor": 0
+    },
+    {
+        "name": "Chirag oswal",
+        "role": "AllRounder",
+        "basePrice": 2000,
+        "photoUrl": "/players/chiragshah.jpg",
+        "unSold": false,
+        "isSold": false,
+        "soldTo": null,
+        "soldFor": 0
+    },
+    {
+        "name": "Siddhant Oswal",
+        "role": "AllRounder",
+        "basePrice": 2000,
+        "photoUrl": "/players/chiragshah.jpg",
+        "unSold": false,
+        "isSold": false,
+        "soldTo": null,
+        "soldFor": 0
+    },
+    {
+        "name": "Sangram",
+        "role": "AllRounder",
+        "basePrice": 2000,
+        "photoUrl": "/players/chiragshah.jpg",
+        "unSold": false,
+        "isSold": false,
+        "soldTo": null,
+        "soldFor": 0
+    },
+    {
+        "name": "Pratham Palresha",
+        "role": "AllRounder",
+        "basePrice": 2000,
+        "photoUrl": "/players/chiragshah.jpg",
+        "unSold": false,
+        "isSold": false,
+        "soldTo": null,
+        "soldFor": 0
+    },
+    {
+        "name": "Heet Mehta",
+        "role": "AllRounder",
+        "basePrice": 2000,
+        "photoUrl": "/players/chiragshah.jpg",
+        "unSold": false,
+        "isSold": false,
+        "soldTo": null,
+        "soldFor": 0
+    },
+    {
+        "name": "Ankush S Upadhyay",
+        "role": "AllRounder",
+        "basePrice": 2000,
+        "photoUrl": "/players/chiragshah.jpg",
+        "unSold": false,
+        "isSold": false,
+        "soldTo": null,
+        "soldFor": 0
+    },
+    {
+        "name": "Sudhanshu Mitkar",
+        "role": "AllRounder",
+        "basePrice": 2000,
+        "photoUrl": "/players/chiragshah.jpg",
+        "unSold": false,
+        "isSold": false,
+        "soldTo": null,
+        "soldFor": 0
+    },
+    {
+        "name": "Yogesh f Gandhi",
+        "role": "AllRounder",
+        "basePrice": 2000,
+        "photoUrl": "/players/chiragshah.jpg",
+        "unSold": false,
+        "isSold": false,
+        "soldTo": null,
+        "soldFor": 0
+    },
+    {
+        "name": "Rohan Jain",
+        "role": "Batsmen",
+        "basePrice": 2000,
+        "photoUrl": "/players/chiragshah.jpg",
+        "unSold": false,
+        "isSold": false,
+        "soldTo": null,
+        "soldFor": 0
+    },
+    {
+        "name": "Yash Shah",
+        "role": "AllRounder",
+        "basePrice": 2000,
+        "photoUrl": "/players/chiragshah.jpg",
+        "unSold": false,
+        "isSold": false,
+        "soldTo": null,
+        "soldFor": 0
+    },
+    {
+        "name": "Gaurav Jog",
+        "role": "Batsmen",
+        "basePrice": 2000,
+        "photoUrl": "/players/chiragshah.jpg",
+        "unSold": false,
+        "isSold": false,
+        "soldTo": null,
+        "soldFor": 0
+    },
+    {
+        "name": "Parth Rawal",
+        "role": "AllRounder",
+        "basePrice": 2000,
+        "photoUrl": "/players/chiragshah.jpg",
+        "unSold": false,
+        "isSold": false,
+        "soldTo": null,
+        "soldFor": 0
+    },
+    {
+        "name": "Sanket Kothari",
+        "role": "Bowler",
+        "basePrice": 2000,
+        "photoUrl": "/players/chiragshah.jpg",
+        "unSold": false,
+        "isSold": false,
+        "soldTo": null,
+        "soldFor": 0
+    },
+    {
+        "name": "Onkar Pasalkar",
+        "role": "AllRounder",
+        "basePrice": 2000,
+        "photoUrl": "/players/chiragshah.jpg",
+        "unSold": false,
+        "isSold": false,
+        "soldTo": null,
+        "soldFor": 0
+    }
 ]

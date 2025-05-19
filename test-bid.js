@@ -28,4 +28,3 @@ socket.on("connect", () => {
 socket.on("disconnect", () => {
   console.log("❌ Disconnected from socket.");
 });
-// MONGODB_URI=mongodb+srv://tanmay:W207Ycen9luKbRtl@cluster0.tpexcjv.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0

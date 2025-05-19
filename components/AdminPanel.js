@@ -84,6 +84,13 @@ export default function AdminPanel() {
       })
       const data = await res.json();
 
+      if(!res.ok) {
+        alert(`Error: ${data.error}`);
+        return;
+      }
+
+      setPlayer(null);
+
       alert("Player Unsold")
     } catch(error) {
       console.error("Error handling unsold player:", error);
@@ -337,7 +344,7 @@ export default function AdminPanel() {
                 mb: 3,
               }}
             >
-              <Button variant="contained" color="error" sx={{ px: 4 }} onClick={handleUnSold}>
+              <Button variant="contained" color="error" sx={{ px: 4 }} onClick={handleUnsold}>
                 UnSold!
               </Button>
 
