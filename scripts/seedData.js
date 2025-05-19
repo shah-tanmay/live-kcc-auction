@@ -56,7 +56,7 @@ async function seed() {
     },
   ]);
 
-  await Player.create(AllPlayers.slice(0, 10));
+  await Player.create(AllPlayers);
 
   console.log("Seed data created!");
   process.exit();
