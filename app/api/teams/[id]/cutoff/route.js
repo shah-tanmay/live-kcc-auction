@@ -12,11 +12,12 @@ export async function GET(request, { params }) {
     return NextResponse.json({ error: "Team not found" }, { status: 404 });
   }
 
-  const totalSlots = 8;
+  const totalSlots = 9;
   const owned = team.squad.length;
   // One slot is for the player currently up for bidding
   const remainingSlots = totalSlots - owned - 1;
-  const minReserve = remainingSlots > 0 ? remainingSlots * 2000 : 0;
+  const minReserve = remainingSlots > 0 ? remainingSlots * 4000 : 0;
+  console.log(owned, remainingSlots, minReserve);
   const maxBidAllowed = team.budget - minReserve;
 
   return NextResponse.json({

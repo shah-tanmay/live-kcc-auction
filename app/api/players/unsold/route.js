@@ -2,11 +2,12 @@
 
 import { NextResponse } from "next/server";
 import connectToDB from "@/lib/db";
-import Player from "@/lib/models/player";
+import { getModel } from "@/lib/getModel";
 
 export async function GET(request) {
   // 1) Ensure DB is connected
   await connectToDB();
+  const Player = getModel('Player');
 
   // 2) Find all players who haven't been sold yet
   const unsoldPlayers = await Player.find({ unSold: true })
@@ -21,7 +22,7 @@ export async function GET(request) {
         return {
           name: p.name,
           role: p.role,
-          price: 2000,
+          price: 4000,
         }
       }),
     },

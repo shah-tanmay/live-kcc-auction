@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/db";
-import Team from "@/lib/models/team";
+import { getModel } from "@/lib/getModel";
 
 export async function GET(request, { params }) {
   await connectDB();
+  const Team = getModel('Team');
 
   const { id } = params;
   const team = await Team.findById(id)

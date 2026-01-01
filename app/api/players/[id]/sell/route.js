@@ -3,13 +3,16 @@
 import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 import connectToDB from "@/lib/db";
-import Player from "@/lib/models/player";
-import Team from "@/lib/models/team";
-import Bid from "@/lib/models/bid";
-import { getAdminFromRequest } from "@/lib/auth";
+import { getModel } from "@/lib/getModel";
+import { db } from "@/lib/firebase";
+import { ref, set } from "firebase/database";
 
 export async function POST(request, { params }) {
   await connectToDB();
+
+  const Player = getModel('Player');
+  const Team = getModel('Team');
+  const Bid = getModel('Bid');
 
   // 2) Start a session/transaction
   const session = await mongoose.startSession();
@@ -17,7 +20,8 @@ export async function POST(request, { params }) {
     session.startTransaction();
 
     // 3) Load player & ensure unsold
-    const player = await Player.findById(params.id).session(session);
+    const { id } = await params;
+    const player = await Player.findById(id).session(session);
     if (!player) {
       throw { status: 404, message: "Player not found" };
     }
@@ -40,11 +44,9 @@ export async function POST(request, { params }) {
 
     // 5) Update player
     player.isSold = true;
-    player.isSoldTo = winningTeam._id;
     player.unSold = false;
     player.soldTo = winningTeam._id;
     player.soldFor = salePrice;
-    player.isSold = true;
     await player.save({ session });
 
     // 6) Update winning team
@@ -52,17 +54,23 @@ export async function POST(request, { params }) {
     winningTeam.purseLeft = winningTeam.purseLeft - salePrice;
     await winningTeam.save({ session });
 
-    // 7) <-- No bid deletion, keep full bid history
-
     // 8) Commit everything
     await session.commitTransaction();
     session.endSession();
 
-    global.__io.emit("playerSold", {
-      player: player._id,
-      team: winningTeam._id,
-      teamName: winningTeam.name,
-      amount: highestBid,
+    // Firebase Update
+    set(ref(db, "auction/status"), {
+      type: "SOLD",
+      data: {
+        player: { 
+            name: player.name, 
+            role: player.role, 
+            photoUrl: player.photoUrl,
+            stats: player.stats || { matches: 0, runs: 0, sr: 0, wickets: 0 }
+        },
+        amount: salePrice,
+        teamName: winningTeam.name 
+      }
     });
 
     // 9) Return the sale result
@@ -78,19 +86,16 @@ export async function POST(request, { params }) {
           },
           soldFor: salePrice,
         },
-        updatedTeam: {
-          id: winningTeam._id,
-          name: winningTeam.name,
-          budgetLeft: winningTeam.budget,
-          squadSize: winningTeam.squad.length,
-        },
       },
       { status: 200 }
     );
   } catch (err) {
-    // Abort on error
-    await session.abortTransaction();
-    session.endSession();
+    // Abort on error ONLY if transaction hasn't been committed
+    if (session.inTransaction()) {
+        await session.abortTransaction();
+    }
+    // Only verify if we own the session end
+    try { session.endSession(); } catch(e) { }
 
     if (err.status && err.message) {
       return NextResponse.json({ error: err.message }, { status: err.status });

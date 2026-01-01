@@ -2,11 +2,12 @@
 
 import { NextResponse } from 'next/server';
 import connectToDB from '@/lib/db';
-import Player from '@/lib/models/player';
+import { getModel } from "@/lib/getModel";
 
 export async function GET() {
     // 1) ensure DB is connected
     await connectToDB();
+    const Player = getModel('Player');
 
     // 2) find top 10 sold players by highest sale price
     const topPlayers = await Player.find({ isSold: true })

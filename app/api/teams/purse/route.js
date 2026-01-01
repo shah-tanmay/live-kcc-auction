@@ -2,11 +2,12 @@
 
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/db";
-import Team from "@/lib/models/team";
+import { getModel } from "@/lib/getModel";
 
 export async function GET() {
   // 1) ensure DB is connected
   await connectDB();
+  const Team = getModel('Team');
 
   // 2) load every team, projecting only the fields we need
   let teams = await Team.find()
@@ -14,11 +15,11 @@ export async function GET() {
     .lean();
 
   teams = teams.map((team) => {
-    const totalSlots = 8;
+    const totalSlots = 9;
     const owned = team.squad.length;
     // One slot is for the player currently up for bidding
     const remainingSlots = totalSlots - owned - 1;
-    const minReserve = remainingSlots > 0 ? remainingSlots * 2000 : 0;
+    const minReserve = remainingSlots > 0 ? remainingSlots * 4000 : 0;
     const maxBidAllowed = team.purseLeft - minReserve;
     return {
       ...team,

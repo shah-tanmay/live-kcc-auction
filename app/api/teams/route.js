@@ -1,9 +1,9 @@
 import connectToDB from "@/lib/db";
-import Team from "@/lib/models/team";
-import Player from "@/lib/models/player.js"; // IMPORTANT: Import Player model
+import { getModel } from "@/lib/getModel";
 
 export async function GET() {
   await connectToDB();
+  const Team = getModel('Team');
   // Populate squad with player info
   const teams = await Team.find().populate("squad").lean();
   return new Response(JSON.stringify(teams), {

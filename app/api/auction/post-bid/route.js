@@ -1,23 +1,25 @@
 // app/api/bid/route.js
 
 import connectDB from "@/lib/db";
-import Player from "@/lib/models/player";
-import Team from "@/lib/models/team";
-import Bid from "@/lib/models/bid";
-import { getAdminFromRequest } from "@/lib/auth";
+import { getModel } from "@/lib/getModel";
+import Bid from "@/lib/models/bid"; // We might need a MockBid, let's stick to simple Bid for now or create one.
+// To avoid complexity, let's assume we can reuse Bid or I should quickly make a MockBid. 
+// Actually, easier to make MockBid now.
+
 import { NextResponse } from "next/server";
-import { setCurrentBid } from "@/lib/currentAuction";
+import { db } from "@/lib/firebase";
+import { ref, set, push } from "firebase/database";
 
 export async function POST(req) {
   await connectDB();
 
-  // const admin = await getAdminFromRequest(req);
-  // if (!admin) {
-  //   return new Response(JSON.stringify({ error: "Unauthorized" }), {
-  //     status: 401,
-  //     headers: { "Content-Type": "application/json" },
-  //   });
-  // }
+  const Player = getModel('Player');
+  const Team = getModel('Team');
+  // Dynamic Bid Model logic inline for now or I should allow getModel('Bid')
+  // For safety, let's use the standard Bid model but maybe clear it on seed? 
+  // User asked for "test tables". 
+  // I will add MockBid to `getModel`.
+  const BidModel = getModel('Bid');
 
   const { playerId, teamId, bidAmount } = await req.json();
 
@@ -52,13 +54,13 @@ export async function POST(req) {
   // ✅ Enforce budget cutoff logic
   const playersOwned = team.squad.length;
   const remainingSlots = 8 - playersOwned - 1; // -1 for current player
-  const minReserve = remainingSlots * 2000;
+  const minReserve = remainingSlots > 0 ? remainingSlots * 4000 : 0;
   const maxBidAllowed = team.purseLeft - minReserve;
 
   if (bidAmount > maxBidAllowed) {
     return NextResponse.json(
       {
-        error: `Bid exceeds max allowed limit. You have ₹${team.budget} total, must reserve ₹${minReserve} for ${remainingSlots} slots. Max allowed: ₹${maxBidAllowed}`,
+        error: `Bid exceeds max allowed limit. You have ₹${team.purseLeft} total, must reserve ₹${minReserve} for ${remainingSlots} slots. Max allowed: ₹${maxBidAllowed}`,
       },
       { status: 400 }
     );
@@ -73,7 +75,7 @@ export async function POST(req) {
     );
   }
 
-  const highestBid = await Bid.findOne({ player: player._id })
+  const highestBid = await BidModel.findOne({ player: player._id })
     .sort({ amount: -1 })
     .exec();
 
@@ -95,7 +97,7 @@ export async function POST(req) {
     }
   }
 
-  const bid = new Bid({
+  const bid = new BidModel({
     player: player._id,
     team: team._id,
     amount: bidAmount,
@@ -104,20 +106,13 @@ export async function POST(req) {
 
   await bid.save();
 
-  await setCurrentBid({
+  // Update Firebase
+  set(ref(db, "auction/currentBid"), {
     player: player._id.toString(),
     team: team._id.toString(),
-    teamName: team.name,
+    teamName: team.name, // Ensure we send the name!
     amount: bidAmount,
-    timestamp: bid.timestamp,
-  });
-
-  global.__io.emit("newBid", {
-    player: player._id,
-    team: team._id,
-    teamName: team.name,
-    amount: bidAmount,
-    timestamp: bid.timestamp,
+    timestamp: bid.timestamp.toISOString(),
   });
 
   return NextResponse.json(

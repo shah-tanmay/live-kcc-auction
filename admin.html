@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Admin - Player Auction</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&amp;family=Noto+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#3b82f6", 
+                        "primary-dark": "#1d4ed8",
+                        "accent": "#f59e0b",
+                        "accent-green": "#10b981",
+                        "accent-red": "#ef4444",
+                        "surface": "#ffffff",
+                        "surface-soft": "#f3f4f6",
+                        "surface-active": "#e5e7eb",
+                        "text-main": "#111827",
+                        "text-muted": "#6b7280",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "Noto Sans", "sans-serif"],
+                        "mono": ["ui-monospace", "SFMono-Regular", "Menlo", "Monaco", "Consolas", "monospace"],
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Lexend', 'Noto Sans', sans-serif; }
+        .scrollbar-hide::-webkit-scrollbar { display: none; }
+        .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.02); }
+        ::-webkit-scrollbar-thumb { background: rgba(0, 0, 0, 0.1); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(0, 0, 0, 0.2); }
+    </style>
+</head>
+<body class="bg-surface-soft text-text-main flex flex-col h-screen overflow-hidden antialiased">
+<header class="flex-none flex items-center justify-between whitespace-nowrap border-b border-gray-200 px-6 py-3 bg-white shadow-sm z-30">
+<div class="flex items-center gap-4">
+<div class="size-12 flex items-center justify-center rounded-xl bg-gradient-to-br from-primary to-primary-dark text-white shadow-lg shadow-blue-500/20">
+<span class="font-black text-lg tracking-tighter leading-none">KCC<br/><span class="text-[10px] block text-center font-normal opacity-80">S5</span></span>
+</div>
+<div class="flex flex-col">
+<h2 class="text-text-main text-lg font-bold leading-none tracking-tight">KCC Season 5 Auction</h2>
+<div class="flex items-center gap-2 mt-1">
+<span class="size-2 rounded-full bg-accent-green animate-pulse"></span>
+<span class="text-xs text-text-muted font-medium tracking-wide uppercase">Admin Console • Round 3</span>
+</div>
+</div>
+</div>
+<div class="flex flex-1 justify-end gap-6 items-center">
+<div class="hidden md:flex flex-col items-end border-r border-gray-200 pr-6">
+<span class="text-[10px] text-text-muted uppercase font-bold tracking-wider">Total Auction Purse</span>
+<span class="text-lg font-mono font-bold text-text-main">$450,000</span>
+</div>
+<div class="flex items-center gap-3">
+<button class="flex items-center justify-center rounded-lg size-10 bg-gray-50 hover:bg-gray-100 text-text-muted transition-colors border border-gray-200">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="flex items-center gap-3 pl-3">
+<div class="text-right hidden sm:block">
+<div class="text-sm font-bold text-text-main">Admin User</div>
+<div class="text-xs text-text-muted">Moderator</div>
+</div>
+<div class="size-10 rounded-full bg-cover bg-center border-2 border-white shadow-sm ring-1 ring-gray-200" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDXRxxrpSV-ZtgDrHaX41WcTIEi9VJvsYDUN-j1xqQqqAEQhCVzxNT1JgeZOA4rjBxTHd6ygaOsV0Bj6gQPMoYTDjZf8XVJ86tY4V1pE7HI_6Z6TnoGHOAFmg_0H0j-TGUXYNtUzBeKH-ZSTjD5niE9h8IsBDy_IJdQhuTISlL6zsnGSY93G2HDU2yIZ3nWfjVK-0oGqvvj9yW7gWmcQoMuusg6ehSIDQcKfAOF4TNEv-bO92XKTCGkv495-MiW84rnTAe3Dqkjvyc");'></div>
+</div>
+</div>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<aside class="hidden lg:flex flex-col w-72 border-r border-gray-200 bg-white overflow-hidden">
+<div class="p-4 border-b border-gray-100 bg-gray-50/50">
+<h3 class="text-xs font-bold uppercase tracking-wider text-text-muted">Activity Log</h3>
+</div>
+<div class="flex-1 overflow-y-auto p-4 space-y-4">
+<div class="relative pl-4 pb-4 border-l border-gray-200 last:border-0 last:pb-0">
+<span class="absolute -left-1.5 top-0 size-3 rounded-full bg-accent-green border-2 border-white shadow-sm"></span>
+<div class="flex items-center gap-3 p-3 -mt-2 rounded-xl bg-white hover:bg-gray-50 transition-colors border border-gray-100 shadow-sm">
+<div class="size-9 rounded-full bg-cover bg-center ring-2 ring-gray-100" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCQQgVLe6FTqQOdrM3bf2fs1nZXE8xA4d2qs370B8axtVDzWahEiRgTxYZWUZkqNtMIFMQwQj9Hky8qZ0yFUmFuCgGw_CVNcdelfB1V8SbVN898m3St7buTci4mYXrh_1wl6k40HGhmjw4KghJcpEm8WKibJpn0uqEIbLMW61tNCghNIJS-fZjwyhf1QVLtbScDTR10WOzU6s-fOgFKs6GoneK3dNtajNwIWhuc9Nl5uVTHUjO63HkHiVo-QU1du5JWWI4ustuwJog");'></div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-center mb-0.5">
+<span class="text-sm font-bold truncate text-text-main">Mike Ross</span>
+<span class="text-[10px] text-text-muted">10:42 AM</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-xs text-accent-green font-mono font-bold">$12,500</span>
+<span class="text-[10px] bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded font-bold">MI</span>
+</div>
+</div>
+</div>
+</div>
+<div class="relative pl-4 pb-4 border-l border-gray-200 last:border-0 last:pb-0">
+<span class="absolute -left-1.5 top-0 size-3 rounded-full bg-accent-green border-2 border-white shadow-sm"></span>
+<div class="flex items-center gap-3 p-3 -mt-2 rounded-xl bg-white hover:bg-gray-50 transition-colors border border-gray-100 shadow-sm">
+<div class="size-9 rounded-full bg-cover bg-center ring-2 ring-gray-100" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCfXVFHGDlVvIk1YPwJI7RCKdyAcqywRqSJDgx7bGbaekfx76C583Wa3IIZlJ-HiyS05B966Lu4aKrjXxRawKuay8pQzov4uysu3BzLbaL5obwpyDcgkShtK9zubOHAB0ixrKgXFClTAhygAQd1AulCpYX_Rxf9doCrLh8Xl1N_5SbUQPLS8SXBexEvAbQ9vjZHbGDrQVHaD8THJUFqHHaefWaaTM7n78zK6TEAkcon1wjGgpY3oe1Lt7wqNbH3R_LStOK6JCbruYo");'></div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-center mb-0.5">
+<span class="text-sm font-bold truncate text-text-main">Harvey Specter</span>
+<span class="text-[10px] text-text-muted">10:38 AM</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-xs text-accent-green font-mono font-bold">$24,000</span>
+<span class="text-[10px] bg-red-100 text-red-700 px-1.5 py-0.5 rounded font-bold">RCB</span>
+</div>
+</div>
+</div>
+</div>
+<div class="relative pl-4 pb-4 border-l border-gray-200 last:border-0 last:pb-0">
+<span class="absolute -left-1.5 top-0 size-3 rounded-full bg-accent-red border-2 border-white shadow-sm"></span>
+<div class="flex items-center gap-3 p-3 -mt-2 rounded-xl bg-gray-50 border border-gray-100 opacity-80">
+<div class="size-9 rounded-full bg-cover bg-center grayscale ring-2 ring-gray-100" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCl13Z6jJHsn3sc4MtZWB2hVZ5pQ4Mp_dDUD_3o9FHa4_W34mSlnDm1PqdvttGBebCBacRt2w-r08EtiQGnGSmleprHnYWF83XsrMmATrSvOB_yejmRCYqWMc3oGrcRzAJ8Ax0XJJF3tZBQDqLSUZwxyV6IMJQ8Xpu7eJOKfBwJE29lqgQK_eiL5GY78des3vS0DiNh1zOIMf_WaPI-c9k92nzbaauyQWCIBgxZwHDhTiNL9Co4dcWz_tadtkdJVoHOaN-aCvcYvJE");'></div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-center mb-0.5">
+<span class="text-sm font-bold truncate text-text-muted">Louis Litt</span>
+<span class="text-[10px] text-text-muted">10:35 AM</span>
+</div>
+<span class="text-xs text-accent-red font-bold uppercase tracking-wide">Unsold</span>
+</div>
+</div>
+</div>
+</div>
+<div class="p-4 border-t border-gray-200 bg-gray-50">
+<h4 class="text-[10px] font-bold text-text-muted uppercase mb-3 tracking-wider">Up Next</h4>
+<div class="flex items-center gap-3 group cursor-pointer hover:bg-white p-3 rounded-xl transition-all border border-transparent hover:border-gray-200 hover:shadow-sm">
+<div class="size-10 rounded-full bg-gray-200 flex items-center justify-center text-sm text-text-muted font-mono font-bold">?</div>
+<div class="flex flex-col">
+<span class="text-sm font-bold text-text-main">Player #45</span>
+<span class="text-xs text-text-muted">All-Rounder</span>
+</div>
+<span class="material-symbols-outlined ml-auto text-gray-400 text-lg">chevron_right</span>
+</div>
+</div>
+</aside>
+<main class="flex-1 flex flex-col min-w-0 bg-surface-soft relative">
+<div class="flex items-center justify-between px-8 py-4 bg-white/80 backdrop-blur-md border-b border-gray-200 z-10 sticky top-0 shadow-sm">
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-2 bg-red-50 border border-red-200 px-3 py-1.5 rounded-full text-red-600 shadow-sm">
+<span class="relative flex h-2.5 w-2.5">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500"></span>
+</span>
+<span class="text-xs font-bold uppercase tracking-wider">Live Auction</span>
+</div>
+<h1 class="text-xl font-bold text-text-main tracking-tight">Stage 1: Main Auction</h1>
+</div>
+<div class="bg-white border border-gray-200 px-5 py-2 rounded-lg flex items-center gap-4 shadow-sm">
+<span class="text-text-muted text-xs font-bold uppercase tracking-wider">Timer</span>
+<span class="font-mono text-2xl font-bold text-text-main tabular-nums text-red-600">00:45</span>
+</div>
+</div>
+<div class="flex-1 overflow-y-auto p-6 md:p-8">
+<div class="max-w-6xl mx-auto flex flex-col gap-6">
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-6 h-full">
+<div class="xl:col-span-5 flex flex-col">
+<div class="bg-white rounded-3xl overflow-hidden border border-gray-200 shadow-xl flex-1 flex flex-col relative group h-full">
+<div class="relative h-72 xl:h-auto xl:flex-1 w-full overflow-hidden bg-gray-100">
+<div class="absolute inset-0 bg-cover bg-top transition-transform duration-1000 group-hover:scale-105" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBWZH6l9fil_BXirzayH8YPocRplpuG76rQdTCCmCWybPMUUbvvXRx2X4wTMAQ4NIx3T2yUDtjiNABM0kNku6Kf0rTaP-rmlS-nIqrc1xcCtA5hsIJrRRZsbedqJsBEQo3svuKYsuflp5uebQN2AMfY-kdJeJkNm8u4Uj1lIES7T67Ur4gVZryEKP-xO25-AXeTfYsn9JNb50QTfv0bl0-PkVPfMJfcsr1ImskAS4iq2WoHBlaprJsbPrfC1U6czl8P4cqSIOsicg0");'></div>
+<div class="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/20 to-transparent"></div>
+<div class="absolute top-4 left-4 flex gap-2">
+<span class="bg-white/90 backdrop-blur text-text-main text-xs font-bold px-3 py-1 rounded-md shadow-md uppercase tracking-wider">Lot #42</span>
+</div>
+<div class="absolute bottom-0 left-0 right-0 p-6 pt-12">
+<div class="flex items-end justify-between">
+<div>
+<h2 class="text-4xl font-bold text-white leading-tight mb-1 drop-shadow-md">John Doe</h2>
+<p class="text-white/80 text-sm font-medium">All-Rounder • 28 Years</p>
+</div>
+</div>
+</div>
+</div>
+<div class="p-6 bg-white relative">
+<div class="absolute right-6 -top-10 bg-white p-3 rounded-xl shadow-lg border border-gray-100 text-center min-w-[100px]">
+<div class="text-[10px] text-text-muted uppercase font-bold tracking-wider mb-0.5">Base Price</div>
+<div class="text-xl font-mono font-bold text-text-main">$1,000</div>
+</div>
+<div class="grid grid-cols-3 gap-4 mt-2">
+<div class="flex flex-col gap-1 p-3 rounded-xl bg-gray-50 border border-gray-100 text-center">
+<span class="text-[10px] text-text-muted uppercase font-bold tracking-wider">Matches</span>
+<span class="text-xl font-bold text-text-main">42</span>
+</div>
+<div class="flex flex-col gap-1 p-3 rounded-xl bg-gray-50 border border-gray-100 text-center">
+<span class="text-[10px] text-text-muted uppercase font-bold tracking-wider">Strike Rate</span>
+<span class="text-xl font-bold text-accent-green">145.2</span>
+</div>
+<div class="flex flex-col gap-1 p-3 rounded-xl bg-gray-50 border border-gray-100 text-center">
+<span class="text-[10px] text-text-muted uppercase font-bold tracking-wider">Average</span>
+<span class="text-xl font-bold text-text-main">38.4</span>
+</div>
+</div>
+<div class="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between text-xs text-text-muted">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">history</span>
+                                        Previous Team: <span class="font-semibold text-text-main">Royal Challengers</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-sm">trophy</span>
+                                        Role: <span class="font-semibold text-text-main">Batsman</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="xl:col-span-7 flex flex-col gap-6">
+<div class="bg-white rounded-3xl border border-gray-200 p-8 relative overflow-hidden shadow-xl">
+<div class="absolute right-0 top-0 size-64 bg-blue-50/50 rounded-bl-full pointer-events-none"></div>
+<div class="relative z-10 flex flex-col h-full justify-between gap-8">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-gray-100 pb-8">
+<div>
+<div class="flex items-center gap-2 mb-2">
+<div class="bg-primary/10 p-1.5 rounded-lg">
+<span class="material-symbols-outlined text-primary text-xl">gavel</span>
+</div>
+<h3 class="text-text-muted text-xs font-bold uppercase tracking-widest">Current Bid</h3>
+</div>
+<div class="text-7xl font-bold text-text-main tracking-tighter leading-none">$5,500</div>
+</div>
+<div class="bg-blue-50 rounded-2xl p-5 border border-blue-100 min-w-[240px] shadow-sm">
+<div class="text-blue-600/70 text-[10px] font-bold uppercase tracking-wider mb-2 text-right">Leading Team</div>
+<div class="flex items-center justify-end gap-4">
+<div class="text-right">
+<div class="text-xl font-bold text-text-main leading-tight">Mumbai<br/>Indians</div>
+</div>
+<div class="size-14 rounded-xl bg-blue-900 flex items-center justify-center text-white text-sm font-black shadow-md border-2 border-white shrink-0">MI</div>
+</div>
+</div>
+</div>
+<div class="flex flex-col gap-5">
+<div class="flex justify-between items-end">
+<label class="text-text-main text-sm font-bold">Increase Bid Amount</label>
+<button class="text-xs text-red-500 hover:text-red-600 hover:underline flex items-center gap-1 font-medium transition-colors">
+<span class="material-symbols-outlined text-sm">restart_alt</span>
+                                            Reset Bid
+                                        </button>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+<button class="relative bg-white hover:bg-blue-50 active:bg-blue-100 border border-gray-200 hover:border-blue-300 rounded-xl py-4 transition-all group shadow-sm hover:shadow-md hover:-translate-y-0.5">
+<span class="text-text-main font-bold text-lg group-hover:text-primary transition-colors">+$100</span>
+</button>
+<button class="relative bg-white hover:bg-blue-50 active:bg-blue-100 border border-gray-200 hover:border-blue-300 rounded-xl py-4 transition-all group shadow-sm hover:shadow-md hover:-translate-y-0.5">
+<span class="text-text-main font-bold text-lg group-hover:text-primary transition-colors">+$500</span>
+</button>
+<button class="relative bg-white hover:bg-blue-50 active:bg-blue-100 border border-gray-200 hover:border-blue-300 rounded-xl py-4 transition-all group shadow-sm hover:shadow-md hover:-translate-y-0.5">
+<span class="text-text-main font-bold text-lg group-hover:text-primary transition-colors">+$1,000</span>
+</button>
+<button class="relative bg-white hover:bg-blue-50 active:bg-blue-100 border border-gray-200 hover:border-blue-300 rounded-xl py-4 transition-all group shadow-sm hover:shadow-md hover:-translate-y-0.5">
+<span class="text-text-main font-bold text-lg group-hover:text-primary transition-colors">+$5,000</span>
+</button>
+</div>
+<div class="flex gap-3 pt-2">
+<div class="relative flex-1">
+<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+<span class="text-gray-500 font-bold">$</span>
+</div>
+<input class="w-full bg-gray-50 border border-gray-300 rounded-xl pl-8 pr-4 py-3 text-text-main placeholder-gray-400 focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-mono font-medium" placeholder="Custom amount" type="number"/>
+</div>
+<button class="bg-gray-800 hover:bg-gray-900 text-white font-bold px-8 rounded-xl shadow-lg hover:shadow-xl transition-all active:scale-95">
+                                            Add Bid
+                                        </button>
+</div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-2 gap-6 flex-1 min-h-[140px]">
+<button class="group relative overflow-hidden bg-gradient-to-br from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-3xl border border-green-400/30 transition-all shadow-lg hover:shadow-green-500/30 flex flex-col items-center justify-center gap-2 hover:-translate-y-1">
+<div class="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform duration-500 rotate-12">
+<span class="material-symbols-outlined text-9xl">check_circle</span>
+</div>
+<span class="material-symbols-outlined text-5xl mb-1 drop-shadow-sm">gavel</span>
+<span class="text-3xl font-black tracking-wide">SOLD</span>
+<span class="text-sm bg-white/20 px-4 py-1.5 rounded-full font-medium backdrop-blur-sm">to Mumbai Indians</span>
+</button>
+<button class="group relative overflow-hidden bg-white hover:bg-red-50 text-gray-400 hover:text-red-600 rounded-3xl border-2 border-dashed border-gray-300 hover:border-red-300 transition-all flex flex-col items-center justify-center gap-2 hover:-translate-y-1 shadow-sm hover:shadow-md">
+<span class="material-symbols-outlined text-5xl mb-1 transition-colors">do_not_disturb_on</span>
+<span class="text-2xl font-bold tracking-wide text-gray-500 group-hover:text-red-600">UNSOLD</span>
+<span class="text-xs text-gray-400 font-medium uppercase tracking-wide group-hover:text-red-400">Pass this player</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="flex-none bg-white border-t border-gray-200 p-4 z-20 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+<div class="max-w-6xl mx-auto flex items-center justify-between">
+<div class="flex items-center gap-6">
+<span class="text-text-muted text-xs font-bold uppercase tracking-wider">Shortcuts</span>
+<div class="flex gap-3">
+<span class="px-2.5 py-1.5 rounded-md bg-gray-100 border border-gray-200 text-[10px] font-bold text-gray-600 shadow-sm">SPACE (Next)</span>
+<span class="px-2.5 py-1.5 rounded-md bg-gray-100 border border-gray-200 text-[10px] font-bold text-gray-600 shadow-sm">S (Sold)</span>
+<span class="px-2.5 py-1.5 rounded-md bg-gray-100 border border-gray-200 text-[10px] font-bold text-gray-600 shadow-sm">P (Pass)</span>
+</div>
+</div>
+<button class="bg-primary hover:bg-primary-dark text-white font-bold text-lg pl-8 pr-6 py-3 rounded-xl shadow-lg shadow-blue-500/30 hover:shadow-blue-600/40 flex items-center gap-3 transition-all transform active:scale-95 group ring-offset-2 ring-offset-white focus:ring-2 focus:ring-primary outline-none">
+<span>Next Player</span>
+<span class="material-symbols-outlined group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</div>
+</main>
+<aside class="hidden lg:flex flex-col w-80 border-l border-gray-200 bg-white shadow-xl z-20">
+<div class="p-4 border-b border-gray-200 flex justify-between items-center bg-gray-50/80">
+<h3 class="text-xs font-bold uppercase tracking-wider text-text-muted">Active Bidders</h3>
+<span class="text-[10px] bg-white border border-gray-200 px-2.5 py-1 rounded-md text-text-main font-bold shadow-sm">8 Teams</span>
+</div>
+<div class="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/30">
+<div class="relative w-full text-left p-4 rounded-2xl bg-white border-2 border-primary/20 shadow-lg shadow-blue-100 group transition-all">
+<div class="absolute top-4 right-4 flex gap-1">
+<span class="flex h-2.5 w-2.5 rounded-full bg-primary animate-pulse shadow-sm"></span>
+</div>
+<div class="flex items-center gap-3 mb-4">
+<div class="size-14 rounded-xl bg-blue-900 flex items-center justify-center text-white font-black text-lg border-2 border-white shadow-md shrink-0">
+                        MI
+                    </div>
+<div class="min-w-0">
+<h4 class="text-text-main font-bold text-lg leading-tight truncate">Mumbai Indians</h4>
+<p class="text-xs text-primary font-bold mt-1 bg-blue-50 inline-block px-2 py-0.5 rounded-md">Highest Bidder</p>
+</div>
+</div>
+<div class="flex justify-between items-center bg-gray-50 p-3 rounded-xl border border-gray-100">
+<div>
+<p class="text-[10px] uppercase text-text-muted font-bold mb-0.5">Purse Left</p>
+<p class="text-text-main font-mono font-bold text-sm">$1,240,000</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] uppercase text-text-muted font-bold mb-0.5">Slots</p>
+<p class="text-text-main font-mono font-bold text-sm">12/25</p>
+</div>
+</div>
+</div>
+<div class="w-full text-left p-3 rounded-xl bg-white hover:bg-gray-50 border border-gray-200 hover:border-gray-300 transition-all group shadow-sm">
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center gap-3 min-w-0">
+<div class="size-10 rounded-lg bg-yellow-500 flex items-center justify-center text-white font-black text-xs shadow-sm shrink-0 border border-yellow-600/20">
+                            CSK
+                        </div>
+<div class="min-w-0">
+<h4 class="text-text-main font-bold text-sm truncate">Chennai Super Kings</h4>
+<p class="text-[10px] text-text-muted font-medium">Purse: <span class="font-mono text-text-main">$850,000</span></p>
+</div>
+</div>
+</div>
+<button class="w-full bg-white hover:bg-primary text-text-muted hover:text-white text-xs font-bold py-2.5 rounded-lg border border-gray-200 hover:border-primary transition-all flex items-center justify-center gap-2 shadow-sm group-hover:shadow-md">
+<span class="material-symbols-outlined text-[16px]">gavel</span>
+                    Place Bid
+                </button>
+</div>
+<div class="w-full text-left p-3 rounded-xl bg-white hover:bg-gray-50 border border-gray-200 hover:border-gray-300 transition-all group shadow-sm">
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center gap-3 min-w-0">
+<div class="size-10 rounded-lg bg-red-700 flex items-center justify-center text-white font-black text-xs shadow-sm shrink-0 border border-red-800/20">
+                            RCB
+                        </div>
+<div class="min-w-0">
+<h4 class="text-text-main font-bold text-sm truncate">Royal Challengers</h4>
+<p class="text-[10px] text-text-muted font-medium">Purse: <span class="font-mono text-text-main">$2,100,000</span></p>
+</div>
+</div>
+</div>
+<button class="w-full bg-white hover:bg-primary text-text-muted hover:text-white text-xs font-bold py-2.5 rounded-lg border border-gray-200 hover:border-primary transition-all flex items-center justify-center gap-2 shadow-sm group-hover:shadow-md">
+<span class="material-symbols-outlined text-[16px]">gavel</span>
+                    Place Bid
+                </button>
+</div>
+<div class="w-full text-left p-3 rounded-xl bg-white hover:bg-gray-50 border border-gray-200 hover:border-gray-300 transition-all group shadow-sm">
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center gap-3 min-w-0">
+<div class="size-10 rounded-lg bg-purple-800 flex items-center justify-center text-white font-black text-xs shadow-sm shrink-0 border border-purple-900/20">
+                            KKR
+                        </div>
+<div class="min-w-0">
+<h4 class="text-text-main font-bold text-sm truncate">Kolkata Knight Riders</h4>
+<p class="text-[10px] text-text-muted font-medium">Purse: <span class="font-mono text-text-main">$560,000</span></p>
+</div>
+</div>
+</div>
+<button class="w-full bg-white hover:bg-primary text-text-muted hover:text-white text-xs font-bold py-2.5 rounded-lg border border-gray-200 hover:border-primary transition-all flex items-center justify-center gap-2 shadow-sm group-hover:shadow-md">
+<span class="material-symbols-outlined text-[16px]">gavel</span>
+                    Place Bid
+                </button>
+</div>
+<div class="w-full text-left p-3 rounded-xl bg-white hover:bg-gray-50 border border-gray-200 hover:border-gray-300 transition-all group shadow-sm">
+<div class="flex items-center justify-between mb-3">
+<div class="flex items-center gap-3 min-w-0">
+<div class="size-10 rounded-lg bg-pink-600 flex items-center justify-center text-white font-black text-xs shadow-sm shrink-0 border border-pink-700/20">
+                            RR
+                        </div>
+<div class="min-w-0">
+<h4 class="text-text-main font-bold text-sm truncate">Rajasthan Royals</h4>
+<p class="text-[10px] text-text-muted font-medium">Purse: <span class="font-mono text-text-main">$920,000</span></p>
+</div>
+</div>
+</div>
+<button class="w-full bg-white hover:bg-primary text-text-muted hover:text-white text-xs font-bold py-2.5 rounded-lg border border-gray-200 hover:border-primary transition-all flex items-center justify-center gap-2 shadow-sm group-hover:shadow-md">
+<span class="material-symbols-outlined text-[16px]">gavel</span>
+                    Place Bid
+                </button>
+</div>
+</div>
+</aside>
+</div>
+
+</body></html>

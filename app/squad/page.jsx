@@ -1,7 +1,8 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { io } from 'socket.io-client';
 import { useRouter } from 'next/navigation';
+import { db } from '@/lib/firebase';
+import { ref, onValue } from 'firebase/database';
 
 // Helper to format currency/points
 const formatPoints = (points) => {
@@ -73,11 +74,17 @@ export default function SquadPage() {
 
     useEffect(() => {
         getTeams();
-        const socket = io('/', { path: '/socket.io' });
-        socket.on('playerSold', async () => {
-            await getTeams();
+        
+        // Listen to Firebase status for SOLD event
+        const statusRef = ref(db, 'auction/status');
+        const unsubscribe = onValue(statusRef, async (snapshot) => {
+             const status = snapshot.val();
+             if (status?.type === 'SOLD') {
+                await getTeams();
+             }
         });
-        return () => socket.disconnect();
+
+        return () => unsubscribe();
     }, []);
 
     // Derived state for the selected team

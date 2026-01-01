@@ -1,49 +1,67 @@
-import { setCurrentPlayer } from '@/lib/currentAuction';
 import connectDB from '@/lib/db';
-import Player from '@/lib/models/player';
+import { getModel } from "@/lib/getModel";
+import { db } from "@/lib/firebase";
+import { ref, set } from "firebase/database";
 
 export async function GET() {
-    await connectDB();
+    try {
+        await connectDB();
+        const Player = getModel('Player');
 
-    // Find all players who are not sold
-    const unsoldPlayers = await Player.find({ unSold: true });
+        // Find all players who are not sold
+        const validPlayers = await Player.find({
+            isSold: { $ne: true },
+            unSold: { $ne: true },
+        }).lean();
 
-    const validPlayers = await Player.find({
-        isSold: { $ne: true },
-        unSold: { $ne: true },
-    });
+        // Also consider previously unsold players if valid list is empty?
+        const unsoldPlayers = await Player.find({ unSold: true }).lean();
 
-    let randomPlayer;
+        let randomPlayer;
 
-    console.log('validPlayers:', validPlayers.length);
-    console.log('unsoldPlayers:', unsoldPlayers.length);
+        if (validPlayers.length > 0) {
+            const randomIndex = Math.floor(Math.random() * validPlayers.length);
+            randomPlayer = validPlayers[randomIndex];
+        } else if(unsoldPlayers.length > 0) {
+            const randomIndex = Math.floor(Math.random() * unsoldPlayers.length);
+            randomPlayer = unsoldPlayers[randomIndex];
+        }
 
-    if (validPlayers.length > 0) {
-        const randomIndex = Math.floor(Math.random() * validPlayers.length);
-        randomPlayer = validPlayers[randomIndex];
-    } else if(unsoldPlayers.length > 0) {
-        const randomIndex = Math.floor(Math.random() * unsoldPlayers.length);
-        randomPlayer = unsoldPlayers[randomIndex];
-    }
+        if (!randomPlayer) {
+            return new Response(JSON.stringify({ message: 'All players sold' }), {
+                status: 200,
+                headers: { 'Content-Type': 'application/json' },
+            });
+        }
 
-    if (validPlayers.length == 0 && unsoldPlayers.length === 0) {
-        return new Response(JSON.stringify({ message: 'All players sold' }), {
+        // Update Firebase
+        // Ensure stats has a default if missing
+        const safeStats = randomPlayer.stats || { matches: 0, runs: 0, sr: 0, wickets: 0 };
+        
+        // Wait for all updates
+        await Promise.all([
+            set(ref(db, 'auction/currentPlayer'), {
+                name: randomPlayer.name,
+                role: randomPlayer.role,
+                photoUrl: randomPlayer.photoUrl || '',
+                stats: safeStats,
+                _id: randomPlayer._id.toString(),
+                basePrice: randomPlayer.basePrice || 4000
+            }),
+            set(ref(db, 'auction/currentBid'), { amount: 'No Bids Yet', teamName: 'No Team Yet' }),
+            set(ref(db, 'auction/status'), null)
+        ]);
+
+        return new Response(JSON.stringify(randomPlayer), {
             status: 200,
             headers: { 'Content-Type': 'application/json' },
         });
+
+    } catch (error) {
+        console.error("Next Player API Error:", error);
+        return new Response(JSON.stringify({ error: error.message || "Internal Server Error" }), {
+            status: 500,
+            headers: { 'Content-Type': 'application/json' },
+        });
     }
-
-    await setCurrentPlayer({
-        player: randomPlayer,
-        amount: -1,
-    });
-
-    global.__io.emit('newPlayer', {
-        player: randomPlayer,
-    });
-
-    return new Response(JSON.stringify(randomPlayer), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
-    });
 }

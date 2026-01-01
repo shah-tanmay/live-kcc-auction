@@ -1,24 +1,18 @@
-// app/api/players/[id]/sell/route.js
+// app/api/players/[id]/unsold/route.js
 
-import { getAdminFromRequest } from '@/lib/auth';
 import connectToDB from '@/lib/db';
-import Player from '@/lib/models/player';
-import mongoose from 'mongoose';
+import { getModel } from '@/lib/getModel';
 import { NextResponse } from 'next/server';
+import { db } from "@/lib/firebase";
+import { ref, set } from "firebase/database";
 
 export async function POST(request, { params }) {
     await connectToDB();
-
-    // // 1) Auth check
-    // const admin = await getAdminFromRequest(request);
-    // if (!admin) {
-    //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    // }
+    const Player = getModel('Player');
 
     try {
-        // 3) Load player & ensure unsold
         const { id } = await params;
-        const player = await Player.findById(params.id);
+        const player = await Player.findById(id);
         if (!player) {
             throw { status: 404, message: 'Player not found' };
         }
@@ -26,15 +20,19 @@ export async function POST(request, { params }) {
             throw { status: 400, message: 'Player already sold' };
         }
 
-        // 5) Update player
+        // Update player
         player.unSold = true;
         await player.save();
 
-        global.__io.emit('playerUnSold', {
-            player: player._id,
+        // Firebase Update
+        set(ref(db, "auction/status"), {
+            type: "UNSOLD",
+            data: {
+                player: { name: player.name },
+                name: player.name
+            }
         });
 
-        // 9) Return the sale result
         return NextResponse.json(
             {
                 message: 'Player Unsold',
@@ -46,8 +44,6 @@ export async function POST(request, { params }) {
             { status: 200 }
         );
     } catch (err) {
-        // Abort on error
-
         if (err.status && err.message) {
             return NextResponse.json({ error: err.message }, { status: err.status });
         }

@@ -1,12 +1,13 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import { io } from 'socket.io-client';
+import { db } from '@/lib/firebase';
+import { ref, onValue, set, push, remove } from 'firebase/database';
 import { formatPoints } from '@/utils/formatPoints';
 import { useRouter } from 'next/navigation';
+import confetti from 'canvas-confetti';
 
 // Helper to get team visual properties
-// Helper to get team visual properties
-// Helper to get team visual properties
+// ... (Team Theme helper remains same, assuming it is unchanged from previous file view)
 const getTeamTheme = (teamName) => {
     if (!teamName) return { color: 'text-slate-600', bg: 'bg-slate-100', char: '?' };
     
@@ -41,17 +42,17 @@ export default function AuctionUI() {
     const [currentBidTeamName, setCurrentBidTeamName] = useState('No Team Yet');
     const [purseData, setPurseData] = useState([]);
     const [hasMounted, setHasMounted] = useState(false);
-    const [currentPlayer, setCurrentPlayer] = useState({
-        name: 'Ansh Solanki',
-        role: 'Batsman',
-        photoUrl: '/players/anshsolanki.jpg',
-        stats: { matches: 84, runs: 2450, sr: 145, wickets: 32 }
-    });
+    const [currentPlayer, setCurrentPlayer] = useState(null);
     const [playerSold, setPlayerSold] = useState(null);
     const [unSold, setUnsoldData] = useState(null);
     const [topBids, setTopBids] = useState([]);
     const [unsoldPlayers, setUnsoldPlayers] = useState([]);
     const [remainingPlayersCount, setRemainingPlayers] = useState();
+    const [isLoading, setIsLoading] = useState(true);
+    
+    // Simulation Mode State
+    const [isSimulating, setIsSimulating] = useState(false);
+
     const router = useRouter();
 
     const remainingPlayers = async () => {
@@ -68,13 +69,9 @@ export default function AuctionUI() {
 
     const fetchPurseData = async () => {
         try {
-            // Using the specific purse endpoint which returns calculated data
             const res = await fetch('/api/teams/purse');
             if (res.ok) {
                 const data = await res.json();
-                // Map the API data to the structure we need (though it likely matches)
-                // The API returns { id, name, remainingPurse, maxBidAllowed }
-                // We just need to make sure we use these keys
                 setPurseData(data);
             }
         } catch (error) {
@@ -108,47 +105,199 @@ export default function AuctionUI() {
 
     useEffect(() => {
         setHasMounted(true);
-        const socket = io('/', { path: '/socket.io' });
+        
+        // Initial Fetch
+        const init = async () => {
+             setIsLoading(true);
+             await Promise.all([
+                fetchPurseData(),
+                getTopBids(),
+                getUnSoldPlayers(),
+                remainingPlayers()
+             ]);
+             setIsLoading(false);
+        };
+        init();
 
-        fetchPurseData();
-        getTopBids();
-        getUnSoldPlayers();
-        remainingPlayers();
+        // --- FIREBASE LISTENERS ---
 
-        socket.on('newBid', (data) => {
-            setCurrentBid(data.amount);
-            setCurrentBidTeamName(data.teamName);
+        // 1. Current Bid Listener
+        const bidRef = ref(db, 'auction/currentBid');
+        const unsubscribeBid = onValue(bidRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                setCurrentBid(data.amount);
+                setCurrentBidTeamName(data.teamName);
+                if (data.amount === 'No Bids Yet') {
+                     // Reset sold/unsold state if reset
+                }
+            }
         });
 
-        socket.on('newPlayer', (data) => {
-            setCurrentPlayer(data.player);
-            setPlayerSold(null);
-            setCurrentBid('No Bids Yet');
-            setCurrentBidTeamName('No Team Yet');
-            setUnsoldData(null);
-            remainingPlayers();
+        // 2. Current Player Listener
+        const playerRef = ref(db, 'auction/currentPlayer');
+        const unsubscribePlayer = onValue(playerRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                setCurrentPlayer(data);
+                // Reset states for new player
+                setPlayerSold(null);
+                setUnsoldData(null);
+                setCurrentBid('No Bids Yet');
+                setCurrentBidTeamName('No Team Yet');
+            } else {
+                setCurrentPlayer(null);
+            }
         });
 
-        socket.on('playerSold', async (data) => {
-            setPlayerSold(data);
-            await getTopBids();
-            await fetchPurseData(); // Refresh purses when player is sold
-            await remainingPlayers();
+        // 3. Status Listener (Sold/Unsold events)
+        const statusRef = ref(db, 'auction/status');
+        const unsubscribeStatus = onValue(statusRef, async (snapshot) => {
+            const status = snapshot.val();
+            if (status) {
+                if (status.type === 'SOLD') {
+                    setPlayerSold(status.data);
+                    
+                    // Simple Confetti
+                    confetti({
+                        particleCount: 150,
+                        spread: 70,
+                        origin: { y: 0.6 }
+                    });
+
+                    // Refresh lists
+                    await getTopBids();
+                    await fetchPurseData();
+                    await remainingPlayers();
+                } else if (status.type === 'UNSOLD') {
+                    setUnsoldData(status.data);
+                    await getUnSoldPlayers();
+                    await remainingPlayers();
+                }
+            }
         });
 
-        socket.on('playerUnSold', async (data) => {
-            setUnsoldData(data);
-            await getUnSoldPlayers();
-            await remainingPlayers();
-        });
+        return () => {
+            unsubscribeBid();
+            unsubscribePlayer();
+            unsubscribeStatus();
+        };
     }, []);
+
+    // --- SIMULATION FUNCTIONS ---
+    const simulateBid = () => {
+        const teams = ['AJ Turf Titans', 'Oswal Champions', 'KCC Kings', 'Solanki Stars'];
+        const randomTeam = teams[Math.floor(Math.random() * teams.length)];
+        const randomAmount = Math.floor(Math.random() * 100) * 1000 + 5000;
+        
+        set(ref(db, 'auction/currentBid'), {
+            amount: randomAmount,
+            teamName: randomTeam
+        });
+        // Clear status so it looks like bidding is active
+        set(ref(db, 'auction/status'), null);
+    };
+
+    const simulateNewPlayer = () => {
+        const players = [
+            { name: 'Virat Kohli', role: 'Batsman', photoUrl: '/players/viratkohli.jpg', stats: { matches: 200, runs: 12000, sr: 130, wickets: 0 } },
+            { name: 'Jasprit Bumrah', role: 'Bowler', photoUrl: '/players/jaspritbumrah.jpg', stats: { matches: 100, runs: 500, sr: 100, wickets: 150 } },
+            { name: 'Rohit Sharma', role: 'Batsman', photoUrl: '/players/rohitsharma.jpg', stats: { matches: 210, runs: 11000, sr: 140, wickets: 10 } }
+        ];
+        const randomPlayer = players[Math.floor(Math.random() * players.length)];
+        
+        set(ref(db, 'auction/currentPlayer'), randomPlayer);
+        set(ref(db, 'auction/currentBid'), { amount: 'No Bids Yet', teamName: 'No Team Yet' });
+        set(ref(db, 'auction/status'), null);
+    };
+
+    const simulateSold = () => {
+        set(ref(db, 'auction/status'), {
+            type: 'SOLD',
+            data: {
+                player: currentPlayer,
+                amount: currentBid === 'No Bids Yet' ? 50000 : currentBid,
+                teamName: currentBidTeamName === 'No Team Yet' ? 'AJ Turf Titans' : currentBidTeamName
+            }
+        });
+    };
+
+    const simulateClear = async () => {
+        if(confirm('Force Clear Firebase Auction Data?')) {
+            await remove(ref(db, 'auction'));
+            // window.location.reload(); 
+        }
+    };
+    
+    // Toggle Simulation Panel
+    const toggleSim = () => setIsSimulating(!isSimulating);
+
 
     if (!hasMounted) return null;
 
     const currentTeamTheme = getTeamTheme(playerSold ? playerSold.teamName : currentBidTeamName);
 
     return (
-        <div className="bg-background-light text-slate-800 font-body h-screen flex flex-col overflow-hidden selection:bg-primary selection:text-white">
+        <div className="bg-background-light text-slate-800 font-body h-screen flex flex-col overflow-hidden selection:bg-primary selection:text-white relative">
+            
+            {/* Initial Loading State */}
+            {isLoading && (
+                <div className="fixed inset-0 z-[200] bg-slate-900 flex flex-col items-center justify-center gap-6 animate-in fade-in duration-500">
+                    <div className="size-32 relative">
+                        <img src="/kcc_logo.jpg" alt="Logo" className="w-full h-full object-contain animate-pulse" />
+                        <div className="absolute inset-x-0 -bottom-8">
+                             <div className="w-full h-1 bg-slate-800 rounded-full overflow-hidden">
+                                <div className="h-full bg-primary animate-[loading_2s_ease-in-out_infinite]"></div>
+                             </div>
+                        </div>
+                    </div>
+                    <div className="flex flex-col items-center">
+                        <h2 className="text-white font-display font-black text-2xl uppercase tracking-tighter">Preparing Auction</h2>
+                        <p className="text-slate-500 text-xs font-bold uppercase tracking-widest mt-2 px-4 py-1 bg-slate-800 rounded-full">Connecting to server...</p>
+                    </div>
+                    <style jsx>{`
+                        @keyframes loading {
+                            0% { width: 0%; left: 0%; }
+                            50% { width: 40%; left: 30%; }
+                            100% { width: 0%; left: 100%; }
+                        }
+                    `}</style>
+                </div>
+            )}
+            
+            {/* Simulation Controls (Floating Button & Panel) */}
+            <div className="fixed bottom-4 right-4 z-[100] flex flex-col items-end gap-2">
+                 {isSimulating && (
+                    <div className="bg-white p-4 rounded-xl shadow-2xl border border-slate-200 mb-2 w-64 animate-in slide-in-from-bottom-5">
+                        <h3 className="font-bold text-sm mb-3 text-slate-900 border-b pb-2">Simulation Controls</h3>
+                        <div className="flex flex-col gap-2">
+                            <button onClick={simulateNewPlayer} className="px-3 py-2 bg-blue-100 text-blue-700 rounded-lg text-xs font-bold hover:bg-blue-200 text-left">
+                                1. New Player
+                            </button>
+                            <button onClick={simulateBid} className="px-3 py-2 bg-green-100 text-green-700 rounded-lg text-xs font-bold hover:bg-green-200 text-left">
+                                2. Place Random Bid
+                            </button>
+                            <button onClick={simulateSold} className="px-3 py-2 bg-red-100 text-red-700 rounded-lg text-xs font-bold hover:bg-red-200 text-left">
+                                3. Mark Sold
+                            </button>
+                            <button onClick={simulateClear} className="px-3 py-2 bg-slate-100 text-slate-700 rounded-lg text-xs font-bold hover:bg-slate-200 text-left border border-slate-300">
+                                4. Force Clear (Fix Jasprit)
+                            </button>
+                            <div className="text-[10px] text-slate-400 mt-2 leading-tight">
+                                * This only writes to Firebase. MongoDB is safe. Use this to verify UI updates.
+                            </div>
+                        </div>
+                    </div>
+                 )}
+                 <button 
+                    onClick={toggleSim}
+                    className="size-12 bg-slate-900 text-white rounded-full shadow-xl hover:bg-slate-800 flex items-center justify-center transition-transform hover:scale-110"
+                    title="Toggle Simulation Tools"
+                >
+                    <span className="material-symbols-outlined">{isSimulating ? 'close' : 'build'}</span>
+                 </button>
+            </div>
+
             <header className="bg-white border-b border-slate-200 h-20 px-6 lg:px-8 flex items-center justify-between shadow-sm z-50 shrink-0 relative">
                 <div className="flex items-center gap-4">
                     <div className="size-16 flex items-center justify-center">
@@ -252,56 +401,86 @@ export default function AuctionUI() {
 
                     {/* Current Player Card */}
                     <div className="flex-1 min-h-0 relative bg-white rounded-[2rem] shadow-lg border border-slate-200 overflow-hidden group flex flex-col md:flex-row">
-                        <div className="flex-1 p-6 lg:p-8 flex flex-col justify-between relative z-10 h-full">
-                            <div>
-                                <div className="flex items-center gap-3 mb-3">
-                                    {currentPlayer?.role && (
-                                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-blue-50 text-blue-700 text-[0.65rem] font-bold uppercase tracking-wider border border-blue-100 shadow-sm">
-                                            <span className="material-symbols-outlined text-sm">sports_cricket</span>
-                                            {currentPlayer.role}
-                                        </span>
+                        {!currentPlayer ? (
+                            <div className="flex-1 flex flex-col items-center justify-center p-10 text-center gap-6">
+                                <div className="size-24 rounded-full bg-slate-100 flex items-center justify-center animate-pulse">
+                                    <span className="material-symbols-outlined text-4xl text-slate-400">hourglass_empty</span>
+                                </div>
+                                <div>
+                                    <h2 className="text-3xl font-display font-black text-slate-800 uppercase tracking-tighter">Waiting for Auction...</h2>
+                                    <p className="text-slate-500 font-medium mt-2">The next player will appear here shortly.</p>
+                                </div>
+                            </div>
+                        ) : (
+                        <>
+                            <div className="flex-1 p-6 lg:p-8 flex flex-col justify-between relative z-10 h-full">
+                                <div>
+                                    <div className="flex items-center gap-3 mb-3">
+                                        {currentPlayer?.role && (
+                                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-blue-50 text-blue-700 text-[0.65rem] font-bold uppercase tracking-wider border border-blue-100 shadow-sm">
+                                                <span className="material-symbols-outlined text-sm">sports_cricket</span>
+                                                {currentPlayer.role}
+                                            </span>
+                                        )}
+                                    </div>
+                                    <h2 className="text-4xl lg:text-6xl font-display font-black text-slate-900 uppercase leading-[0.9] tracking-tighter">
+                                        {currentPlayer?.name || 'Waiting...'} 
+                                    </h2>
+                                </div>
+                                <div className="mt-auto">
+                                    <div className="grid grid-cols-4 gap-2 lg:gap-6 mb-4 max-w-md">
+                                        <div>
+                                            <p className="text-[0.6rem] uppercase tracking-widest text-slate-400 font-bold mb-0.5">Mat</p>
+                                            <p className="text-2xl font-black text-slate-800">{currentPlayer?.stats?.matches || '-'}</p>
+                                        </div>
+                                        <div>
+                                            <p className="text-[0.6rem] uppercase tracking-widest text-slate-400 font-bold mb-0.5">Runs</p>
+                                            <p className="text-2xl font-black text-slate-800">{currentPlayer?.stats?.runs || '-'}</p>
+                                        </div>
+                                        <div>
+                                            <p className="text-[0.6rem] uppercase tracking-widest text-slate-400 font-bold mb-0.5">SR</p>
+                                            <p className="text-2xl font-black text-slate-800">{currentPlayer?.stats?.sr || '-'}</p>
+                                        </div>
+                                        <div>
+                                            <p className="text-[0.6rem] uppercase tracking-widest text-slate-400 font-bold mb-0.5">Wkts</p>
+                                            <p className="text-2xl font-black text-slate-800">{currentPlayer?.stats?.wickets || '-'}</p>
+                                        </div>
+                                    </div>
+                                    <div className="inline-block pt-3 border-t border-slate-100 pr-8">
+                                        <p className="text-xs font-medium text-slate-400 uppercase tracking-wide">Base Price: <span className="text-slate-900 font-bold ml-1">{formatPoints(currentPlayer?.basePrice || 4000)}</span></p>
+                                    </div>
+                                </div>
+                            </div>
+                            {currentPlayer?.photoUrl && (
+                                 <div className="relative w-full md:w-[45%] h-full bg-gradient-to-b from-slate-50 to-white md:bg-none shrink-0 overflow-hidden">
+                                    <div className="absolute inset-0 bg-slate-50/50 md:rounded-l-[3rem] border-l border-white/50"></div>
+                                    
+                                    {/* Status Overlays */}
+                                    {playerSold && (
+                                        <div className="absolute inset-0 z-20 bg-green-900/40 backdrop-blur-sm flex items-center justify-center animate-in fade-in zoom-in duration-500">
+                                            <div className="bg-white p-4 rounded-3xl shadow-2xl transform rotate-6 border-4 border-green-500">
+                                                <div className="text-green-600 font-black text-6xl tracking-tighter uppercase">SOLD</div>
+                                            </div>
+                                        </div>
                                     )}
+                                    {unSold && (
+                                        <div className="absolute inset-0 z-20 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center animate-in fade-in zoom-in duration-500">
+                                            <div className="bg-white p-4 rounded-3xl shadow-2xl transform -rotate-6 border-4 border-slate-400">
+                                                <div className="text-slate-500 font-black text-6xl tracking-tighter uppercase">UNSOLD</div>
+                                            </div>
+                                        </div>
+                                    )}
+                                    <span className="absolute top-10 right-4 font-display font-black text-9xl text-slate-100 -rotate-90 origin-top-right select-none opacity-50">
+                                        {currentPlayer.name.split(' ')[0]}
+                                    </span>
+                                    <img 
+                                        alt="Player" 
+                                        className="absolute bottom-0 right-0 h-[115%] w-auto max-w-none object-contain drop-shadow-2xl z-10 transition-transform duration-700 group-hover:scale-105 origin-bottom-right md:right-[-10px]" 
+                                        src={currentPlayer.photoUrl} 
+                                    />
                                 </div>
-                                <h2 className="text-4xl lg:text-6xl font-display font-black text-slate-900 uppercase leading-[0.9] tracking-tighter">
-                                    {currentPlayer?.name || 'Waiting...'} 
-                                </h2>
-                            </div>
-                            <div className="mt-auto">
-                                <div className="grid grid-cols-4 gap-2 lg:gap-6 mb-4 max-w-md">
-                                    <div>
-                                        <p className="text-[0.6rem] uppercase tracking-widest text-slate-400 font-bold mb-0.5">Mat</p>
-                                        <p className="text-2xl font-black text-slate-800">{currentPlayer?.stats?.matches || '-'}</p>
-                                    </div>
-                                    <div>
-                                        <p className="text-[0.6rem] uppercase tracking-widest text-slate-400 font-bold mb-0.5">Runs</p>
-                                        <p className="text-2xl font-black text-slate-800">{currentPlayer?.stats?.runs || '-'}</p>
-                                    </div>
-                                    <div>
-                                        <p className="text-[0.6rem] uppercase tracking-widest text-slate-400 font-bold mb-0.5">SR</p>
-                                        <p className="text-2xl font-black text-slate-800">{currentPlayer?.stats?.sr || '-'}</p>
-                                    </div>
-                                    <div>
-                                        <p className="text-[0.6rem] uppercase tracking-widest text-slate-400 font-bold mb-0.5">Wkts</p>
-                                        <p className="text-2xl font-black text-slate-800">{currentPlayer?.stats?.wickets || '-'}</p>
-                                    </div>
-                                </div>
-                                <div className="inline-block pt-3 border-t border-slate-100 pr-8">
-                                    <p className="text-xs font-medium text-slate-400 uppercase tracking-wide">Base Price: <span className="text-slate-900 font-bold ml-1">{formatPoints(2000)}</span></p>
-                                </div>
-                            </div>
-                        </div>
-                        {currentPlayer?.photoUrl && (
-                             <div className="relative w-full md:w-[45%] h-full bg-gradient-to-b from-slate-50 to-white md:bg-none shrink-0 overflow-hidden">
-                                <div className="absolute inset-0 bg-slate-50/50 md:rounded-l-[3rem] border-l border-white/50"></div>
-                                <span className="absolute top-10 right-4 font-display font-black text-9xl text-slate-100 -rotate-90 origin-top-right select-none opacity-50">
-                                    {currentPlayer.name.split(' ')[0]}
-                                </span>
-                                <img 
-                                    alt="Player" 
-                                    className="absolute bottom-0 right-0 h-[115%] w-auto max-w-none object-contain drop-shadow-2xl z-10 transition-transform duration-700 group-hover:scale-105 origin-bottom-right md:right-[-10px]" 
-                                    src={currentPlayer.photoUrl} 
-                                />
-                            </div>
+                            )}
+                        </>
                         )}
                     </div>
                 </section>

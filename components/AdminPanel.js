@@ -32,109 +32,15 @@ import {
   Whatshot,
 } from "@mui/icons-material";
 import { formatPoints } from "@/utils/formatPoints";
-import { io } from "socket.io-client";
+import { db } from "@/lib/firebase";
+import { ref, onValue } from "firebase/database";
 
-const pulse = keyframes`
-  0% { transform: scale(1); }
-  50% { transform: scale(1.02); }
-  100% { transform: scale(1); }
-`;
-
-const AnimatedCard = styled(Card)({
-  animation: `${pulse} 1.5s ease-in-out infinite`,
-  border: "2px solid #ff4444",
-  background: "linear-gradient(45deg, #fff5f5, #ffffff)",
-});
-
-export default function AdminPanel() {
-  const isMobile = useMediaQuery("(max-width:600px)");
-  const [currentPlayer, setCurrentPlayer] = useState(null);
-  const [bidAmount, setBidAmount] = useState("");
-  const [selectedTeam, setSelectedTeam] = useState("");
-  const [loading, setLoading] = useState(true);
-  const [teams, setTeams] = useState([
-    { name: "Mumbai Indians", purse: 48200000, color: "#004ba0" },
-    { name: "Chennai Super Kings", purse: 46500000, color: "#fdb913" },
-    { name: "Kolkata Riders", purse: 45500000, color: "#2e0854" },
-  ]);
-  const [hasMounted, setHasMounted] = useState(false);
-  const [unsoldPlayers, setUnsoldPlayers] = useState([]);
-  const router = useRouter();
-
-  //   useEffect(() => {
-  // if (!document.cookie.includes("adminToken")) router.push("/admin");
-  //   }, []);
-
-  const handleNextPlayer = () => {
-    setCurrentPlayer({
-      name: "Jasprit Bumrah",
-      basePrice: 180000,
-      role: "Bowler",
-      stats: { matches: 210, wickets: 320 },
-    });
-  };
-
-  const handleUnsold = async () => {
-    try {
-      const res = await fetch(`/api/players/${player.id}/unsold`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-      const data = await res.json();
-
-      if(!res.ok) {
-        alert(`Error: ${data.error}`);
-        return;
-      }
-
-      setPlayer(null);
-
-      alert("Player Unsold")
-    } catch(error) {
-      console.error("Error handling unsold player:", error);
-      alert("Something went wrong while marking the player as unsold.");
-    }
-  }
-
-  const handleSold = async () => {
-    try {
-      const res = await fetch(`/api/players/${player.id}/sell`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        // Handle and show the error message from the server
-        console.error("Bid failed:", data.error);
-        alert(`Error: ${data.error}`);
-        return;
-      }
-
-      // Bid was successful
-      // alert("Player Sold!");
-      setPlayer(null);
-
-      // You could also update state or UI here if needed
-    } catch (error) {
-      console.error("Unexpected error placing bid:", error);
-      alert("Something went wrong while placing the bid.");
-    }
-  };
-
-  const [purseData, setPurseData] = useState([]);
-  const [currentBid, setCurrentBid] = useState("No Bids Yet");
-  const [currentBidTeamName, setCurrentBidTeamName] = useState("No Team Yet");
-  const [player, setPlayer] = useState(null);
+// ... inside component ...
 
   useEffect(() => {
     setHasMounted(true);
-    const socket = io("/", { path: "/socket.io" });
+    
+    // Fetch initial purse data
     fetch("/api/teams/purse")
       .then((res) => res.json())
       .then((data) => {
@@ -142,10 +48,17 @@ export default function AdminPanel() {
         setLoading(false);
       });
 
-    socket.on("newBid", (data) => {
-      setCurrentBid(data.amount);
-      setCurrentBidTeamName(data.teamName);
+    // Firebase Listener for Bids
+    const bidRef = ref(db, 'auction/currentBid');
+    const unsubscribe = onValue(bidRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+            setCurrentBid(data.amount);
+            setCurrentBidTeamName(data.teamName);
+        }
     });
+
+    return () => unsubscribe();
   }, []);
 
   if (!hasMounted || loading || !purseData) return null;
