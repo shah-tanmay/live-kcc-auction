@@ -23,7 +23,6 @@ export default function AuctionUI() {
     const [isLoading, setIsLoading] = useState(true);
     
     // Simulation Mode State
-    const [isSimulating, setIsSimulating] = useState(false);
     const [isMobile, setIsMobile] = useState(false);
 
     const router = useRouter();
@@ -178,53 +177,6 @@ export default function AuctionUI() {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
-    // --- SIMULATION FUNCTIONS ---
-    const simulateBid = () => {
-        const teams = ['AJ Turf Titans', 'Oswal Champions', 'KCC Kings', 'Solanki Stars'];
-        const randomTeam = teams[Math.floor(Math.random() * teams.length)];
-        const randomAmount = Math.floor(Math.random() * 100) * 1000 + 5000;
-        
-        set(ref(db, 'auction/currentBid'), {
-            amount: randomAmount,
-            teamName: randomTeam
-        });
-        // Clear status so it looks like bidding is active
-        set(ref(db, 'auction/status'), null);
-    };
-
-    const simulateNewPlayer = () => {
-        const players = [
-            { name: 'Virat Kohli', role: 'Batsman', photoUrl: '/players/viratkohli.jpg', stats: { matches: 200, runs: 12000, sr: 130, wickets: 0 } },
-            { name: 'Jasprit Bumrah', role: 'Bowler', photoUrl: '/players/jaspritbumrah.jpg', stats: { matches: 100, runs: 500, sr: 100, wickets: 150 } },
-            { name: 'Rohit Sharma', role: 'Batsman', photoUrl: '/players/rohitsharma.jpg', stats: { matches: 210, runs: 11000, sr: 140, wickets: 10 } }
-        ];
-        const randomPlayer = players[Math.floor(Math.random() * players.length)];
-        
-        set(ref(db, 'auction/currentPlayer'), randomPlayer);
-        set(ref(db, 'auction/currentBid'), { amount: 'No Bids Yet', teamName: 'No Team Yet' });
-        set(ref(db, 'auction/status'), null);
-    };
-
-    const simulateSold = () => {
-        set(ref(db, 'auction/status'), {
-            type: 'SOLD',
-            data: {
-                player: currentPlayer,
-                amount: currentBid === 'No Bids Yet' ? 50000 : currentBid,
-                teamName: currentBidTeamName === 'No Team Yet' ? 'AJ Turf Titans' : currentBidTeamName
-            }
-        });
-    };
-
-    const simulateClear = async () => {
-        if(confirm('Force Clear Firebase Auction Data?')) {
-            await remove(ref(db, 'auction'));
-            // window.location.reload(); 
-        }
-    };
-    
-    // Toggle Simulation Panel
-    const toggleSim = () => setIsSimulating(!isSimulating);
 
 
     if (!hasMounted) return null;
@@ -249,34 +201,6 @@ export default function AuctionUI() {
                     router={router}
                 />
                 
-                {/* Keep simulation controls available even on mobile for testing */}
-                <div className="fixed bottom-24 right-4 z-[100] flex flex-col items-end gap-2">
-                     {isSimulating && (
-                        <div className="bg-white p-4 rounded-xl shadow-2xl border border-slate-200 mb-2 w-64 animate-in slide-in-from-bottom-5">
-                            <h3 className="font-bold text-sm mb-3 text-slate-900 border-b pb-2">Simulation Controls</h3>
-                            <div className="flex flex-col gap-2">
-                                <button onClick={simulateNewPlayer} className="px-3 py-2 bg-blue-100 text-blue-700 rounded-lg text-xs font-bold hover:bg-blue-200 text-left">
-                                    1. New Player
-                                </button>
-                                <button onClick={simulateBid} className="px-3 py-2 bg-green-100 text-green-700 rounded-lg text-xs font-bold hover:bg-green-200 text-left">
-                                    2. Place Random Bid
-                                </button>
-                                <button onClick={simulateSold} className="px-3 py-2 bg-red-100 text-red-700 rounded-lg text-xs font-bold hover:bg-red-200 text-left">
-                                    3. Mark Sold
-                                </button>
-                                <button onClick={simulateClear} className="px-3 py-2 bg-slate-100 text-slate-700 rounded-lg text-xs font-bold hover:bg-slate-200 text-left border border-slate-300">
-                                    4. Force Clear (Fix Jasprit)
-                                </button>
-                            </div>
-                        </div>
-                     )}
-                     <button 
-                        onClick={toggleSim}
-                        className="size-10 bg-slate-900 text-white rounded-full shadow-xl flex items-center justify-center transition-transform hover:scale-110"
-                    >
-                        <span className="material-symbols-outlined text-sm">{isSimulating ? 'close' : 'build'}</span>
-                     </button>
-                </div>
             </>
         );
     }
@@ -287,38 +211,6 @@ export default function AuctionUI() {
             {/* Initial Loading State */}
             {isLoading && <LoadingScreen message="Fetching Auction Real-time Data..." />}
             
-            {/* Simulation Controls (Floating Button & Panel) */}
-            <div className="fixed bottom-4 right-4 z-[100] flex flex-col items-end gap-2">
-                 {isSimulating && (
-                    <div className="bg-white p-4 rounded-xl shadow-2xl border border-slate-200 mb-2 w-64 animate-in slide-in-from-bottom-5">
-                        <h3 className="font-bold text-sm mb-3 text-slate-900 border-b pb-2">Simulation Controls</h3>
-                        <div className="flex flex-col gap-2">
-                            <button onClick={simulateNewPlayer} className="px-3 py-2 bg-blue-100 text-blue-700 rounded-lg text-xs font-bold hover:bg-blue-200 text-left">
-                                1. New Player
-                            </button>
-                            <button onClick={simulateBid} className="px-3 py-2 bg-green-100 text-green-700 rounded-lg text-xs font-bold hover:bg-green-200 text-left">
-                                2. Place Random Bid
-                            </button>
-                            <button onClick={simulateSold} className="px-3 py-2 bg-red-100 text-red-700 rounded-lg text-xs font-bold hover:bg-red-200 text-left">
-                                3. Mark Sold
-                            </button>
-                            <button onClick={simulateClear} className="px-3 py-2 bg-slate-100 text-slate-700 rounded-lg text-xs font-bold hover:bg-slate-200 text-left border border-slate-300">
-                                4. Force Clear (Fix Jasprit)
-                            </button>
-                            <div className="text-[10px] text-slate-400 mt-2 leading-tight">
-                                * This only writes to Firebase. MongoDB is safe. Use this to verify UI updates.
-                            </div>
-                        </div>
-                    </div>
-                 )}
-                 <button 
-                    onClick={toggleSim}
-                    className="size-12 bg-slate-900 text-white rounded-full shadow-xl hover:bg-slate-800 flex items-center justify-center transition-transform hover:scale-110"
-                    title="Toggle Simulation Tools"
-                >
-                    <span className="material-symbols-outlined">{isSimulating ? 'close' : 'build'}</span>
-                 </button>
-            </div>
 
             <header className="bg-white border-b border-slate-200 h-20 px-6 lg:px-8 flex items-center justify-between shadow-sm z-50 shrink-0 relative">
                 <div className="flex items-center gap-6">

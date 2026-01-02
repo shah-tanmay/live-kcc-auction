@@ -34,6 +34,7 @@ import {
 import { formatPoints } from "@/utils/formatPoints";
 import { db } from "@/lib/firebase";
 import { ref, onValue } from "firebase/database";
+import AnimatedCard from "./AnimatedCard";
 
 export default function AdminPanel() {
   const [hasMounted, setHasMounted] = useState(false);

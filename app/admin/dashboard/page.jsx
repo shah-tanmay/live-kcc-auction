@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { db } from '@/lib/firebase';
-import { ref, onValue } from 'firebase/database';
+import { ref, onValue, set, push, remove } from 'firebase/database';
 import { formatPoints } from '@/utils/formatPoints';
 import Cookies from 'js-cookie';
 import confetti from 'canvas-confetti';
@@ -19,6 +19,8 @@ export default function AdminDashboard() {
     const [loading, setLoading] = useState(true);
     const [actionLoading, setActionLoading] = useState(false);
     const [lastAction, setLastAction] = useState(null);
+    const [isSimulating, setIsSimulating] = useState(false);
+    const isMock = process.env.NEXT_PUBLIC_MOCK_MODE === 'true';
 
     const fetchTeams = async () => {
         try {
@@ -237,6 +239,52 @@ export default function AdminDashboard() {
             setLoading(false);
         }
     };
+
+    // --- SIMULATION FUNCTIONS ---
+    const simulateBid = () => {
+        const teamNames = teams.length > 0 ? teams.map(t => t.name) : ['AJ Turf Titans', 'Oswal Champions', 'KCC Kings', 'Solanki Stars'];
+        const randomTeam = teamNames[Math.floor(Math.random() * teamNames.length)];
+        const randomAmount = Math.floor(Math.random() * 100) * 1000 + 5000;
+        
+        set(ref(db, 'auction/currentBid'), {
+            amount: randomAmount,
+            teamName: randomTeam
+        });
+        set(ref(db, 'auction/status'), null);
+    };
+
+    const simulateNewPlayer = () => {
+         const players = [
+            { name: 'Virat Kohli', role: 'Batsman', photoUrl: '', stats: { matches: 200, runs: 12000, sr: 130, wickets: 0 } },
+            { name: 'Jasprit Bumrah', role: 'Bowler', photoUrl: '', stats: { matches: 100, runs: 500, sr: 100, wickets: 150 } },
+            { name: 'Rohit Sharma', role: 'Batsman', photoUrl: '', stats: { matches: 210, runs: 11000, sr: 140, wickets: 10 } }
+        ];
+        const randomPlayer = players[Math.floor(Math.random() * players.length)];
+        
+        set(ref(db, 'auction/currentPlayer'), randomPlayer);
+        set(ref(db, 'auction/currentBid'), { amount: 'No Bids Yet', teamName: 'No Team Yet' });
+        set(ref(db, 'auction/status'), null);
+    };
+
+    const simulateSold = () => {
+        if (!currentPlayer) return alert('No active player to sell.');
+        set(ref(db, 'auction/status'), {
+            type: 'SOLD',
+            data: {
+                player: currentPlayer,
+                amount: currentBid === 0 ? 50000 : currentBid,
+                teamName: currentBidTeam === null ? 'AJ Turf Titans' : currentBidTeam
+            }
+        });
+    };
+
+    const simulateClear = async () => {
+        if(confirm('Force Clear Firebase Auction Data?')) {
+            await remove(ref(db, 'auction'));
+        }
+    };
+
+    const toggleSim = () => setIsSimulating(!isSimulating);
 
     if (loading) return <LoadingScreen message="Initializing Admin Dashboard..." />;
 
@@ -604,6 +652,53 @@ export default function AdminDashboard() {
                     </aside>
                 )}
             </div>
+
+            {/* Simulation Controls (Mock Only) */}
+            {isMock && (
+                <div className="fixed bottom-6 right-6 z-[100] flex flex-col items-end gap-3">
+                    {isSimulating && (
+                        <div className="bg-white p-5 rounded-2xl shadow-2xl border border-slate-200 mb-2 w-72 animate-in slide-in-from-bottom-5">
+                            <div className="flex items-center justify-between mb-4 border-b pb-2">
+                                <h3 className="font-bold text-sm text-slate-900 flex items-center gap-2">
+                                    <span className="material-symbols-outlined text-sm text-primary">science</span>
+                                    Simulation Tools
+                                </h3>
+                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Mock Mode</span>
+                            </div>
+                            <div className="flex flex-col gap-2">
+                                <button onClick={simulateNewPlayer} className="px-4 py-2.5 bg-blue-50 text-blue-700 rounded-xl text-xs font-bold hover:bg-blue-100 transition-colors flex items-center justify-between group">
+                                    <span>1. New Player</span>
+                                    <span className="material-symbols-outlined text-xs opacity-0 group-hover:opacity-100 transition-opacity">add_circle</span>
+                                </button>
+                                <button onClick={simulateBid} className="px-4 py-2.5 bg-green-50 text-green-700 rounded-xl text-xs font-bold hover:bg-green-100 transition-colors flex items-center justify-between group">
+                                    <span>2. Place Random Bid</span>
+                                    <span className="material-symbols-outlined text-xs opacity-0 group-hover:opacity-100 transition-opacity">trending_up</span>
+                                </button>
+                                <button onClick={simulateSold} className="px-4 py-2.5 bg-red-50 text-red-700 rounded-xl text-xs font-bold hover:bg-red-100 transition-colors flex items-center justify-between group">
+                                    <span>3. Mark Sold</span>
+                                    <span className="material-symbols-outlined text-xs opacity-0 group-hover:opacity-100 transition-opacity">gavel</span>
+                                </button>
+                                <button onClick={simulateClear} className="px-4 py-2.5 bg-slate-50 text-slate-600 rounded-xl text-xs font-bold hover:bg-slate-100 transition-colors border border-slate-200 flex items-center justify-between group mt-2">
+                                    <span>4. Wipe Firebase</span>
+                                    <span className="material-symbols-outlined text-xs opacity-0 group-hover:opacity-100 transition-opacity">delete_forever</span>
+                                </button>
+                                <div className="text-[9px] text-slate-400 mt-3 leading-tight italic bg-slate-50 p-2 rounded-lg">
+                                    * Real-time Firebase overrides only. Does not affect persistent MongoDB data.
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                    <button 
+                        onClick={toggleSim}
+                        className={`size-14 rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 ${isSimulating ? 'bg-slate-900 rotate-90' : 'bg-primary hover:bg-orange-600'}`}
+                        title="Simulation Tools"
+                    >
+                        <span className="material-symbols-outlined text-white text-2xl">
+                            {isSimulating ? 'close' : 'build'}
+                        </span>
+                    </button>
+                </div>
+            )}
         </div>
     );
 }
