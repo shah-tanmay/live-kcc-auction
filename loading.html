@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>KCC Season 5 - Loading</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f2460d",
+                        "background-light": "#f8f6f5",
+                        "background-dark": "#221410",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+</head>
+<body class="relative flex h-screen w-full flex-col bg-background-light dark:bg-background-dark font-display overflow-hidden text-[#181311] dark:text-white transition-colors duration-300">
+<!-- Decorative background elements -->
+<div class="absolute inset-0 overflow-hidden pointer-events-none">
+<div class="absolute -top-[20%] -right-[10%] w-[50%] h-[50%] bg-primary/5 rounded-full blur-3xl"></div>
+<div class="absolute top-[40%] -left-[10%] w-[30%] h-[30%] bg-primary/5 rounded-full blur-2xl"></div>
+</div>
+<!-- Main Content Container -->
+<div class="layout-container flex h-full grow flex-col z-10">
+<div class="flex flex-1 justify-center items-center py-5 px-4 md:px-40">
+<div class="layout-content-container flex flex-col max-w-[480px] w-full flex-1 items-center justify-center">
+<!-- Logo Section -->
+<div class="mb-8 relative group">
+<div class="absolute inset-0 bg-primary/20 blur-xl rounded-full scale-90 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+<div class="relative w-32 h-32 md:w-40 md:h-40 bg-white dark:bg-[#2a1a15] rounded-2xl shadow-lg flex items-center justify-center p-4 border border-white/50 dark:border-white/5">
+<div class="w-full h-full bg-center bg-contain bg-no-repeat" data-alt="KCC Season 5 Tournament Logo Emblem" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuCY4KRtfmZD5pUlaH35c5WQnrjNZ6R5wfmoKAndMiZfO12Th99BmtvOVasQsp1HsTLLRqtu6dC4pe6pi6YneCUOEwaxNz9o-NK21n0m7lbiiFykH6SHql9C4wNCx57YZpzQHNB9M5xu6FzSNdd7etUdtOlpocDGSlytxvWVEkQqkciekqUm9k3aFLK57wiJznQB957_NpUh4Wd7gCglIL4le-W-J3DnMZ64MXPQHrlzgP-4pc44KjQhqn4QiCPopAMft9gdSd3R9MY");'>
+</div>
+</div>
+</div>
+<!-- Headline -->
+<h1 class="text-[#181311] dark:text-white tracking-tight text-[32px] font-bold leading-tight px-4 text-center pb-2">
+                    KCC Season 5
+                </h1>
+<p class="text-[#8a6b60] dark:text-[#a08b80] text-sm font-medium mb-12 text-center">
+                    Official Auction Dashboard
+                </p>
+<!-- Progress Section -->
+<div class="w-full flex flex-col gap-3 p-4 bg-white/50 dark:bg-black/20 rounded-xl border border-white/60 dark:border-white/5 shadow-sm backdrop-blur-sm">
+<div class="flex gap-6 justify-between items-end">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary animate-spin text-xl">sync</span>
+<p class="text-[#181311] dark:text-gray-200 text-base font-semibold leading-normal">Loading Auction Data...</p>
+</div>
+<span class="text-primary font-bold text-sm">45%</span>
+</div>
+<!-- Progress Bar -->
+<div class="rounded-full bg-[#e6dedb] dark:bg-white/10 overflow-hidden">
+<div class="h-2.5 rounded-full bg-primary shadow-[0_0_10px_rgba(242,70,13,0.4)]" style="width: 45%;"></div>
+</div>
+<p class="text-[#8a6b60] dark:text-[#8a8a8a] text-xs font-normal leading-normal text-center pt-1">
+                        Connecting to secure auction server...
+                    </p>
+</div>
+</div>
+</div>
+<!-- Footer Meta -->
+<div class="pb-8 w-full flex justify-center">
+<p class="text-[#8a6b60] dark:text-[#5a4b45] text-xs font-normal leading-normal px-4 text-center opacity-60">
+                Application v1.0.2 © 2024
+            </p>
+</div>
+</div>
+</body></html>

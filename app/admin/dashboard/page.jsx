@@ -6,32 +6,8 @@ import { ref, onValue } from 'firebase/database';
 import { formatPoints } from '@/utils/formatPoints';
 import Cookies from 'js-cookie';
 import confetti from 'canvas-confetti';
-
-// Basic Team Theme Helper (Simplified for Admin)
-const getTeamColor = (name) => {
-    if (!name) return 'bg-gray-200 text-gray-600';
-    if (name.includes('MI') || name.includes('Mumbai')) return 'bg-blue-900 text-white';
-    if (name.includes('CSK') || name.includes('Chennai')) return 'bg-yellow-500 text-white';
-    if (name.includes('RCB') || name.includes('Royal')) return 'bg-red-700 text-white';
-    if (name.includes('KKR') || name.includes('Kolkata')) return 'bg-purple-800 text-white';
-    if (name.includes('RR') || name.includes('Rajasthan')) return 'bg-pink-600 text-white';
-    if (name.includes('SRH') || name.includes('Sunrisers')) return 'bg-orange-500 text-white';
-    if (name.includes('DC') || name.includes('Delhi')) return 'bg-blue-600 text-white';
-    if (name.includes('PBKS') || name.includes('Punjab')) return 'bg-red-500 text-white';
-    if (name.includes('LSG') || name.includes('Lucknow')) return 'bg-cyan-600 text-white';
-    if (name.includes('GT') || name.includes('Gujarat')) return 'bg-teal-700 text-white';
-    return 'bg-gray-700 text-white';
-}
-
-const getTeamInitial = (name) => {
-    if (!name) return '?';
-    if (name.includes('Mumbai')) return 'MI';
-    if (name.includes('Chennai')) return 'CSK';
-    if (name.includes('Royal')) return 'RCB';
-    if (name.includes('Kolkata')) return 'KKR';
-    if (name.includes('Rajasthan')) return 'RR';
-    return name.substring(0, 2).toUpperCase();
-}
+import LoadingScreen from '@/components/LoadingScreen';
+import { getTeamTheme } from '@/utils/teamTheme';
 
 export default function AdminDashboard() {
     const router = useRouter();
@@ -44,6 +20,16 @@ export default function AdminDashboard() {
     const [actionLoading, setActionLoading] = useState(false);
     const [lastAction, setLastAction] = useState(null);
 
+    const fetchTeams = async () => {
+        try {
+            const res = await fetch('/api/teams/purse');
+            const data = await res.json();
+            setTeams(data);
+        } catch (error) {
+            console.error("Failed to fetch teams", error);
+        }
+    };
+
     // Initial Data Fetch
     useEffect(() => {
         const token = Cookies.get('adminToken');
@@ -52,22 +38,11 @@ export default function AdminDashboard() {
             return;
         }
 
-        const fetchInitialData = async () => {
-            try {
-                // Fetch Teams & Purses
-                const res = await fetch('/api/teams/purse');
-                const data = await res.json();
-                setTeams(data);
-                
-                // Fetch Current Player (if any logic exists, or rely on firebase mostly)
-                // For now relying on Firebase listener below
-            } catch (error) {
-                console.error("Failed to fetch initial data", error);
-            } finally {
-                setLoading(false);
-            }
+        const init = async () => {
+            await fetchTeams();
+            setLoading(false);
         };
-        fetchInitialData();
+        init();
 
         // Firebase Listeners
         const bidRef = ref(db, 'auction/currentBid');
@@ -98,6 +73,7 @@ export default function AdminDashboard() {
                         origin: { y: 0.6 }
                     });
                     setLastAction('SOLD');
+                    fetchTeams(); // Refetch teams to update Max Bid allowed
                 } else if (data.type === 'UNSOLD') {
                     setLastAction('UNSOLD');
                 }
@@ -262,7 +238,7 @@ export default function AdminDashboard() {
         }
     };
 
-    if (loading) return <div className="flex items-center justify-center h-screen">Loading...</div>;
+    if (loading) return <LoadingScreen message="Initializing Admin Dashboard..." />;
 
     return (
         <div className="bg-surface-soft text-slate-900 flex flex-col h-screen overflow-hidden antialiased font-display">
@@ -326,204 +302,228 @@ export default function AdminDashboard() {
 
                     <div className="flex-1 overflow-y-auto p-6 md:p-8">
                         <div className="max-w-6xl mx-auto flex flex-col gap-6">
-                            <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 h-full">
-                                {/* Player Card */}
-                                <div className="xl:col-span-12 flex flex-col">
-                                    <div className="bg-white rounded-3xl overflow-hidden border border-gray-200 shadow-xl flex-1 flex flex-col relative group h-full">
-                                        {!currentPlayer ? (
-                                            <div className="h-72 w-full flex flex-col items-center justify-center bg-gray-50 gap-4 relative">
-                                                <div className="size-20 bg-slate-100 rounded-full flex items-center justify-center text-slate-300">
-                                                    <span className="material-symbols-outlined text-4xl">sports_cricket</span>
-                                                </div>
-                                                <h2 className="text-xl font-bold text-slate-400">Auction Not Started</h2>
-                                                <button 
-                                                    onClick={handleNextPlayer}
-                                                    disabled={actionLoading}
-                                                    className={`bg-primary hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-xl shadow-lg transition-transform flex items-center gap-2 ${actionLoading ? 'opacity-50 cursor-not-allowed' : 'hover:-translate-y-1'}`}
-                                                >
-                                                    {actionLoading ? (
-                                                        <><span>Loading...</span><span className="size-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></span></>
-                                                    ) : (
-                                                        <><span>Start Auction (Get First Player)</span><span className="material-symbols-outlined">play_arrow</span></>
+                            <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 items-start">
+                                {currentPlayer ? (
+                                    <>
+                                        {/* Player Card */}
+                                        <div className="xl:col-span-5 flex flex-col h-full">
+                                            <div className="bg-white rounded-3xl overflow-hidden border border-gray-200 shadow-xl flex-1 flex flex-col relative group">
+                                                <div className="relative h-72 w-full overflow-hidden bg-gray-100 items-end flex justify-center">
+                                                    {/* Status Overlay */}
+                                                    {(lastAction === 'SOLD') && (
+                                                        <div className="absolute inset-0 z-20 bg-green-900/40 backdrop-blur-sm flex items-center justify-center animate-in fade-in zoom-in">
+                                                            <div className="bg-white p-6 rounded-3xl shadow-2xl transform rotate-6 border-4 border-green-500 flex flex-col items-center gap-4">
+                                                                <div className="text-green-600 font-black text-6xl tracking-tighter uppercase drop-shadow-md">SOLD</div>
+                                                                <button 
+                                                                    onClick={handleNextPlayer} 
+                                                                    className="bg-slate-900 text-white px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 -rotate-6 hover:bg-black transition-colors"
+                                                                >
+                                                                    <span>Next Player</span>
+                                                                    <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                                                                </button>
+                                                            </div>
+                                                        </div>
                                                     )}
-                                                </button>
-                                            </div>
-                                        ) : (
-                                        <>
-                                            <div className="relative h-72 w-full overflow-hidden bg-gray-100 items-end flex justify-center">
-                                                {/* Status Overlay */}
-                                                {(lastAction === 'SOLD') && (
-                                                    <div className="absolute inset-0 z-20 bg-green-900/40 backdrop-blur-sm flex items-center justify-center animate-in fade-in zoom-in">
-                                                        <div className="bg-white p-6 rounded-3xl shadow-2xl transform rotate-6 border-4 border-green-500 flex flex-col items-center gap-4">
-                                                            <div className="text-green-600 font-black text-6xl tracking-tighter uppercase drop-shadow-md">SOLD</div>
-                                                            <button 
-                                                                onClick={handleNextPlayer} 
-                                                                className="bg-slate-900 text-white px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 -rotate-6 hover:bg-black transition-colors"
-                                                            >
-                                                                <span>Next Player</span>
-                                                                <span className="material-symbols-outlined text-sm">arrow_forward</span>
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                )}
-                                                {(lastAction === 'UNSOLD') && (
-                                                    <div className="absolute inset-0 z-20 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center animate-in fade-in zoom-in">
-                                                        <div className="bg-white p-6 rounded-3xl shadow-2xl transform -rotate-6 border-4 border-slate-400 flex flex-col items-center gap-4">
-                                                            <div className="text-slate-500 font-black text-6xl tracking-tighter uppercase drop-shadow-md">UNSOLD</div>
-                                                            <button 
-                                                                onClick={handleNextPlayer} 
-                                                                className="bg-primary text-white px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 rotate-6 hover:bg-orange-700 transition-colors"
-                                                            >
-                                                                <span>Next Player</span>
-                                                                <span className="material-symbols-outlined text-sm">arrow_forward</span>
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                )}
-                                                {/* Loading Overlay */}
-                                                {actionLoading && (
-                                                    <div className="absolute inset-0 z-30 bg-white/50 backdrop-blur-sm flex items-center justify-center">
-                                                        <div className="flex flex-col items-center gap-3">
-                                                            <span className="size-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></span>
-                                                            <span className="text-sm font-bold text-slate-900 bg-white/80 px-3 py-1 rounded-full">Processing...</span>
-                                                        </div>
-                                                    </div>
-                                                )}
-
-                                                {currentPlayer?.photoUrl ? (
-                                                    <img src={currentPlayer.photoUrl} className="h-full w-auto object-contain" />
-                                                ) : (
-                                                     <div className="flex items-center justify-center h-full w-full text-slate-300 font-bold text-4xl">?</div>
-                                                )}
-                                                
-                                                <div className="absolute top-4 left-4 flex gap-2">
-                                                    <span className="bg-white/90 backdrop-blur text-slate-900 text-xs font-bold px-3 py-1 rounded-md shadow-md uppercase tracking-wider">Lot #--</span>
-                                                </div>
-                                                <div className="absolute bottom-0 left-0 right-0 p-6 pt-12 bg-gradient-to-t from-gray-900/90 via-gray-900/40 to-transparent">
-                                                    <div className="flex items-end justify-between">
-                                                        <div>
-                                                            <h2 className="text-4xl font-bold text-white leading-tight mb-1 drop-shadow-md">{currentPlayer?.name || "Waiting..."}</h2>
-                                                            <p className="text-white/80 text-sm font-medium">{currentPlayer?.role || "---"}</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="p-6 bg-white relative">
-                                                 <div className="absolute right-6 -top-10 bg-white p-3 rounded-xl shadow-lg border border-gray-100 text-center min-w-[100px]">
-                                                    <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-0.5">Base Price</div>
-                                                    <div className="text-xl font-mono font-bold text-slate-900">{formatPoints(currentPlayer?.basePrice || 0)}</div>
-                                                </div>
-                                                <div className="grid grid-cols-3 gap-4 mt-2">
-                                                    <div className="flex flex-col gap-1 p-3 rounded-xl bg-gray-50 border border-gray-100 text-center">
-                                                        <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Matches</span>
-                                                        <span className="text-xl font-bold text-slate-900">{currentPlayer?.stats?.matches || '-'}</span>
-                                                    </div>
-                                                    <div className="flex flex-col gap-1 p-3 rounded-xl bg-gray-50 border border-gray-100 text-center">
-                                                        <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Runs</span>
-                                                        <span className="text-xl font-bold text-slate-900">{currentPlayer?.stats?.runs || '-'}</span>
-                                                    </div>
-                                                    <div className="flex flex-col gap-1 p-3 rounded-xl bg-gray-50 border border-gray-100 text-center">
-                                                        <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Wickets</span>
-                                                        <span className="text-xl font-bold text-slate-900">{currentPlayer?.stats?.wickets || '-'}</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </>
-                                        )}
-                                    </div>
-                                </div>
-
-                                {/* Bidding Controls - Full Width */}
-                                <div className="xl:col-span-12 flex flex-col gap-6">
-                                    <div className="bg-white rounded-3xl border border-gray-200 p-8 relative overflow-hidden shadow-xl">
-                                        <div className="absolute right-0 top-0 size-64 bg-blue-50/50 rounded-bl-full pointer-events-none"></div>
-                                        <div className="relative z-10 flex flex-col h-full justify-between gap-8">
-                                            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-gray-100 pb-8">
-                                                <div>
-                                                    <div className="flex items-center gap-2 mb-2">
-                                                        <div className="bg-primary/10 p-1.5 rounded-lg">
-                                                            <span className="material-symbols-outlined text-primary text-xl">gavel</span>
-                                                        </div>
-                                                        <h3 className="text-slate-400 text-xs font-bold uppercase tracking-widest">Current Bid</h3>
-                                                    </div>
-                                                    <div className="text-7xl font-bold text-slate-900 tracking-tighter leading-none">{formatPoints(currentBid)}</div>
-                                                </div>
-                                                {currentBidTeam && (
-                                                    <div className="bg-blue-50 rounded-2xl p-5 border border-blue-100 min-w-[240px] shadow-sm">
-                                                        <div className="text-blue-600/70 text-[10px] font-bold uppercase tracking-wider mb-2 text-right">Leading Team</div>
-                                                        <div className="flex items-center justify-end gap-4">
-                                                            <div className="text-right">
-                                                                <div className="text-xl font-bold text-slate-900 leading-tight">{currentBidTeam}</div>
+                                                    {(lastAction === 'UNSOLD') && (
+                                                        <div className="absolute inset-0 z-20 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center animate-in fade-in zoom-in">
+                                                            <div className="bg-white p-6 rounded-3xl shadow-2xl transform -rotate-6 border-4 border-slate-400 flex flex-col items-center gap-4">
+                                                                <div className="text-slate-500 font-black text-6xl tracking-tighter uppercase drop-shadow-md">UNSOLD</div>
+                                                                <button 
+                                                                    onClick={handleNextPlayer} 
+                                                                    className="bg-primary text-white px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 rotate-6 hover:bg-orange-700 transition-colors"
+                                                                >
+                                                                    <span>Next Player</span>
+                                                                    <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                                                                </button>
                                                             </div>
-                                                            <div className={`size-14 rounded-xl flex items-center justify-center text-white text-sm font-black shadow-md border-2 border-white shrink-0 ${getTeamColor(currentBidTeam)}`}>
-                                                                {getTeamInitial(currentBidTeam)}
+                                                        </div>
+                                                    )}
+                                                    {/* Loading Overlay */}
+                                                    {actionLoading && (
+                                                        <div className="absolute inset-0 z-30 bg-white/50 backdrop-blur-sm flex items-center justify-center">
+                                                            <div className="flex flex-col items-center gap-3">
+                                                                <span className="size-10 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></span>
+                                                                <span className="text-sm font-bold text-slate-900 bg-white/80 px-3 py-1 rounded-full">Processing...</span>
+                                                            </div>
+                                                        </div>
+                                                    )}
+
+                                                    {currentPlayer?.photoUrl ? (
+                                                        <img src={currentPlayer.photoUrl} className="h-full w-auto object-contain" />
+                                                    ) : (
+                                                         <div className="flex items-center justify-center h-full w-full text-slate-300 font-bold text-4xl">?</div>
+                                                    )}
+                                                    
+                                                    <div className="absolute top-4 left-4 flex gap-2">
+                                                        <span className="bg-white/90 backdrop-blur text-slate-900 text-xs font-bold px-3 py-1 rounded-md shadow-md uppercase tracking-wider">Lot #--</span>
+                                                    </div>
+                                                    <div className="absolute bottom-0 left-0 right-0 p-6 pt-12 bg-gradient-to-t from-gray-900/90 via-gray-900/40 to-transparent">
+                                                        <div className="flex items-end justify-between">
+                                                            <div>
+                                                                <h2 className="text-4xl font-bold text-white leading-tight mb-1 drop-shadow-md">{currentPlayer?.name || "Waiting..."}</h2>
+                                                                <p className="text-white/80 text-sm font-medium">{currentPlayer?.role || "---"}</p>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                )}
-                                            </div>
-
-                                            {/* Manual Bid Section - Redesigned */}
-                                            <div className="flex flex-col gap-5">
-                                                 <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200">
-                                                    <div className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Manual Bid Entry</div>
-                                                    <div className="flex flex-col md:flex-row gap-4 items-end">
-                                                        <div className="flex-1 w-full">
-                                                            <label className="text-[10px] uppercase font-bold text-slate-400 mb-1 block">Select Team</label>
-                                                            <select 
-                                                                className="w-full bg-white border border-slate-300 text-slate-900 text-sm rounded-xl focus:ring-primary focus:border-primary block p-3"
-                                                                value={manualBidTeam}
-                                                                onChange={(e) => setManualBidTeam(e.target.value)}
-                                                            >
-                                                                <option value="">-- Choose Team --</option>
-                                                                {teams.map(t => (
-                                                                    <option key={t.id} value={t.id}>{t.name} (Purse: {formatPoints(t.remainingPurse)})</option>
-                                                                ))}
-                                                            </select>
+                                                </div>
+                                                <div className="p-6 bg-white relative">
+                                                     <div className="absolute right-6 -top-10 bg-white p-3 rounded-xl shadow-lg border border-gray-100 text-center min-w-[100px]">
+                                                        <div className="text-[10px] text-slate-400 uppercase font-bold tracking-wider mb-0.5">Base Price</div>
+                                                        <div className="text-xl font-mono font-bold text-slate-900">{formatPoints(currentPlayer?.basePrice || 0)}</div>
+                                                    </div>
+                                                    <div className="grid grid-cols-3 gap-4 mt-2">
+                                                        <div className="flex flex-col gap-1 p-3 rounded-xl bg-gray-50 border border-gray-100 text-center">
+                                                            <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Matches</span>
+                                                            <span className="text-xl font-bold text-slate-900">{currentPlayer?.stats?.matches || '-'}</span>
                                                         </div>
-                                                        <div className="w-full md:w-48">
-                                                            <label className="text-[10px] uppercase font-bold text-slate-400 mb-1 block">Bid Amount</label>
-                                                            <input 
-                                                                type="number" 
-                                                                className="bg-white border border-slate-300 text-slate-900 text-sm rounded-xl focus:ring-primary focus:border-primary block w-full p-3 font-mono" 
-                                                                placeholder="Enter amount"
-                                                                value={manualBidAmount}
-                                                                onChange={(e) => setManualBidAmount(e.target.value)}
-                                                            />
+                                                        <div className="flex flex-col gap-1 p-3 rounded-xl bg-gray-50 border border-gray-100 text-center">
+                                                            <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Runs</span>
+                                                            <span className="text-xl font-bold text-slate-900">{currentPlayer?.stats?.runs || '-'}</span>
                                                         </div>
-                                                        <div className="flex gap-2">
-                                                            <button 
-                                                                onClick={() => handleManualBidSubmit()}
-                                                                className="bg-slate-900 hover:bg-black text-white font-bold py-3 px-6 rounded-xl shadow-lg transition-transform active:scale-95 flex items-center gap-2"
-                                                            >
-                                                                <span>Place Bid</span>
-                                                            </button>
-                                                            {/* Quick Increments for Selected Team */}
-                                                            <button onClick={() => setManualBidAmount(Number(currentBid || 0) + 100)} className="bg-white border border-slate-200 hover:border-primary hover:text-primary text-slate-600 font-bold py-3 px-3 rounded-xl transition-colors text-xs">+100</button>
-                                                            <button onClick={() => setManualBidAmount(Number(currentBid || 0) + 500)} className="bg-white border border-slate-200 hover:border-primary hover:text-primary text-slate-600 font-bold py-3 px-3 rounded-xl transition-colors text-xs">+500</button>
+                                                        <div className="flex flex-col gap-1 p-3 rounded-xl bg-gray-50 border border-gray-100 text-center">
+                                                            <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Wickets</span>
+                                                            <span className="text-xl font-bold text-slate-900">{currentPlayer?.stats?.wickets || '-'}</span>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-
-                                            <div className="grid grid-cols-2 gap-6 flex-1 min-h-[140px] mt-4">
-                                                <button onClick={handleSell} className="group relative overflow-hidden bg-gradient-to-br from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-3xl border border-green-400/30 transition-all shadow-lg hover:shadow-green-500/30 flex flex-col items-center justify-center gap-2 hover:-translate-y-1">
-                                                    <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-110 transition-transform duration-500 rotate-12">
-                                                        <span className="material-symbols-outlined text-9xl">check_circle</span>
-                                                    </div>
-                                                    <span className="material-symbols-outlined text-5xl mb-1 drop-shadow-sm">gavel</span>
-                                                    <span className="text-3xl font-black tracking-wide">SOLD</span>
-                                                    <span className="text-sm bg-white/20 px-4 py-1.5 rounded-full font-medium backdrop-blur-sm">to {currentBidTeam || 'Highest Bidder'}</span>
-                                                </button>
-                                                <button onClick={handleUnsold} className="group relative overflow-hidden bg-white hover:bg-red-50 text-gray-400 hover:text-red-600 rounded-3xl border-2 border-dashed border-gray-300 hover:border-red-300 transition-all flex flex-col items-center justify-center gap-2 hover:-translate-y-1 shadow-sm hover:shadow-md">
-                                                    <span className="material-symbols-outlined text-5xl mb-1 transition-colors">do_not_disturb_on</span>
-                                                    <span className="text-2xl font-bold tracking-wide text-gray-500 group-hover:text-red-600">UNSOLD</span>
-                                                    <span className="text-xs text-gray-400 font-medium uppercase tracking-wide group-hover:text-red-400">Pass this player</span>
-                                                </button>
                                             </div>
                                         </div>
+
+                                        {/* Bidding Controls */}
+                                        <div className="xl:col-span-7 flex flex-col gap-6">
+                                            <div className="bg-white rounded-3xl border border-gray-200 p-8 relative overflow-hidden shadow-xl">
+                                                <div className="absolute right-0 top-0 size-64 bg-blue-50/50 rounded-bl-full pointer-events-none"></div>
+                                                <div className="relative z-10 flex flex-col h-full justify-between gap-8">
+                                                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 border-b border-gray-100 pb-8">
+                                                        <div>
+                                                            <div className="flex items-center gap-2 mb-2">
+                                                                <div className="bg-primary/10 p-1.5 rounded-lg">
+                                                                    <span className="material-symbols-outlined text-primary text-xl">gavel</span>
+                                                                </div>
+                                                                <h3 className="text-slate-400 text-xs font-bold uppercase tracking-widest">Current Bid</h3>
+                                                            </div>
+                                                            <div className="text-7xl font-bold text-slate-900 tracking-tighter leading-none">{formatPoints(currentBid)}</div>
+                                                        </div>
+                                                        {currentBidTeam && (
+                                                            <div className="bg-blue-50 rounded-2xl p-5 border border-blue-100 min-w-[240px] shadow-sm">
+                                                                <div className="text-blue-600/70 text-[10px] font-bold uppercase tracking-wider mb-2 text-right">Leading Team</div>
+                                                                <div className="flex items-center justify-end gap-4">
+                                                                    <div className="text-right">
+                                                                        <div className="text-xl font-bold text-slate-900 leading-tight">{currentBidTeam}</div>
+                                                                    </div>
+                                                                    <div className={`size-14 rounded-xl flex items-center justify-center text-white text-sm font-black shadow-md border-2 border-white shrink-0 ${getTeamTheme(currentBidTeam).bg} ${getTeamTheme(currentBidTeam).color}`}>
+                                                                        {getTeamTheme(currentBidTeam).logo ? (
+                                                                            <img src={getTeamTheme(currentBidTeam).logo} alt={currentBidTeam} className="w-full h-full object-contain p-1" />
+                                                                        ) : (
+                                                                            getTeamTheme(currentBidTeam).char
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        )}
+                                                    </div>
+
+                                                    {/* Manual Bid Section - Refined Proportions */}
+                                                    <div className="flex flex-col gap-5">
+                                                         <div className="bg-white p-6 rounded-3xl border border-slate-200 shadow-lg shadow-slate-200/40 relative overflow-hidden group">
+                                                           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-orange-400 via-primary to-orange-400"></div>
+                                                           <div className="relative z-10">
+                                                               <div className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-4 flex items-center gap-2">
+                                                                   <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></div>
+                                                                   Manual Bid Entry
+                                                               </div>
+                                                               <div className="flex flex-col gap-5">
+                                                                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                                                       <div className="w-full">
+                                                                           <label className="text-[10px] uppercase font-bold text-slate-500 mb-1.5 block tracking-widest ml-1">Target Team</label>
+                                                                           <div className="relative group/select">
+                                                                               <select 
+                                                                                   className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm font-bold rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary block p-3 shadow-sm appearance-none transition-all cursor-pointer group-hover/select:border-slate-300"
+                                                                                   value={manualBidTeam}
+                                                                                   onChange={(e) => setManualBidTeam(e.target.value)}
+                                                                               >
+                                                                                   <option value="">-- Select Team to Bid --</option>
+                                                                                   {teams.map(t => (
+                                                                                       <option key={t.id} value={t.id}>{t.name} (Max: {formatPoints(t.maxBidAllowed)})</option>
+                                                                                   ))}
+                                                                               </select>
+                                                                               <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                                                                                   <span className="material-symbols-outlined text-lg">expand_more</span>
+                                                                               </div>
+                                                                           </div>
+                                                                       </div>
+                                                                       <div className="w-full">
+                                                                           <label className="text-[10px] uppercase font-bold text-slate-500 mb-1.5 block tracking-widest ml-1">Bid Amount (₹)</label>
+                                                                           <div className="relative group/input">
+                                                                               <span className="absolute left-4 top-1/2 -translate-y-1/2 text-primary font-black text-lg italic pt-0.5">₹</span>
+                                                                               <input 
+                                                                                   type="number" 
+                                                                                   className="bg-slate-50 border border-slate-200 text-slate-900 text-lg font-mono font-black rounded-xl focus:ring-2 focus:ring-primary/20 focus:border-primary block w-full p-3 pl-9 shadow-sm transition-all group-hover/input:border-slate-300" 
+                                                                                   placeholder="Enter exact amount"
+                                                                                   value={manualBidAmount}
+                                                                                   onChange={(e) => setManualBidAmount(e.target.value)}
+                                                                               />
+                                                                           </div>
+                                                                       </div>
+                                                                   </div>
+
+                                                                   <div className="flex flex-col xl:flex-row gap-3 items-stretch">
+                                                                       <button 
+                                                                           onClick={() => handleManualBidSubmit()}
+                                                                           className="flex-1 bg-slate-900 hover:bg-black text-white font-black py-3.5 px-6 rounded-xl shadow-lg shadow-slate-200 transition-all active:scale-[0.98] flex items-center justify-center gap-2 text-base group/btn"
+                                                                       >
+                                                                           <span className="material-symbols-outlined text-orange-400 text-xl group-hover:translate-x-1 transition-transform">rocket_launch</span>
+                                                                           <span>Confirm & Place Bid</span>
+                                                                       </button>
+                                                                       
+                                                                       <div className="flex gap-2 shrink-0">
+                                                                           <button 
+                                                                               onClick={() => setManualBidAmount(currentBid === 0 ? (currentPlayer?.basePrice || 0) : Number(currentBid) + 100)} 
+                                                                               className="flex-1 xl:w-28 bg-white border border-slate-200 hover:border-primary/50 hover:bg-orange-50/30 text-slate-700 font-black py-3.5 px-2 rounded-xl transition-all shadow-sm active:scale-95 text-[10px] uppercase tracking-tighter"
+                                                                           >
+                                                                               {currentBid === 0 ? 'Start (BP)' : '+ 100'}
+                                                                           </button>
+                                                                           <button 
+                                                                               onClick={() => setManualBidAmount(currentBid === 0 ? (currentPlayer?.basePrice || 0) + 500 : Number(currentBid) + 500)} 
+                                                                               className="flex-1 xl:w-28 bg-white border border-slate-200 hover:border-primary/50 hover:bg-orange-50/30 text-slate-700 font-black py-3.5 px-2 rounded-xl transition-all shadow-sm active:scale-95 text-[10px] uppercase tracking-tighter"
+                                                                           >
+                                                                               {currentBid === 0 ? 'Start + 500' : '+ 500'}
+                                                                           </button>
+                                                                       </div>
+                                                                   </div>
+                                                               </div>
+                                                           </div>
+                                                         </div>
+                                                    </div>
+                                                </div>
+
+                                                <div className="grid grid-cols-2 gap-5 min-h-[120px] mt-2">
+                                                    <button onClick={handleSell} className="group relative overflow-hidden bg-gradient-to-br from-green-500 via-emerald-600 to-green-700 hover:from-green-600 hover:to-green-800 text-white rounded-3xl border-2 border-white/10 transition-all shadow-xl shadow-green-100/50 flex flex-col items-center justify-center gap-1 hover:-translate-y-1.5 active:scale-95">
+                                                        <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:scale-125 transition-transform duration-700 rotate-12">
+                                                            <span className="material-symbols-outlined text-[80px]">verified</span>
+                                                        </div>
+                                                        <span className="material-symbols-outlined text-4xl mb-0.5 drop-shadow-md group-hover:scale-110 transition-transform">gavel</span>
+                                                        <span className="text-2xl font-black tracking-tight uppercase leading-none">SOLD</span>
+                                                        <span className="text-[10px] bg-black/20 px-3 py-1 rounded-full font-bold uppercase tracking-widest mt-1 backdrop-blur-md">to {currentBidTeam || 'Highest Bidder'}</span>
+                                                    </button>
+                                                    <button onClick={handleUnsold} className="group relative overflow-hidden bg-slate-50 hover:bg-red-50 text-slate-400 hover:text-red-500 rounded-3xl border-2 border-dashed border-slate-200 hover:border-red-200 transition-all flex flex-col items-center justify-center gap-1 hover:-translate-y-1.5 shadow-sm hover:shadow-lg active:scale-95">
+                                                        <span className="material-symbols-outlined text-4xl mb-0.5 transition-colors group-hover:rotate-90 transition-transform duration-500">cancel</span>
+                                                        <span className="text-xl font-black tracking-tight uppercase leading-none">UNSOLD</span>
+                                                        <span className="text-[10px] font-bold uppercase tracking-widest mt-1 text-slate-400 group-hover:text-red-400">Skip Player</span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </>
+                                ) : (
+                                    <div className="col-span-12 w-full bg-white rounded-3xl border border-gray-200 shadow-xl overflow-hidden min-h-[500px]">
+                                         <PreAuctionLobby 
+                                            teams={teams} 
+                                            onStart={handleNextPlayer} 
+                                            loading={actionLoading} 
+                                        />
                                     </div>
-                                </div>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -551,55 +551,146 @@ export default function AdminDashboard() {
                 </main>
 
                 {/* Right Sidebar - Active Bidders */}
-                <aside className="hidden lg:flex flex-col w-80 border-l border-gray-200 bg-white shadow-xl z-20">
-                    <div className="p-4 border-b border-gray-200 flex justify-between items-center bg-gray-50/80">
-                        <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">Active Teams</h3>
-                        <span className="text-[10px] bg-white border border-gray-200 px-2.5 py-1 rounded-md text-slate-800 font-bold shadow-sm">{teams.length} Teams</span>
-                    </div>
-                    <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/30">
-                        {teams.map(team => {
-                            const isHighest = team.name === currentBidTeam;
-                            // const teamColorClass = getTeamColor(team.name);
-                            return (
-                                <div key={team.id} className={`w-full text-left p-3 rounded-xl border transition-all group shadow-sm ${isHighest ? 'bg-white border-2 border-primary/20 shadow-lg shadow-blue-100' : 'bg-white hover:bg-gray-50 border-gray-200 hover:border-gray-300'}`}>
-                                    <div className="flex items-center justify-between mb-3">
-                                        <div className="flex items-center gap-3 min-w-0">
-                                            <div className={`size-10 rounded-lg flex items-center justify-center text-white font-black text-xs shadow-sm shrink-0 ${getTeamColor(team.name)}`}>
-                                                {getTeamInitial(team.name)}
-                                            </div>
-                                            <div className="min-w-0">
-                                                <h4 className="text-slate-900 font-bold text-sm truncate">{team.name}</h4>
-                                                <p className="text-[10px] text-slate-500 font-medium">Purse: <span className="font-mono text-slate-900">{formatPoints(team.remainingPurse)}</span></p>
+                {currentPlayer && (
+                    <aside className="hidden lg:flex flex-col w-80 border-l border-gray-200 bg-white shadow-xl z-20 overflow-hidden">
+                        <div className="p-4 border-b border-gray-200 flex justify-between items-center bg-gray-50/80">
+                            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">Active Teams</h3>
+                            <span className="text-[10px] bg-white border border-gray-200 px-2.5 py-1 rounded-md text-slate-800 font-bold shadow-sm">{teams.length} Teams</span>
+                        </div>
+                        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/30">
+                            {teams.map(team => {
+                                const isHighest = team.name === currentBidTeam;
+                                return (
+                                    <div key={team.id} className={`w-full text-left p-3 rounded-xl border transition-all group shadow-sm ${isHighest ? 'bg-white border-2 border-primary/20 shadow-lg shadow-blue-100' : 'bg-white hover:bg-gray-50 border-gray-200 hover:border-gray-300'}`}>
+                                        <div className="flex items-center justify-between mb-3">
+                                            <div className="flex items-center gap-3 min-w-0">
+                                                <div className={`size-10 rounded-lg flex items-center justify-center text-white font-black text-xs shadow-sm shrink-0 ${getTeamTheme(team.name).bg} ${getTeamTheme(team.name).color}`}>
+                                                    {getTeamTheme(team.name).logo ? (
+                                                        <img src={getTeamTheme(team.name).logo} alt={team.name} className="w-full h-full object-contain p-0.5" />
+                                                    ) : (
+                                                        getTeamTheme(team.name).char
+                                                    )}
+                                                </div>
+                                                <div className="min-w-0">
+                                                    <h4 className="text-slate-900 font-bold text-sm truncate">{team.name}</h4>
+                                                    <p className="text-[10px] text-slate-500 font-medium">Purse: <span className="font-mono text-slate-900">{formatPoints(team.remainingPurse)}</span></p>
+                                                </div>
                                             </div>
                                         </div>
+                                        {isHighest ? (
+                                            <div className="text-xs text-primary font-bold bg-blue-50 p-2 rounded-lg text-center border border-blue-100">
+                                                Highest Bidder
+                                            </div>
+                                        ) : (
+                                            <div className="grid grid-cols-2 gap-2">
+                                                <button 
+                                                    onClick={() => handleBid(currentBid === 0 ? (currentPlayer.basePrice || 0) : Number(currentBid) + 100, team.id)}
+                                                    className="py-2 rounded-lg border border-slate-200 text-[10px] font-black uppercase text-slate-500 hover:bg-primary hover:text-white hover:border-primary transition-all"
+                                                >
+                                                    {currentBid === 0 ? 'Start' : '+100'}
+                                                </button>
+                                                <button 
+                                                    onClick={() => handleBid(currentBid === 0 ? (currentPlayer.basePrice || 0) + 500 : Number(currentBid) + 500, team.id)}
+                                                    className="py-2 rounded-lg border border-slate-200 text-[10px] font-black uppercase text-slate-500 hover:bg-primary hover:text-white hover:border-primary transition-all"
+                                                >
+                                                    {currentBid === 0 ? 'Start+500' : '+500'}
+                                                </button>
+                                            </div>
+                                        )}
                                     </div>
-                                    {isHighest ? (
-                                        <div className="text-xs text-primary font-bold bg-blue-50 p-2 rounded-lg text-center border border-blue-100">
-                                            Highest Bidder
+                                );
+                            })}
+                        </div>
+                    </aside>
+                )}
+            </div>
+        </div>
+    );
+}
+
+// Pre-Auction Lobby Component
+function PreAuctionLobby({ teams, onStart, loading }) {
+    return (
+        <div className="flex-1 p-2 lg:p-6 relative">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-primary/5 rounded-full blur-3xl -mt-20 pointer-events-none"></div>
+            <div className="max-w-6xl mx-auto flex flex-col items-center gap-8 z-10 relative pb-10">
+                <div className="text-center mt-4 lg:mt-10 space-y-4">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-100 shadow-sm rounded-full text-[10px] font-bold uppercase tracking-widest text-primary mb-2">
+                        <span className="material-symbols-outlined text-sm">hourglass_empty</span>
+                        Starting Soon
+                    </div>
+                    <h1 className="font-display font-black text-4xl lg:text-6xl text-slate-900 tracking-tighter leading-none">
+                        KCC Season 5
+                        <span className="block text-xl lg:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-400 via-slate-600 to-slate-400 mt-1 tracking-tight">Player Auction</span>
+                    </h1>
+                    <p className="text-slate-500 font-medium text-sm lg:text-base max-w-xl mx-auto leading-relaxed px-4">
+                        Welcome to the official auction for KCC Season 5. Get ready as franchises battle it out to build their dream squads.
+                    </p>
+                    
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-4">
+                        <button 
+                            onClick={onStart}
+                            disabled={loading}
+                            className={`bg-primary hover:bg-orange-600 text-white font-black py-4 px-10 rounded-2xl shadow-xl shadow-primary/20 transition-all flex items-center gap-3 uppercase tracking-wider text-sm ${loading ? 'opacity-70 cursor-not-allowed' : 'hover:-translate-y-1 active:scale-95'}`}
+                        >
+                            {loading ? (
+                                <><span>Initialising...</span><span className="size-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span></>
+                            ) : (
+                                <><span>Start Auction</span><span className="material-symbols-outlined font-black">play_arrow</span></>
+                            )}
+                        </button>
+                        
+                        <button 
+                            onClick={() => window.location.href = '/players'}
+                            className="bg-white border border-slate-200 hover:border-primary/50 text-slate-700 font-black py-4 px-10 rounded-2xl shadow-sm transition-all flex items-center gap-3 uppercase tracking-wider text-sm hover:-translate-y-1 active:scale-95"
+                        >
+                            <span>Players Pool</span>
+                            <span className="material-symbols-outlined font-black text-primary">groups</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div className="w-16 h-1 bg-gradient-to-r from-transparent via-slate-200 to-transparent rounded-full my-2"></div>
+
+                <div className="w-full">
+                    <div className="flex items-center justify-between mb-6 px-2">
+                        <div>
+                            <h2 className="font-display font-bold text-lg lg:text-xl text-slate-900 flex items-center gap-2">
+                                <span className="material-symbols-outlined text-primary text-2xl">diversity_3</span>
+                                Franchise Owners
+                            </h2>
+                            <p className="text-slate-400 text-[10px] mt-0.5 font-medium uppercase tracking-wider">Participating groups ready for the auction</p>
+                        </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                        {teams.map((team, idx) => (
+                            <div key={team.id || idx} className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm hover:shadow-lg hover:border-primary/20 hover:-translate-y-1 transition-all duration-300 group">
+                                <div className="flex items-start justify-between mb-4">
+                                    {getTeamTheme(team.name).logo ? (
+                                        <div className="size-12 rounded-xl bg-white overflow-hidden shadow-inner border border-slate-100 flex items-center justify-center p-1 group-hover:scale-110 transition-transform duration-300">
+                                            <img src={getTeamTheme(team.name).logo} alt={team.name} className="w-full h-full object-contain" />
                                         </div>
                                     ) : (
-                                        <div className="grid grid-cols-2 gap-2">
-                                            <button 
-                                                onClick={() => handleBid((Number(currentBid)||0) + 100, team.id)}
-                                                disabled={(Number(currentBid)||0) + 100 > team.maxBidAllowed}
-                                                className={`font-bold py-2 rounded-lg border text-xs transition-colors ${(Number(currentBid)||0) + 100 > team.maxBidAllowed ? 'bg-gray-100 text-gray-300 border-gray-200 cursor-not-allowed' : 'bg-white hover:bg-slate-100 text-slate-600 border-gray-200'}`}
-                                            >
-                                                +100
-                                            </button>
-                                            <button 
-                                                onClick={() => handleBid((Number(currentBid)||0) + 500, team.id)}
-                                                disabled={(Number(currentBid)||0) + 500 > team.maxBidAllowed}
-                                                className={`font-bold py-2 rounded-lg border text-xs transition-colors ${(Number(currentBid)||0) + 500 > team.maxBidAllowed ? 'bg-gray-100 text-gray-300 border-gray-200 cursor-not-allowed' : 'bg-white hover:bg-slate-100 text-slate-600 border-gray-200'}`}
-                                            >
-                                                +500
-                                            </button>
+                                        <div className={`size-12 rounded-xl flex items-center justify-center font-black text-xl shadow-inner group-hover:scale-110 transition-transform duration-300 border border-white/10 ${getTeamTheme(team.name).bg} ${getTeamTheme(team.name).color}`}>
+                                            {getTeamTheme(team.name).char}
                                         </div>
                                     )}
+                                    <span className="material-symbols-outlined text-slate-200 group-hover:text-primary transition-colors text-lg">verified</span>
                                 </div>
-                            );
-                        })}
+                                <div>
+                                    <h3 className="font-display font-bold text-base text-slate-900 mb-0.5 group-hover:text-primary transition-colors">{team.name}</h3>
+                                    <div className="h-px w-full bg-slate-50 my-2"></div>
+                                    <p className="text-[9px] uppercase tracking-widest text-slate-400 font-bold mb-1 italic">Status</p>
+                                    <p className="text-slate-700 text-xs font-bold flex items-center gap-2">
+                                        <span className="size-2 rounded-full bg-green-500 animate-pulse"></span>
+                                        Owner: [Placeholder]
+                                    </p>
+                                </div>
+                            </div>
+                        ))}
                     </div>
-                </aside>
+                </div>
             </div>
         </div>
     );

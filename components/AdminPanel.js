@@ -35,7 +35,19 @@ import { formatPoints } from "@/utils/formatPoints";
 import { db } from "@/lib/firebase";
 import { ref, onValue } from "firebase/database";
 
-// ... inside component ...
+export default function AdminPanel() {
+  const [hasMounted, setHasMounted] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [purseData, setPurseData] = useState([]);
+  const [currentBid, setCurrentBid] = useState(0);
+  const [currentBidTeamName, setCurrentBidTeamName] = useState("");
+  const [player, setPlayer] = useState(null);
+  const [selectedTeam, setSelectedTeam] = useState("");
+  const [unsoldPlayers, setUnsoldPlayers] = useState([]);
+  const isMobile = useMediaQuery("(max-width:600px)");
+
+  const handleSold = () => {};
+  const handleUnsold = () => {};
 
   useEffect(() => {
     setHasMounted(true);
@@ -179,7 +191,7 @@ import { ref, onValue } from "firebase/database";
                         <DetailItem label="Role" value={player.role} />
                         <DetailItem
                           label="Base Price"
-                          value={formatPoints(2000)}
+                          value={formatPoints(player.basePrice || 4000)}
                         />
                       </Grid>
                     </Grid>

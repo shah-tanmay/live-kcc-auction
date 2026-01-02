@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { db } from '@/lib/firebase';
 import { ref, onValue } from 'firebase/database';
+import MobileSquadUI from '@/components/MobileSquadUI';
+import LoadingScreen from '@/components/LoadingScreen';
 
 // Helper to format currency/points
 const formatPoints = (points) => {
@@ -49,6 +51,18 @@ export default function SquadPage() {
     const [teams, setTeams] = useState([]);
     const [selectedTeam, setSelectedTeam] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [isMobile, setIsMobile] = useState(false);
+
+    // Responsive Handlers
+    useEffect(() => {
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth < 1024);
+        };
+        
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
 
     const getTeams = async () => {
         try {
@@ -102,6 +116,22 @@ export default function SquadPage() {
     // Since we don't know the initial Total Purse from just 'purseLeft', 
     // we can calculate 'Spent' by summing player sold prices.
     const amountSpent = items.reduce((acc, player) => acc + (player.soldFor || 0), 0);
+
+    if (loading) {
+        return <LoadingScreen message="Fetching Squad Rosters..." />;
+    }
+
+    if (isMobile) {
+        return (
+            <MobileSquadUI 
+                teams={teams}
+                selectedTeam={selectedTeam}
+                setSelectedTeam={setSelectedTeam}
+                formatPoints={formatPoints}
+                getTeamTheme={getTeamTheme}
+            />
+        );
+    }
 
     return (
         <div className="bg-background-light text-slate-800 font-body h-screen flex flex-col overflow-hidden selection:bg-primary selection:text-white">

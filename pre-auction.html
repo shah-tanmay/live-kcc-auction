@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Auction Pre-Start Screen</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&amp;family=Noto+Sans:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f2460d",
+                        "secondary": "#fcd34d",
+                        "background-light": "#f8fafc",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"],
+                        "body": ["Noto Sans", "sans-serif"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 20px;
+        }
+    </style>
+</head>
+<body class="bg-background-light text-slate-800 font-body h-screen flex flex-col overflow-hidden selection:bg-primary selection:text-white">
+<header class="bg-white border-b border-slate-200 h-20 px-6 lg:px-8 flex items-center justify-between shadow-sm z-50 shrink-0 relative">
+<div class="flex items-center gap-4">
+<div class="size-10 bg-primary text-white rounded-lg flex items-center justify-center shadow-md shadow-primary/30">
+<span class="material-symbols-outlined text-2xl">trophy</span>
+</div>
+<div>
+<h1 class="font-display font-black text-xl lg:text-2xl uppercase tracking-tighter text-slate-900 leading-none">KCC Season 5</h1>
+<p class="text-[0.65rem] font-bold text-primary uppercase tracking-[0.2em]">Tournament Auction</p>
+</div>
+</div>
+<div class="flex items-center gap-2 bg-slate-50 px-4 py-1.5 rounded-full border border-slate-200">
+<span class="relative flex h-2.5 w-2.5">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-orange-500"></span>
+</span>
+<span class="text-xs font-bold uppercase tracking-widest text-slate-500">Pre-Auction Lobby</span>
+</div>
+<div class="flex flex-col items-end">
+<span class="text-[0.65rem] text-slate-400 uppercase tracking-widest font-bold">Date</span>
+<span class="text-sm font-bold text-slate-900">Oct 24, 2024</span>
+</div>
+</header>
+<main class="flex-1 p-4 lg:p-8 overflow-y-auto custom-scrollbar relative">
+<div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-primary/5 rounded-full blur-3xl -mt-20 pointer-events-none"></div>
+<div class="absolute bottom-0 right-0 w-[500px] h-[500px] bg-secondary/5 rounded-full blur-3xl -mr-20 -mb-20 pointer-events-none"></div>
+<div class="max-w-7xl mx-auto flex flex-col items-center gap-12 z-10 relative pb-10">
+<div class="text-center mt-8 lg:mt-16 space-y-6 animate-fade-in-up">
+<div class="inline-flex items-center gap-2 px-5 py-2.5 bg-white border border-slate-100 shadow-sm rounded-full text-sm font-bold uppercase tracking-widest text-primary mb-4 transform hover:scale-105 transition-transform">
+<span class="material-symbols-outlined text-lg">hourglass_empty</span>
+                    Starting Soon
+                </div>
+<h1 class="font-display font-black text-6xl lg:text-8xl text-slate-900 tracking-tighter leading-[0.9]">
+                    KCC Season 5
+                    <span class="block text-3xl lg:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-400 via-slate-600 to-slate-400 mt-2 tracking-tight">Player Auction</span>
+</h1>
+<p class="text-slate-500 font-medium text-lg lg:text-xl max-w-2xl mx-auto leading-relaxed">
+                    Welcome to the official auction for KCC Season 5. Get ready as 7 franchises battle it out to build their dream squads. The bidding will commence shortly.
+                </p>
+</div>
+<div class="w-24 h-1.5 bg-gradient-to-r from-transparent via-slate-200 to-transparent rounded-full"></div>
+<div class="w-full">
+<div class="flex items-end justify-between mb-8 px-2">
+<div>
+<h2 class="font-display font-bold text-2xl lg:text-3xl text-slate-900 flex items-center gap-3">
+<span class="material-symbols-outlined text-primary text-3xl">diversity_3</span>
+                            Franchise Owners
+                        </h2>
+<p class="text-slate-400 text-sm mt-1 font-medium">Participating teams ready for the auction</p>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+<div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-lg hover:border-orange-200 hover:-translate-y-1 transition-all duration-300 group">
+<div class="flex items-start justify-between mb-5">
+<div class="size-16 rounded-2xl bg-orange-50 text-orange-600 flex items-center justify-center font-black text-3xl shadow-inner group-hover:scale-110 transition-transform duration-300 border border-orange-100">F</div>
+<span class="material-symbols-outlined text-slate-300 group-hover:text-orange-400 transition-colors">verified</span>
+</div>
+<div>
+<h3 class="font-display font-bold text-xl text-slate-900 mb-1 group-hover:text-orange-600 transition-colors">Firehawks</h3>
+<div class="h-px w-full bg-slate-100 my-3"></div>
+<p class="text-xs uppercase tracking-widest text-slate-400 font-bold mb-1">Team Owner</p>
+<p class="text-slate-700 font-bold flex items-center gap-2">
+<span class="size-6 rounded-full bg-slate-100 flex items-center justify-center text-xs text-slate-500 material-symbols-outlined">person</span>
+                                Rajesh Kumar
+                            </p>
+</div>
+</div>
+<div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-lg hover:border-blue-200 hover:-translate-y-1 transition-all duration-300 group">
+<div class="flex items-start justify-between mb-5">
+<div class="size-16 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center font-black text-3xl shadow-inner group-hover:scale-110 transition-transform duration-300 border border-blue-100">T</div>
+<span class="material-symbols-outlined text-slate-300 group-hover:text-blue-400 transition-colors">verified</span>
+</div>
+<div>
+<h3 class="font-display font-bold text-xl text-slate-900 mb-1 group-hover:text-blue-600 transition-colors">Titans</h3>
+<div class="h-px w-full bg-slate-100 my-3"></div>
+<p class="text-xs uppercase tracking-widest text-slate-400 font-bold mb-1">Team Owner</p>
+<p class="text-slate-700 font-bold flex items-center gap-2">
+<span class="size-6 rounded-full bg-slate-100 flex items-center justify-center text-xs text-slate-500 material-symbols-outlined">person</span>
+                                Amit Shah
+                            </p>
+</div>
+</div>
+<div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-lg hover:border-green-200 hover:-translate-y-1 transition-all duration-300 group">
+<div class="flex items-start justify-between mb-5">
+<div class="size-16 rounded-2xl bg-green-50 text-green-600 flex items-center justify-center font-black text-3xl shadow-inner group-hover:scale-110 transition-transform duration-300 border border-green-100">W</div>
+<span class="material-symbols-outlined text-slate-300 group-hover:text-green-400 transition-colors">verified</span>
+</div>
+<div>
+<h3 class="font-display font-bold text-xl text-slate-900 mb-1 group-hover:text-green-600 transition-colors">Warriors</h3>
+<div class="h-px w-full bg-slate-100 my-3"></div>
+<p class="text-xs uppercase tracking-widest text-slate-400 font-bold mb-1">Team Owner</p>
+<p class="text-slate-700 font-bold flex items-center gap-2">
+<span class="size-6 rounded-full bg-slate-100 flex items-center justify-center text-xs text-slate-500 material-symbols-outlined">person</span>
+                                Vikram Singh
+                            </p>
+</div>
+</div>
+<div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-lg hover:border-purple-200 hover:-translate-y-1 transition-all duration-300 group">
+<div class="flex items-start justify-between mb-5">
+<div class="size-16 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center font-black text-3xl shadow-inner group-hover:scale-110 transition-transform duration-300 border border-purple-100">R</div>
+<span class="material-symbols-outlined text-slate-300 group-hover:text-purple-400 transition-colors">verified</span>
+</div>
+<div>
+<h3 class="font-display font-bold text-xl text-slate-900 mb-1 group-hover:text-purple-600 transition-colors">Royals</h3>
+<div class="h-px w-full bg-slate-100 my-3"></div>
+<p class="text-xs uppercase tracking-widest text-slate-400 font-bold mb-1">Team Owner</p>
+<p class="text-slate-700 font-bold flex items-center gap-2">
+<span class="size-6 rounded-full bg-slate-100 flex items-center justify-center text-xs text-slate-500 material-symbols-outlined">person</span>
+                                Priya Sharma
+                            </p>
+</div>
+</div>
+<div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-lg hover:border-red-200 hover:-translate-y-1 transition-all duration-300 group">
+<div class="flex items-start justify-between mb-5">
+<div class="size-16 rounded-2xl bg-red-50 text-red-600 flex items-center justify-center font-black text-3xl shadow-inner group-hover:scale-110 transition-transform duration-300 border border-red-100">K</div>
+<span class="material-symbols-outlined text-slate-300 group-hover:text-red-400 transition-colors">verified</span>
+</div>
+<div>
+<h3 class="font-display font-bold text-xl text-slate-900 mb-1 group-hover:text-red-600 transition-colors">Kings</h3>
+<div class="h-px w-full bg-slate-100 my-3"></div>
+<p class="text-xs uppercase tracking-widest text-slate-400 font-bold mb-1">Team Owner</p>
+<p class="text-slate-700 font-bold flex items-center gap-2">
+<span class="size-6 rounded-full bg-slate-100 flex items-center justify-center text-xs text-slate-500 material-symbols-outlined">person</span>
+                                Rahul Verma
+                            </p>
+</div>
+</div>
+<div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-lg hover:border-yellow-200 hover:-translate-y-1 transition-all duration-300 group">
+<div class="flex items-start justify-between mb-5">
+<div class="size-16 rounded-2xl bg-yellow-50 text-yellow-600 flex items-center justify-center font-black text-3xl shadow-inner group-hover:scale-110 transition-transform duration-300 border border-yellow-100">S</div>
+<span class="material-symbols-outlined text-slate-300 group-hover:text-yellow-400 transition-colors">verified</span>
+</div>
+<div>
+<h3 class="font-display font-bold text-xl text-slate-900 mb-1 group-hover:text-yellow-600 transition-colors">Strikers</h3>
+<div class="h-px w-full bg-slate-100 my-3"></div>
+<p class="text-xs uppercase tracking-widest text-slate-400 font-bold mb-1">Team Owner</p>
+<p class="text-slate-700 font-bold flex items-center gap-2">
+<span class="size-6 rounded-full bg-slate-100 flex items-center justify-center text-xs text-slate-500 material-symbols-outlined">person</span>
+                                Ankit Patel
+                            </p>
+</div>
+</div>
+<div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-lg hover:border-gray-300 hover:-translate-y-1 transition-all duration-300 group opacity-90">
+<div class="flex items-start justify-between mb-5">
+<div class="size-16 rounded-2xl bg-gray-100 text-gray-600 flex items-center justify-center font-black text-3xl shadow-inner group-hover:scale-110 transition-transform duration-300 border border-gray-200">G</div>
+<span class="material-symbols-outlined text-slate-300 group-hover:text-gray-500 transition-colors">verified</span>
+</div>
+<div>
+<h3 class="font-display font-bold text-xl text-slate-900 mb-1 group-hover:text-gray-600 transition-colors">Giants</h3>
+<div class="h-px w-full bg-slate-100 my-3"></div>
+<p class="text-xs uppercase tracking-widest text-slate-400 font-bold mb-1">Team Owner</p>
+<p class="text-slate-700 font-bold flex items-center gap-2">
+<span class="size-6 rounded-full bg-slate-100 flex items-center justify-center text-xs text-slate-500 material-symbols-outlined">person</span>
+                                Arun Kumar
+                            </p>
+</div>
+</div>
+<div class="rounded-2xl p-6 border-2 border-dashed border-slate-200 flex flex-col items-center justify-center text-center gap-3 opacity-60 hover:opacity-100 hover:border-slate-300 hover:bg-slate-50 transition-all cursor-default">
+<div class="size-14 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
+<span class="material-symbols-outlined text-2xl">sports_cricket</span>
+</div>
+<p class="text-sm font-bold text-slate-400">Registration Closed</p>
+</div>
+</div>
+</div>
+</div>
+</main>
+
+</body></html>

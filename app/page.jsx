@@ -5,37 +5,9 @@ import { ref, onValue, set, push, remove } from 'firebase/database';
 import { formatPoints } from '@/utils/formatPoints';
 import { useRouter } from 'next/navigation';
 import confetti from 'canvas-confetti';
-
-// Helper to get team visual properties
-// ... (Team Theme helper remains same, assuming it is unchanged from previous file view)
-const getTeamTheme = (teamName) => {
-    if (!teamName) return { color: 'text-slate-600', bg: 'bg-slate-100', char: '?' };
-    
-    // Normalize string for matching
-    const name = teamName.toLowerCase();
-    
-    // Checks for keywords in the team name
-    if (name.includes('aj turf')) return { logo: '/logos/ajturf.jpg', color: 'text-slate-800', bg: 'bg-white' };
-    if (name.includes('champion')) return { logo: '/logos/champion.jpg', color: 'text-slate-800', bg: 'bg-white' };
-    if (name.includes('kcc')) return { logo: '/logos/kcc.jpg', color: 'text-slate-800', bg: 'bg-white' };
-    if (name.includes('kumar')) return { logo: '/logos/kumar.jpg', color: 'text-slate-800', bg: 'bg-white' };
-    if (name.includes('oswal')) return { logo: '/logos/oswal.jpg', color: 'text-slate-800', bg: 'bg-white' };
-    if (name.includes('solanki')) return { logo: '/logos/solanki.jpg', color: 'text-slate-800', bg: 'bg-white' };
-    if (name.includes('upadhyay')) return { logo: '/logos/upadhyay.jpg', color: 'text-slate-800', bg: 'bg-white' };
-    if (name.includes('firehawks')) return { color: 'text-orange-600', bg: 'bg-orange-100', char: 'F' };
-    
-    // Fallback themes
-    const themes = {
-        'Titans': { color: 'text-blue-600', bg: 'bg-blue-100', char: 'T' },
-        'Warriors': { color: 'text-green-600', bg: 'bg-green-100', char: 'W' },
-        'Royals': { color: 'text-purple-600', bg: 'bg-purple-100', char: 'R' },
-        'Kings': { color: 'text-red-600', bg: 'bg-red-100', char: 'K' },
-        'Strikers': { color: 'text-yellow-600', bg: 'bg-yellow-100', char: 'S' },
-        'Giants': { color: 'text-gray-600', bg: 'bg-gray-100', char: 'G' },
-    };
-    
-    return themes[teamName] || { color: 'text-slate-600', bg: 'bg-slate-100', char: teamName?.[0] || '?' };
-};
+import MobileAuctionUI from '@/components/MobileAuctionUI';
+import LoadingScreen from '@/components/LoadingScreen';
+import { getTeamTheme } from '@/utils/teamTheme';
 
 export default function AuctionUI() {
     const [currentBid, setCurrentBid] = useState('No Bids Yet');
@@ -52,6 +24,7 @@ export default function AuctionUI() {
     
     // Simulation Mode State
     const [isSimulating, setIsSimulating] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
 
     const router = useRouter();
 
@@ -109,12 +82,26 @@ export default function AuctionUI() {
         // Initial Fetch
         const init = async () => {
              setIsLoading(true);
-             await Promise.all([
+             const { get } = await import('firebase/database');
+             
+             // Concurrent fetch for API and Firebase
+             const [snapshotPlayer, snapshotBid] = await Promise.all([
+                get(ref(db, 'auction/currentPlayer')),
+                get(ref(db, 'auction/currentBid')),
                 fetchPurseData(),
                 getTopBids(),
                 getUnSoldPlayers(),
                 remainingPlayers()
              ]);
+
+             // Set initial firebase values to avoid wait sync flash
+             if (snapshotPlayer.exists()) setCurrentPlayer(snapshotPlayer.val());
+             if (snapshotBid.exists()) {
+                const b = snapshotBid.val();
+                setCurrentBid(b.amount);
+                setCurrentBidTeamName(b.teamName);
+             }
+
              setIsLoading(false);
         };
         init();
@@ -184,6 +171,13 @@ export default function AuctionUI() {
         };
     }, []);
 
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth < 1024);
+        handleResize();
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
     // --- SIMULATION FUNCTIONS ---
     const simulateBid = () => {
         const teams = ['AJ Turf Titans', 'Oswal Champions', 'KCC Kings', 'Solanki Stars'];
@@ -237,33 +231,61 @@ export default function AuctionUI() {
 
     const currentTeamTheme = getTeamTheme(playerSold ? playerSold.teamName : currentBidTeamName);
 
+    if (isMobile) {
+        return (
+            <>
+                <MobileAuctionUI 
+                    purseData={purseData}
+                    currentBid={currentBid}
+                    currentBidTeamName={currentBidTeamName}
+                    currentPlayer={currentPlayer}
+                    playerSold={playerSold}
+                    unSold={unSold}
+                    topBids={topBids}
+                    unsoldPlayers={unsoldPlayers}
+                    remainingPlayersCount={remainingPlayersCount}
+                    formatPoints={formatPoints}
+                    getTeamTheme={getTeamTheme}
+                    router={router}
+                />
+                
+                {/* Keep simulation controls available even on mobile for testing */}
+                <div className="fixed bottom-24 right-4 z-[100] flex flex-col items-end gap-2">
+                     {isSimulating && (
+                        <div className="bg-white p-4 rounded-xl shadow-2xl border border-slate-200 mb-2 w-64 animate-in slide-in-from-bottom-5">
+                            <h3 className="font-bold text-sm mb-3 text-slate-900 border-b pb-2">Simulation Controls</h3>
+                            <div className="flex flex-col gap-2">
+                                <button onClick={simulateNewPlayer} className="px-3 py-2 bg-blue-100 text-blue-700 rounded-lg text-xs font-bold hover:bg-blue-200 text-left">
+                                    1. New Player
+                                </button>
+                                <button onClick={simulateBid} className="px-3 py-2 bg-green-100 text-green-700 rounded-lg text-xs font-bold hover:bg-green-200 text-left">
+                                    2. Place Random Bid
+                                </button>
+                                <button onClick={simulateSold} className="px-3 py-2 bg-red-100 text-red-700 rounded-lg text-xs font-bold hover:bg-red-200 text-left">
+                                    3. Mark Sold
+                                </button>
+                                <button onClick={simulateClear} className="px-3 py-2 bg-slate-100 text-slate-700 rounded-lg text-xs font-bold hover:bg-slate-200 text-left border border-slate-300">
+                                    4. Force Clear (Fix Jasprit)
+                                </button>
+                            </div>
+                        </div>
+                     )}
+                     <button 
+                        onClick={toggleSim}
+                        className="size-10 bg-slate-900 text-white rounded-full shadow-xl flex items-center justify-center transition-transform hover:scale-110"
+                    >
+                        <span className="material-symbols-outlined text-sm">{isSimulating ? 'close' : 'build'}</span>
+                     </button>
+                </div>
+            </>
+        );
+    }
+
     return (
         <div className="bg-background-light text-slate-800 font-body h-screen flex flex-col overflow-hidden selection:bg-primary selection:text-white relative">
             
             {/* Initial Loading State */}
-            {isLoading && (
-                <div className="fixed inset-0 z-[200] bg-slate-900 flex flex-col items-center justify-center gap-6 animate-in fade-in duration-500">
-                    <div className="size-32 relative">
-                        <img src="/kcc_logo.jpg" alt="Logo" className="w-full h-full object-contain animate-pulse" />
-                        <div className="absolute inset-x-0 -bottom-8">
-                             <div className="w-full h-1 bg-slate-800 rounded-full overflow-hidden">
-                                <div className="h-full bg-primary animate-[loading_2s_ease-in-out_infinite]"></div>
-                             </div>
-                        </div>
-                    </div>
-                    <div className="flex flex-col items-center">
-                        <h2 className="text-white font-display font-black text-2xl uppercase tracking-tighter">Preparing Auction</h2>
-                        <p className="text-slate-500 text-xs font-bold uppercase tracking-widest mt-2 px-4 py-1 bg-slate-800 rounded-full">Connecting to server...</p>
-                    </div>
-                    <style jsx>{`
-                        @keyframes loading {
-                            0% { width: 0%; left: 0%; }
-                            50% { width: 40%; left: 30%; }
-                            100% { width: 0%; left: 100%; }
-                        }
-                    `}</style>
-                </div>
-            )}
+            {isLoading && <LoadingScreen message="Fetching Auction Real-time Data..." />}
             
             {/* Simulation Controls (Floating Button & Panel) */}
             <div className="fixed bottom-4 right-4 z-[100] flex flex-col items-end gap-2">
@@ -299,252 +321,361 @@ export default function AuctionUI() {
             </div>
 
             <header className="bg-white border-b border-slate-200 h-20 px-6 lg:px-8 flex items-center justify-between shadow-sm z-50 shrink-0 relative">
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-6">
                     <div className="size-16 flex items-center justify-center">
                         <img src="/kcc_logo.jpg" alt="KCC Logo" className="h-full w-full object-contain drop-shadow-md hover:scale-105 transition-transform duration-300" />
                     </div>
-                    <div>
+                    <div className="flex flex-col">
                         <h1 className="font-display font-black text-xl lg:text-2xl uppercase tracking-tighter text-slate-900 leading-none">KCC Season 5</h1>
-                        <p className="text-[0.65rem] font-bold text-primary uppercase tracking-[0.2em]">Live Auction Feed</p>
+                        <p className="text-[0.65rem] font-bold text-primary uppercase tracking-[0.2em] mt-1.5">Live Auction Feed</p>
                     </div>
                 </div>
-                <div className="hidden lg:flex items-center gap-2">
-                    <span className="material-symbols-outlined text-slate-400">timer</span>
-                    <span className="text-xs font-bold uppercase tracking-widest text-slate-500">Live Bidding In Progress</span>
-                    <Button variant='contained' color='primary' className="ml-4" onClick={() => router.push('/squad')}>
-                            Squad
-                    </Button>
-                </div>
-                <div className="flex flex-col items-end">
-                    <span className="text-[0.65rem] text-slate-400 uppercase tracking-widest font-bold">Remaining</span>
-                    <div className="flex items-baseline gap-1">
-                        <span className="text-3xl font-display font-black text-slate-900 leading-none">{remainingPlayersCount ?? '--'}</span>
-                        <span className="text-sm font-bold text-slate-300">Players</span>
+                <div className="hidden lg:flex items-center gap-6">
+                    {currentPlayer && (
+                        <div className="flex items-center gap-3 pr-6 border-r border-slate-200">
+                             <button onClick={() => router.push('/players')} className="flex items-center gap-2 group">
+                                <span className="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors">groups</span>
+                                <span className="text-[10px] font-black uppercase tracking-widest text-slate-500 group-hover:text-slate-900 transition-colors">Players Pool</span>
+                            </button>
+                            <button onClick={() => router.push('/squad')} className="flex items-center gap-2 group">
+                                <span className="material-symbols-outlined text-slate-400 group-hover:text-primary transition-colors">diversity_3</span>
+                                <span className="text-[10px] font-black uppercase tracking-widest text-slate-500 group-hover:text-slate-900 transition-colors">Squad Gallery</span>
+                            </button>
+                        </div>
+                    )}
+                    <div className="flex items-center gap-2">
+                        <span className="material-symbols-outlined text-slate-400">timer</span>
+                        <span className="text-xs font-bold uppercase tracking-widest text-slate-500">
+                            {currentPlayer ? 'Live Bidding In Progress' : 'Status: Pre-Auction'}
+                        </span>
                     </div>
                 </div>
+                {currentPlayer && (
+                    <div className="flex flex-col items-end">
+                        <span className="text-[0.65rem] text-slate-400 uppercase tracking-widest font-bold">Remaining</span>
+                        <div className="flex items-baseline gap-1">
+                            <span className="text-3xl font-display font-black text-slate-900 leading-none">{remainingPlayersCount ?? '--'}</span>
+                            <span className="text-sm font-bold text-slate-300">Players</span>
+                        </div>
+                    </div>
+                )}
             </header>
 
             <main className="flex-1 p-4 lg:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 overflow-hidden relative">
                 <div className="absolute top-0 left-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-3xl -ml-20 -mt-20 pointer-events-none"></div>
                 <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-3xl -mr-20 -mb-20 pointer-events-none"></div>
                 
-                {/* Team Purses Sidebar */}
-                <aside className="hidden lg:flex lg:col-span-3 bg-white/80 backdrop-blur-md rounded-2xl border border-slate-200 shadow-sm flex-col overflow-hidden h-full z-10">
-                    <div className="p-4 border-b border-slate-100 bg-slate-50/80 sticky top-0">
-                        <h2 className="font-display font-bold text-slate-800 flex items-center gap-2 text-sm uppercase tracking-wide">
-                            <span className="material-symbols-outlined text-primary">account_balance_wallet</span>
-                            Team Purses
-                        </h2>
+                {!currentPlayer ? (
+                    <div className="col-span-12 w-full bg-white/80 backdrop-blur-md rounded-[2.5rem] border border-slate-200 shadow-xl overflow-hidden min-h-[500px]">
+                        <PreAuctionLobby teams={purseData} />
                     </div>
-                    <div className="flex-1 overflow-y-auto p-3 space-y-2.5 custom-scrollbar">
-                        {purseData.map((team, idx) => {
-                            const theme = getTeamTheme(team.name);
-                            return (
-                                <div key={idx} className="flex items-center justify-between p-3 rounded-xl bg-white border border-slate-100 shadow-sm hover:border-primary/20 transition-colors group">
-                                    <div className="flex items-center gap-3 overflow-hidden">
-                                        {theme.logo ? (
-                                            <div className="size-9 rounded-lg bg-white overflow-hidden shadow-inner border border-slate-100 flex items-center justify-center p-0.5 shrink-0">
-                                                <img src={theme.logo} alt={team.name} className="w-full h-full object-contain" />
+                ) : (
+                    <>
+                        {/* Team Purses Sidebar */}
+                        <aside className="hidden lg:flex lg:col-span-3 bg-white/80 backdrop-blur-md rounded-2xl border border-slate-200 shadow-sm flex-col overflow-hidden h-full z-10">
+                            <div className="p-4 border-b border-slate-100 bg-slate-50/80 sticky top-0">
+                                <h2 className="font-display font-bold text-slate-800 flex items-center gap-2 text-sm uppercase tracking-wide">
+                                    <span className="material-symbols-outlined text-primary">account_balance_wallet</span>
+                                    Team Purses
+                                </h2>
+                            </div>
+                            <div className="flex-1 overflow-y-auto p-3 space-y-2.5 custom-scrollbar">
+                                {purseData.map((team, idx) => {
+                                    const theme = getTeamTheme(team.name);
+                                    return (
+                                        <div key={idx} className="flex items-center justify-between p-3 rounded-xl bg-white border border-slate-100 shadow-sm hover:border-primary/20 transition-colors group">
+                                            <div className="flex items-center gap-3 overflow-hidden">
+                                                {theme.logo ? (
+                                                    <div className="size-9 rounded-lg bg-white overflow-hidden shadow-inner border border-slate-100 flex items-center justify-center p-0.5 shrink-0">
+                                                        <img src={theme.logo} alt={team.name} className="w-full h-full object-contain" />
+                                                    </div>
+                                                ) : (
+                                                    <div className={`size-9 rounded-lg ${theme.bg} ${theme.color} flex items-center justify-center font-black text-sm shadow-inner shrink-0`}>{theme.char}</div>
+                                                )}
+                                                <div className="flex flex-col min-w-0">
+                                                    <span className="font-bold text-sm text-slate-700 group-hover:text-primary transition-colors truncate">{team.name}</span>
+                                                    <span className="text-[0.6rem] text-slate-400 uppercase font-bold truncate">Max Bid: {formatPoints(team.maxBidAllowed)}</span>
+                                                </div>
                                             </div>
-                                        ) : (
-                                            <div className={`size-9 rounded-lg ${theme.bg} ${theme.color} flex items-center justify-center font-black text-sm shadow-inner shrink-0`}>{theme.char}</div>
-                                        )}
-                                        <div className="flex flex-col min-w-0">
-                                            <span className="font-bold text-sm text-slate-700 group-hover:text-primary transition-colors truncate">{team.name}</span>
-                                            <span className="text-[0.6rem] text-slate-400 uppercase font-bold truncate">Max Bid: {formatPoints(team.maxBidAllowed)}</span>
+                                            <span className="font-display font-bold text-slate-900 ml-2">{formatPoints(team.remainingPurse)}</span>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </aside>
+
+                        {/* Center Content */}
+                        <section className="col-span-1 lg:col-span-6 flex flex-col gap-6 h-full z-20">
+                            {/* Current Bid Card */}
+                            <div className="relative shrink-0 z-20 bg-white rounded-[2.5rem] shadow-2xl shadow-primary/25 border-4 border-primary/20 p-8 lg:p-10 flex flex-col items-center justify-center text-center overflow-hidden min-h-[340px]">
+                                <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-orange-50 via-white to-white opacity-80 pointer-events-none"></div>
+                                <div className="absolute -top-24 -right-24 size-48 bg-primary/5 rounded-full blur-2xl"></div>
+                                <div className="absolute -bottom-24 -left-24 size-48 bg-secondary/10 rounded-full blur-2xl"></div>
+                                <div className="relative z-10 flex flex-col items-center w-full">
+                                    <div className="flex items-center gap-2 mb-4">
+                                        <span className="relative flex h-3 w-3">
+                                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                                            <span className="relative inline-flex rounded-full h-3 w-3 bg-primary"></span>
+                                        </span>
+                                        <span className="font-bold text-slate-400 uppercase tracking-[0.25em] text-xs">
+                                            {playerSold ? 'PLAYER SOLD' : unSold ? 'PLAYER UNSOLD' : 'Current High Bid'}
+                                        </span>
+                                    </div>
+                                    <div className="font-display font-black text-6xl lg:text-[6rem] xl:text-[7rem] leading-none text-slate-900 tracking-tighter mb-8 scale-110 origin-center drop-shadow-sm">
+                                        {formatPoints(currentBid)}
+                                    </div>
+                                    {(currentBidTeamName !== 'No Team Yet' || playerSold) && (
+                                        <div className="flex items-center gap-4 bg-slate-900 text-white pl-2 pr-8 py-2.5 rounded-full shadow-xl transform transition-transform hover:scale-105 ring-4 ring-slate-100">
+                                            <div className="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-600 rounded-full flex items-center justify-center text-white shadow-inner border border-white/20">
+                                                <span className="material-icons-round text-2xl">local_fire_department</span>
+                                            </div>
+                                            <div className="text-left leading-tight">
+                                                <span className="block text-[0.6rem] uppercase tracking-wider text-slate-400 font-bold mb-0.5">
+                                                    {playerSold ? 'Sold To' : 'Held By'}
+                                                </span>
+                                                <span className="block font-display font-bold text-xl tracking-tight">
+                                                    {playerSold ? playerSold.teamName : currentBidTeamName}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            {/* Current Player Card */}
+                            <div className="flex-1 min-h-0 relative bg-white rounded-[2rem] shadow-lg border border-slate-200 overflow-hidden group flex flex-col md:flex-row">
+                                <div className="flex-1 p-6 lg:p-8 flex flex-col justify-between relative z-10 h-full">
+                                    <div>
+                                        <div className="flex items-center gap-3 mb-3">
+                                            {currentPlayer?.role && (
+                                                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-blue-50 text-blue-700 text-[0.65rem] font-bold uppercase tracking-wider border border-blue-100 shadow-sm">
+                                                    <span className="material-symbols-outlined text-sm">sports_cricket</span>
+                                                    {currentPlayer.role}
+                                                </span>
+                                            )}
+                                        </div>
+                                        <h2 className="text-4xl lg:text-6xl font-display font-black text-slate-900 uppercase leading-[0.9] tracking-tighter">
+                                            {currentPlayer?.name || 'Waiting...'} 
+                                        </h2>
+                                    </div>
+                                    <div className="mt-auto">
+                                        <div className="grid grid-cols-4 gap-2 lg:gap-6 mb-4 max-w-md">
+                                            <div>
+                                                <p className="text-[0.6rem] uppercase tracking-widest text-slate-400 font-bold mb-0.5">Mat</p>
+                                                <p className="text-2xl font-black text-slate-800">{currentPlayer?.stats?.matches || '-'}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-[0.6rem] uppercase tracking-widest text-slate-400 font-bold mb-0.5">Runs</p>
+                                                <p className="text-2xl font-black text-slate-800">{currentPlayer?.stats?.runs || '-'}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-[0.6rem] uppercase tracking-widest text-slate-400 font-bold mb-0.5">SR</p>
+                                                <p className="text-2xl font-black text-slate-800">{currentPlayer?.stats?.sr || '-'}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-[0.6rem] uppercase tracking-widest text-slate-400 font-bold mb-0.5">Wkts</p>
+                                                <p className="text-2xl font-black text-slate-800">{currentPlayer?.stats?.wickets || '-'}</p>
+                                            </div>
+                                        </div>
+                                        <div className="inline-block pt-3 border-t border-slate-100 pr-8">
+                                            <p className="text-xs font-medium text-slate-400 uppercase tracking-wide">Base Price: <span className="text-slate-900 font-bold ml-1">{formatPoints(currentPlayer?.basePrice || 4000)}</span></p>
                                         </div>
                                     </div>
-                                    <span className="font-display font-bold text-slate-900 ml-2">{formatPoints(team.remainingPurse)}</span>
                                 </div>
-                            );
-                        })}
-                    </div>
-                </aside>
-
-                {/* Center Content */}
-                <section className="col-span-1 lg:col-span-6 flex flex-col gap-6 h-full z-20">
-                    {/* Current Bid Card */}
-                    <div className="relative shrink-0 z-20 bg-white rounded-[2.5rem] shadow-2xl shadow-primary/25 border-4 border-primary/20 p-8 lg:p-10 flex flex-col items-center justify-center text-center overflow-hidden min-h-[340px]">
-                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-orange-50 via-white to-white opacity-80 pointer-events-none"></div>
-                        <div className="absolute -top-24 -right-24 size-48 bg-primary/5 rounded-full blur-2xl"></div>
-                        <div className="absolute -bottom-24 -left-24 size-48 bg-secondary/10 rounded-full blur-2xl"></div>
-                        <div className="relative z-10 flex flex-col items-center w-full">
-                            <div className="flex items-center gap-2 mb-4">
-                                <span className="relative flex h-3 w-3">
-                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                                    <span className="relative inline-flex rounded-full h-3 w-3 bg-primary"></span>
-                                </span>
-                                <span className="font-bold text-slate-400 uppercase tracking-[0.25em] text-xs">
-                                     {playerSold ? 'PLAYER SOLD' : unSold ? 'PLAYER UNSOLD' : 'Current High Bid'}
-                                </span>
-                            </div>
-                            <div className="font-display font-black text-6xl lg:text-[6rem] xl:text-[7rem] leading-none text-slate-900 tracking-tighter mb-8 scale-110 origin-center drop-shadow-sm">
-                                {formatPoints(currentBid)}
-                            </div>
-                            {(currentBidTeamName !== 'No Team Yet' || playerSold) && (
-                                <div className="flex items-center gap-4 bg-slate-900 text-white pl-2 pr-8 py-2.5 rounded-full shadow-xl transform transition-transform hover:scale-105 ring-4 ring-slate-100">
-                                    <div className={`size-12 rounded-full bg-gradient-to-br from-slate-700 to-slate-900 flex items-center justify-center text-white shadow-inner border border-white/20`}>
-                                        <span className="material-symbols-outlined text-2xl">local_fire_department</span>
-                                    </div>
-                                    <div className="text-left leading-tight">
-                                        <span className="block text-[0.6rem] uppercase tracking-wider text-slate-400 font-bold mb-0.5">
-                                            {playerSold ? 'Sold To' : 'Held By'}
-                                        </span>
-                                        <span className="block font-display font-bold text-xl tracking-tight">
-                                            {playerSold ? playerSold.teamName : currentBidTeamName}
-                                        </span>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-
-                    {/* Current Player Card */}
-                    <div className="flex-1 min-h-0 relative bg-white rounded-[2rem] shadow-lg border border-slate-200 overflow-hidden group flex flex-col md:flex-row">
-                        {!currentPlayer ? (
-                            <div className="flex-1 flex flex-col items-center justify-center p-10 text-center gap-6">
-                                <div className="size-24 rounded-full bg-slate-100 flex items-center justify-center animate-pulse">
-                                    <span className="material-symbols-outlined text-4xl text-slate-400">hourglass_empty</span>
-                                </div>
-                                <div>
-                                    <h2 className="text-3xl font-display font-black text-slate-800 uppercase tracking-tighter">Waiting for Auction...</h2>
-                                    <p className="text-slate-500 font-medium mt-2">The next player will appear here shortly.</p>
-                                </div>
-                            </div>
-                        ) : (
-                        <>
-                            <div className="flex-1 p-6 lg:p-8 flex flex-col justify-between relative z-10 h-full">
-                                <div>
-                                    <div className="flex items-center gap-3 mb-3">
-                                        {currentPlayer?.role && (
-                                            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-blue-50 text-blue-700 text-[0.65rem] font-bold uppercase tracking-wider border border-blue-100 shadow-sm">
-                                                <span className="material-symbols-outlined text-sm">sports_cricket</span>
-                                                {currentPlayer.role}
-                                            </span>
+                                {currentPlayer?.photoUrl && (
+                                    <div className="relative w-full md:w-[45%] h-full bg-gradient-to-b from-slate-50 to-white md:bg-none shrink-0 overflow-hidden">
+                                        <div className="absolute inset-0 bg-slate-50/50 md:rounded-l-[3rem] border-l border-white/50"></div>
+                                        
+                                        {/* Status Overlays */}
+                                        {playerSold && (
+                                            <div className="absolute inset-0 z-20 bg-green-900/40 backdrop-blur-sm flex items-center justify-center animate-in fade-in zoom-in duration-500">
+                                                <div className="bg-white p-4 rounded-3xl shadow-2xl transform rotate-6 border-4 border-green-500">
+                                                    <div className="text-green-600 font-black text-6xl tracking-tighter uppercase">SOLD</div>
+                                                </div>
+                                            </div>
                                         )}
+                                        {unSold && (
+                                            <div className="absolute inset-0 z-20 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center animate-in fade-in zoom-in duration-500">
+                                                <div className="bg-white p-4 rounded-3xl shadow-2xl transform -rotate-6 border-4 border-slate-400">
+                                                    <div className="text-slate-500 font-black text-6xl tracking-tighter uppercase">UNSOLD</div>
+                                                </div>
+                                            </div>
+                                        )}
+                                        <span className="absolute top-10 right-4 font-display font-black text-9xl text-slate-100 -rotate-90 origin-top-right select-none opacity-50">
+                                            {currentPlayer.name.split(' ')[0]}
+                                        </span>
+                                        <img 
+                                            alt="Player" 
+                                            className="absolute bottom-0 right-0 h-[115%] w-auto max-w-none object-contain drop-shadow-2xl z-10 transition-transform duration-700 group-hover:scale-105 origin-bottom-right md:right-[-10px]" 
+                                            src={currentPlayer.photoUrl} 
+                                        />
                                     </div>
-                                    <h2 className="text-4xl lg:text-6xl font-display font-black text-slate-900 uppercase leading-[0.9] tracking-tighter">
-                                        {currentPlayer?.name || 'Waiting...'} 
+                                )}
+                            </div>
+                        </section>
+
+                        {/* Right Sidebar - Top Bids & Unsold */}
+                        <aside className="hidden lg:flex lg:col-span-3 flex-col gap-6 h-full z-10">
+                            {/* Top Bids */}
+                            <div className="flex-1 bg-white rounded-2xl border border-slate-200 shadow-sm flex flex-col overflow-hidden min-h-0">
+                                <div className="p-4 border-b border-slate-100 bg-slate-50/80 sticky top-0">
+                                    <h2 className="font-display font-bold text-slate-800 flex items-center gap-2 text-sm uppercase tracking-wide">
+                                        <span className="material-symbols-outlined text-green-600">trending_up</span>
+                                        Top 5 Bids
                                     </h2>
                                 </div>
-                                <div className="mt-auto">
-                                    <div className="grid grid-cols-4 gap-2 lg:gap-6 mb-4 max-w-md">
-                                        <div>
-                                            <p className="text-[0.6rem] uppercase tracking-widest text-slate-400 font-bold mb-0.5">Mat</p>
-                                            <p className="text-2xl font-black text-slate-800">{currentPlayer?.stats?.matches || '-'}</p>
-                                        </div>
-                                        <div>
-                                            <p className="text-[0.6rem] uppercase tracking-widest text-slate-400 font-bold mb-0.5">Runs</p>
-                                            <p className="text-2xl font-black text-slate-800">{currentPlayer?.stats?.runs || '-'}</p>
-                                        </div>
-                                        <div>
-                                            <p className="text-[0.6rem] uppercase tracking-widest text-slate-400 font-bold mb-0.5">SR</p>
-                                            <p className="text-2xl font-black text-slate-800">{currentPlayer?.stats?.sr || '-'}</p>
-                                        </div>
-                                        <div>
-                                            <p className="text-[0.6rem] uppercase tracking-widest text-slate-400 font-bold mb-0.5">Wkts</p>
-                                            <p className="text-2xl font-black text-slate-800">{currentPlayer?.stats?.wickets || '-'}</p>
-                                        </div>
-                                    </div>
-                                    <div className="inline-block pt-3 border-t border-slate-100 pr-8">
-                                        <p className="text-xs font-medium text-slate-400 uppercase tracking-wide">Base Price: <span className="text-slate-900 font-bold ml-1">{formatPoints(currentPlayer?.basePrice || 4000)}</span></p>
-                                    </div>
+                                <div className="flex-1 overflow-y-auto p-0 no-scrollbar">
+                                    <table className="w-full text-left text-sm">
+                                        <thead className="bg-slate-50 text-slate-400 font-bold text-[0.65rem] uppercase tracking-wider sticky top-0 z-10">
+                                            <tr>
+                                                <th className="px-5 py-2">Player</th>
+                                                <th className="px-5 py-2">Team</th>
+                                                <th className="px-5 py-2 text-right">Bid</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody className="divide-y divide-slate-100">
+                                            {topBids.length > 0 ? topBids.slice(0, 5).map((bid, i) => (
+                                                <tr key={i} className="hover:bg-slate-50 transition-colors">
+                                                    <td className="px-5 py-3 font-semibold text-slate-700">{bid.player}</td>
+                                                    <td className="px-5 py-3 text-slate-500 text-xs font-bold uppercase">{bid.team || '-'}</td>
+                                                    <td className="px-5 py-3 text-right font-black text-slate-900">{formatPoints(bid.amount)}</td>
+                                                </tr>
+                                            )) : (
+                                                <tr>
+                                                    <td colSpan={3} className="px-5 py-3 text-center text-slate-400">No bids yet</td>
+                                                </tr>
+                                            )}
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
-                            {currentPlayer?.photoUrl && (
-                                 <div className="relative w-full md:w-[45%] h-full bg-gradient-to-b from-slate-50 to-white md:bg-none shrink-0 overflow-hidden">
-                                    <div className="absolute inset-0 bg-slate-50/50 md:rounded-l-[3rem] border-l border-white/50"></div>
-                                    
-                                    {/* Status Overlays */}
-                                    {playerSold && (
-                                        <div className="absolute inset-0 z-20 bg-green-900/40 backdrop-blur-sm flex items-center justify-center animate-in fade-in zoom-in duration-500">
-                                            <div className="bg-white p-4 rounded-3xl shadow-2xl transform rotate-6 border-4 border-green-500">
-                                                <div className="text-green-600 font-black text-6xl tracking-tighter uppercase">SOLD</div>
-                                            </div>
-                                        </div>
-                                    )}
-                                    {unSold && (
-                                        <div className="absolute inset-0 z-20 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center animate-in fade-in zoom-in duration-500">
-                                            <div className="bg-white p-4 rounded-3xl shadow-2xl transform -rotate-6 border-4 border-slate-400">
-                                                <div className="text-slate-500 font-black text-6xl tracking-tighter uppercase">UNSOLD</div>
-                                            </div>
-                                        </div>
-                                    )}
-                                    <span className="absolute top-10 right-4 font-display font-black text-9xl text-slate-100 -rotate-90 origin-top-right select-none opacity-50">
-                                        {currentPlayer.name.split(' ')[0]}
-                                    </span>
-                                    <img 
-                                        alt="Player" 
-                                        className="absolute bottom-0 right-0 h-[115%] w-auto max-w-none object-contain drop-shadow-2xl z-10 transition-transform duration-700 group-hover:scale-105 origin-bottom-right md:right-[-10px]" 
-                                        src={currentPlayer.photoUrl} 
-                                    />
-                                </div>
-                            )}
-                        </>
-                        )}
-                    </div>
-                </section>
 
-                {/* Right Sidebar - Top Bids & Unsold */}
-                <aside className="hidden lg:flex lg:col-span-3 flex-col gap-6 h-full z-10">
-                    {/* Top Bids */}
-                    <div className="flex-1 bg-white rounded-2xl border border-slate-200 shadow-sm flex flex-col overflow-hidden min-h-0">
-                        <div className="p-4 border-b border-slate-100 bg-slate-50/80 sticky top-0">
-                            <h2 className="font-display font-bold text-slate-800 flex items-center gap-2 text-sm uppercase tracking-wide">
-                                <span className="material-symbols-outlined text-green-600">trending_up</span>
-                                Top 5 Bids
-                            </h2>
-                        </div>
-                        <div className="flex-1 overflow-y-auto p-0 no-scrollbar">
-                            <table className="w-full text-left text-sm">
-                                <thead className="bg-slate-50 text-slate-400 font-bold text-[0.65rem] uppercase tracking-wider sticky top-0 z-10">
-                                    <tr>
-                                        <th className="px-5 py-2">Player</th>
-                                        <th className="px-5 py-2">Team</th>
-                                        <th className="px-5 py-2 text-right">Bid</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-slate-100">
-                                    {topBids.length > 0 ? topBids.slice(0, 5).map((bid, i) => (
-                                        <tr key={i} className="hover:bg-slate-50 transition-colors">
-                                            <td className="px-5 py-3 font-semibold text-slate-700">{bid.player}</td>
-                                            <td className="px-5 py-3 text-slate-500 text-xs font-bold uppercase">{bid.team || '-'}</td>
-                                            <td className="px-5 py-3 text-right font-black text-slate-900">{formatPoints(bid.amount)}</td>
-                                        </tr>
+                            {/* Unsold Players */}
+                            <div className="h-1/3 min-h-[200px] bg-white rounded-2xl border border-slate-200 shadow-sm flex flex-col overflow-hidden">
+                                <div className="p-4 border-b border-slate-100 bg-slate-50/80 sticky top-0">
+                                    <h2 className="font-display font-bold text-slate-800 flex items-center gap-2 text-sm uppercase tracking-wide">
+                                        <span className="material-symbols-outlined text-slate-400">gavel</span>
+                                        Unsold Players
+                                    </h2>
+                                </div>
+                                <div className="flex-1 overflow-y-auto p-3 space-y-2 custom-scrollbar">
+                                    {unsoldPlayers.length > 0 ? unsoldPlayers.map((player, i) => (
+                                        <div key={i} className="px-3 py-2.5 bg-slate-50 rounded-lg border border-slate-100 text-sm font-semibold text-slate-600 flex justify-between items-center group hover:border-slate-300 transition-colors">
+                                            <span>{player.name}</span>
+                                            <span className="text-[0.6rem] uppercase tracking-wider font-bold bg-white border border-slate-200 px-1.5 py-0.5 rounded text-slate-400">{player.role}</span>
+                                        </div>
                                     )) : (
-                                        <tr>
-                                            <td colSpan={3} className="px-5 py-3 text-center text-slate-400">No bids yet</td>
-                                        </tr>
+                                        <div className="text-center text-slate-400 text-xs py-2">No unsold players</div>
                                     )}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    {/* Unsold Players */}
-                    <div className="h-1/3 min-h-[200px] bg-white rounded-2xl border border-slate-200 shadow-sm flex flex-col overflow-hidden">
-                        <div className="p-4 border-b border-slate-100 bg-slate-50/80 sticky top-0">
-                            <h2 className="font-display font-bold text-slate-800 flex items-center gap-2 text-sm uppercase tracking-wide">
-                                <span className="material-symbols-outlined text-slate-400">gavel</span>
-                                Unsold Players
-                            </h2>
-                        </div>
-                        <div className="flex-1 overflow-y-auto p-3 space-y-2 custom-scrollbar">
-                            {unsoldPlayers.length > 0 ? unsoldPlayers.map((player, i) => (
-                                <div key={i} className="px-3 py-2.5 bg-slate-50 rounded-lg border border-slate-100 text-sm font-semibold text-slate-600 flex justify-between items-center group hover:border-slate-300 transition-colors">
-                                    <span>{player.name}</span>
-                                    <span className="text-[0.6rem] uppercase tracking-wider font-bold bg-white border border-slate-200 px-1.5 py-0.5 rounded text-slate-400">{player.role}</span>
                                 </div>
-                            )) : (
-                                <div className="text-center text-slate-400 text-xs py-2">No unsold players</div>
-                            )}
-                        </div>
-                    </div>
-                </aside>
+                            </div>
+                        </aside>
+                    </>
+                )}
             </main>
         </div>
     );
 };
+
+// Pre-Auction Lobby Component (Audience Version)
+function PreAuctionLobby({ teams }) {
+    // Helper to get initials
+    const getInitials = (name) => {
+        if (!name) return '?';
+        return name.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+    };
+
+    // Helper to get team color
+    const getTeamColor = (name) => {
+        const theme = getTeamTheme(name);
+        return theme.bg + ' ' + theme.color;
+    };
+
+    return (
+        <div className="flex-1 p-2 lg:p-8 relative h-full overflow-y-auto custom-scrollbar">
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-primary/5 rounded-full blur-3xl -mt-20 pointer-events-none"></div>
+            <div className="max-w-6xl mx-auto flex flex-col items-center gap-8 z-10 relative pb-10">
+                <div className="text-center mt-4 lg:mt-12 space-y-4">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-100 shadow-sm rounded-full text-[10px] font-bold uppercase tracking-widest text-primary mb-2">
+                        <span className="material-symbols-outlined text-sm">hourglass_empty</span>
+                        Auction Starting Soon
+                    </div>
+                    <h1 className="font-display font-black text-4xl lg:text-7xl text-slate-900 tracking-tighter leading-none">
+                        KCC Season 5
+                        <span className="block text-xl lg:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-400 via-slate-600 to-slate-400 mt-2 tracking-tight">Official Player Auction</span>
+                    </h1>
+                    <p className="text-slate-500 font-medium text-sm lg:text-lg max-w-2xl mx-auto leading-relaxed px-4">
+                        Welcome to the official auction for KCC Season 5. Get ready as franchises battle it out to build their dream squads. The bidding will commence shortly.
+                    </p>
+                    
+                    <button 
+                        onClick={() => window.location.href = '/players'}
+                        className="mt-4 inline-flex items-center gap-3 bg-white border border-slate-200 hover:border-primary/50 text-slate-700 font-black py-4 px-10 rounded-2xl shadow-sm hover:shadow-md transition-all uppercase tracking-widest text-sm active:scale-95"
+                    >
+                        <span>View Players Pool</span>
+                        <span className="material-symbols-outlined font-black text-primary">groups</span>
+                    </button>
+                </div>
+
+                <div className="w-24 h-1 bg-gradient-to-r from-transparent via-slate-200 to-transparent rounded-full my-4"></div>
+
+                <div className="w-full">
+                    <div className="flex items-center justify-between mb-8 px-2">
+                        <div>
+                            <h2 className="font-display font-bold text-xl lg:text-2xl text-slate-900 flex items-center gap-3">
+                                <span className="material-symbols-outlined text-primary text-3xl">diversity_3</span>
+                                Participating Franchises
+                            </h2>
+                            <p className="text-slate-400 text-xs mt-1 font-medium uppercase tracking-wider">Owner groups ready for the battle</p>
+                        </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        {teams.map((team, idx) => {
+                             const theme = getTeamTheme(team.name);
+                             return (
+                                <div key={team.id || idx} className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm hover:shadow-xl hover:border-primary/20 hover:-translate-y-1 transition-all duration-300 group">
+                                    <div className="flex items-start justify-between mb-5">
+                                        {theme.logo ? (
+                                            <div className="size-14 rounded-2xl bg-white overflow-hidden shadow-inner border border-slate-100 flex items-center justify-center p-1 group-hover:scale-110 transition-transform duration-300">
+                                                <img src={theme.logo} alt={team.name} className="w-full h-full object-contain" />
+                                            </div>
+                                        ) : (
+                                            <div className={`size-14 rounded-2xl flex items-center justify-center font-black text-2xl shadow-inner group-hover:scale-110 transition-transform duration-300 border border-white/10 ${theme.bg} ${theme.color}`}>
+                                                {theme.char || getInitials(team.name)}
+                                            </div>
+                                        )}
+                                        <div className="size-8 rounded-full bg-slate-50 flex items-center justify-center">
+                                            <span className="material-symbols-outlined text-slate-200 group-hover:text-primary transition-colors text-lg">verified</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h3 className="font-display font-bold text-lg text-slate-900 mb-1 group-hover:text-primary transition-colors truncate">{team.name}</h3>
+                                        <div className="h-px w-full bg-slate-50 my-3"></div>
+                                        <div className="flex items-center justify-between">
+                                            <div>
+                                                <p className="text-[9px] uppercase tracking-widest text-slate-400 font-black mb-1">Status</p>
+                                                <div className="flex items-center gap-1.5">
+                                                    <span className="size-2 rounded-full bg-green-500 animate-pulse"></span>
+                                                    <span className="text-xs font-bold text-slate-600">Owner: [Placeholder]</span>
+                                                </div>
+                                            </div>
+                                            <div className="text-right">
+                                                <p className="text-[9px] uppercase tracking-widest text-slate-400 font-black mb-1">Purse</p>
+                                                <p className="text-xs font-black text-slate-900">{formatPoints(team.remainingPurse)}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                             );
+                        })}
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
 // Simple Button component for the Squad link to replace MUI button
 const Button = ({ children, onClick, className }) => (
     <button 

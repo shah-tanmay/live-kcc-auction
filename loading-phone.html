@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Loading Screen - KCC Season 5</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#F24E1E",
+                        "background-light": "#F8F9FB",
+                        "background-dark": "#0F172A",
+                        "surface-light": "#FFFFFF",
+                        "surface-dark": "#1E293B",
+                        "text-primary-light": "#111827",
+                        "text-primary-dark": "#F3F4F6",
+                        "text-secondary-light": "#6B7280",
+                        "text-secondary-dark": "#9CA3AF",
+                    },
+                    fontFamily: {
+                        display: ["Inter", "sans-serif"],
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'bounce-slight': 'bounce-slight 1.5s infinite',
+                        'spin-slow': 'spin 3s linear infinite',
+                    },
+                    keyframes: {
+                        'bounce-slight': {
+                            '0%, 100%': { transform: 'translateY(-5%)', animationTimingFunction: 'cubic-bezier(0.8, 0, 1, 1)' },
+                            '50%': { transform: 'translateY(0)', animationTimingFunction: 'cubic-bezier(0, 0, 0.2, 1)' },
+                        }
+                    }
+                },
+            },
+        };
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .loading-dot {
+            animation: loading-dot 1.4s infinite ease-in-out both;
+        }
+        .loading-dot:nth-child(1) { animation-delay: -0.32s; }
+        .loading-dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes loading-dot {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+        .gavel-strike {
+            transform-origin: bottom right;
+            animation: gavel 2s infinite ease-in-out;
+        }
+        @keyframes gavel {
+            0%, 100% { transform: rotate(0deg); }
+            10% { transform: rotate(-20deg); }
+            20% { transform: rotate(0deg); }
+            30% { transform: rotate(-10deg); }
+            40% { transform: rotate(0deg); }
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark h-screen w-full flex flex-col items-center justify-center relative overflow-hidden">
+<div class="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none opacity-10 dark:opacity-5">
+<div class="absolute -top-24 -left-24 w-96 h-96 bg-primary rounded-full blur-3xl"></div>
+<div class="absolute top-1/2 -right-32 w-80 h-80 bg-orange-300 rounded-full blur-3xl"></div>
+<div class="absolute -bottom-32 left-1/3 w-96 h-96 bg-primary rounded-full blur-3xl"></div>
+</div>
+<div class="relative z-10 flex flex-col items-center max-w-xs w-full">
+<div class="relative mb-12">
+<div class="absolute inset-0 bg-orange-100 dark:bg-orange-900/20 rounded-full scale-150 animate-pulse-slow"></div>
+<div class="w-32 h-32 bg-surface-light dark:bg-surface-dark rounded-3xl shadow-xl shadow-orange-500/10 flex items-center justify-center relative border border-gray-100 dark:border-gray-700">
+<div class="flex flex-col items-center justify-center">
+<div class="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mb-2 shadow-lg shadow-orange-500/30 transform rotate-3 transition-transform">
+<span class="text-white font-bold text-2xl tracking-tighter">KCC</span>
+</div>
+<div class="flex gap-1">
+<span class="material-symbols-outlined text-primary text-xl gavel-strike">gavel</span>
+</div>
+</div>
+<div class="absolute inset-0 animate-spin-slow">
+<div class="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-3 w-6 h-6 bg-white border-2 border-primary rounded-full flex items-center justify-center shadow-sm">
+<div class="w-full h-[1px] bg-primary rotate-45"></div>
+<div class="w-full h-[1px] bg-primary -rotate-45 absolute"></div>
+</div>
+</div>
+</div>
+</div>
+<div class="text-center space-y-2 mb-8">
+<h2 class="text-2xl font-bold text-text-primary-light dark:text-text-primary-dark">Loading Auction</h2>
+<p class="text-sm text-text-secondary-light dark:text-text-secondary-dark font-medium">Fetching live bids &amp; player stats...</p>
+</div>
+<div class="w-full space-y-3">
+<div class="h-1.5 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full w-2/3 animate-[shimmer_2s_infinite] relative overflow-hidden">
+<div class="absolute top-0 left-0 h-full w-full bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full animate-[shimmer_1.5s_infinite]"></div>
+</div>
+</div>
+<div class="flex justify-between text-xs font-medium text-text-secondary-light dark:text-text-secondary-dark px-1">
+<span>Connecting to server</span>
+<span class="text-primary font-bold">65%</span>
+</div>
+</div>
+<div class="mt-12 bg-white/60 dark:bg-surface-dark/60 backdrop-blur-md rounded-xl p-4 border border-white/50 dark:border-gray-700/50 max-w-[280px] w-full animate-bounce-slight">
+<div class="flex items-start gap-3">
+<div class="p-1.5 bg-orange-100 dark:bg-orange-900/30 rounded-lg text-primary shrink-0">
+<span class="material-symbols-outlined text-lg">lightbulb</span>
+</div>
+<div>
+<p class="text-[10px] uppercase font-bold text-text-secondary-light dark:text-text-secondary-dark mb-1">Did you know?</p>
+<p class="text-xs text-text-primary-light dark:text-text-primary-dark leading-relaxed">
+                        The highest bid in KCC history was placed in Season 4 for Parth Raval at 41,000.
+                    </p>
+</div>
+</div>
+</div>
+<div class="absolute bottom-8 flex flex-col items-center gap-2">
+<div class="flex gap-1.5">
+<div class="w-2 h-2 rounded-full bg-primary loading-dot"></div>
+<div class="w-2 h-2 rounded-full bg-primary loading-dot"></div>
+<div class="w-2 h-2 rounded-full bg-primary loading-dot"></div>
+</div>
+<span class="text-[10px] font-semibold text-text-secondary-light dark:text-text-secondary-dark uppercase tracking-widest mt-2">Season 5</span>
+</div>
+</div>
+<style>
+        @keyframes shimmer {
+            100% {
+                transform: translateX(100%);
+            }
+        }
+    </style>
+
+</body></html>

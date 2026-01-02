@@ -1,9 +1,13 @@
 import connectToDB from "@/lib/db";
-import Player from "@/lib/models/player";
+import { getModel } from "@/lib/getModel";
 
 export async function GET() {
   await connectToDB();
-  const players = await Player.find().lean();
+  const Player = getModel('Player');
+  const players = await Player.find()
+    .populate("soldTo", "name logoUrl")
+    .lean();
+  
   return new Response(JSON.stringify(players), {
     status: 200,
     headers: { "Content-Type": "application/json" },
