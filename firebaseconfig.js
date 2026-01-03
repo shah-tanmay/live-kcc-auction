@@ -1,10 +1,21 @@
+
+const firebaseApiKey = process.env.NEXT_PUBLIC_FIREBASE_API_KEY;
+const firebaseAuthDomain = process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN;
+const firebaseDatabaseUrl = process.env.NEXT_PUBLIC_FIREBASE_DATABASE_URL;
+const firebaseProjectId = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID;
+const firebaseStorageBucket = process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET;
+const firebaseMessagingSenderId = process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID;
+const firebaseAppId = process.env.NEXT_PUBLIC_FIREBASE_APP_ID;
+const firebaseMeasurementId = process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID;
+
+
 const firebaseConfig = {
-  apiKey: "AIzaSyCYznVRJEd4D0BhNmfUiE2JHwvKzvtXTRE",
-  authDomain: "kcc-auction-2026.firebaseapp.com",
-  databaseURL: "https://kcc-auction-2026-default-rtdb.firebaseio.com",
-  projectId: "kcc-auction-2026",
-  storageBucket: "kcc-auction-2026.firebasestorage.app",
-  messagingSenderId: "500724281136",
-  appId: "1:500724281136:web:9c5130aa4698a6b1faa2f5",
-  measurementId: "G-Z1JJT8J7V4"
+  apiKey: firebaseApiKey,
+  authDomain: firebaseAuthDomain,
+  databaseURL: firebaseDatabaseUrl,
+  projectId: firebaseProjectId,
+  storageBucket: firebaseStorageBucket,
+  messagingSenderId: firebaseMessagingSenderId,
+  appId: firebaseAppId,
+  measurementId: firebaseMeasurementId
 };
