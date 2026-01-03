@@ -377,6 +377,30 @@ const MobilePreAuctionLobby = ({ teams, getTeamTheme, formatPoints, router, isLo
                             );
                         })
                     )}
+
+                    {/* Mystery Team Card for Mobile */}
+                    {!isLoading && process.env.NEXT_PUBLIC_SHOW_MYSTERY_TEAM === 'true' && (
+                        <div className="bg-white rounded-3xl p-5 border border-slate-200 shadow-xl flex items-center justify-between relative overflow-hidden group ring-4 ring-slate-50">
+                             <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-slate-100 via-transparent to-transparent opacity-50"></div>
+                             
+                             <div className="flex items-center gap-4 relative z-10">
+                                <div className="size-14 rounded-2xl bg-slate-50 flex items-center justify-center font-black text-2xl text-slate-400 border border-slate-100 shadow-inner">
+                                    <span className="material-icons-round text-3xl animate-pulse text-slate-400">help_outline</span>
+                                </div>
+                                <div>
+                                    <h3 className="font-display font-bold text-lg text-slate-900 leading-tight mb-1">Revealing Soon...</h3>
+                                    <div className="flex items-center gap-1.5 opacity-50">
+                                        <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">New Franchise</span>
+                                    </div>
+                                </div>
+                             </div>
+                             
+                             <div className="text-right relative z-10 opacity-50 blur-[1px]">
+                                <p className="text-[9px] uppercase tracking-widest text-slate-400 font-black mb-1">Purse</p>
+                                <p className="font-display font-bold text-slate-600 border-b border-transparent">--</p>
+                             </div>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
