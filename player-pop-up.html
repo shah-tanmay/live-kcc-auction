@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Players Page - KCC Season 5</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&amp;family=Noto+Sans:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#f2460d",
+                        "secondary": "#fcd34d",
+                        "background-light": "#f8fafc",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"],
+                        "body": ["Noto Sans", "sans-serif"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 20px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background-color: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-background-light text-slate-800 font-body h-screen flex flex-col overflow-hidden selection:bg-primary selection:text-white" x-data="{ modalOpen: true }">
+<header class="bg-white border-b border-slate-200 h-20 px-6 lg:px-8 flex items-center justify-between shadow-sm z-50 shrink-0 relative">
+<div class="flex items-center gap-4">
+<div class="size-10 bg-primary text-white rounded-lg flex items-center justify-center shadow-md shadow-primary/30 transform hover:scale-105 transition-transform duration-300">
+<span class="material-symbols-outlined text-2xl">trophy</span>
+</div>
+<div>
+<h1 class="font-display font-black text-xl lg:text-2xl uppercase tracking-tighter text-slate-900 leading-none">KCC Season 5</h1>
+<p class="text-[0.65rem] font-bold text-primary uppercase tracking-[0.2em]">Registered Players</p>
+</div>
+</div>
+<div class="flex items-center gap-6">
+<div class="hidden md:flex items-center bg-slate-100 rounded-full px-4 py-2 border border-slate-200 focus-within:border-primary/50 focus-within:ring-2 focus-within:ring-primary/20 transition-all">
+<span class="material-symbols-outlined text-slate-400 text-xl">search</span>
+<input class="bg-transparent border-none text-sm font-medium text-slate-700 placeholder-slate-400 focus:ring-0 w-48 lg:w-64" placeholder="Search players..." type="text"/>
+</div>
+<div class="flex items-center gap-3 pl-6 border-l border-slate-200">
+<div class="text-right hidden sm:block">
+<p class="text-[0.65rem] text-slate-400 uppercase tracking-widest font-bold">Total Players</p>
+<p class="font-display font-black text-xl text-slate-900 leading-none">124</p>
+</div>
+<div class="size-10 rounded-full bg-slate-900 text-white flex items-center justify-center">
+<span class="material-symbols-outlined">groups</span>
+</div>
+</div>
+</div>
+</header>
+<main class="flex-1 overflow-y-auto p-4 lg:p-8 custom-scrollbar relative">
+<div class="fixed top-20 left-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-3xl -ml-20 -mt-20 pointer-events-none z-0"></div>
+<div class="fixed bottom-0 right-0 w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-3xl -mr-20 -mb-20 pointer-events-none z-0"></div>
+<div class="relative z-10 max-w-7xl mx-auto">
+<div class="flex items-center justify-between mb-8">
+<h2 class="text-2xl font-display font-bold text-slate-900 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">sports_cricket</span>
+                    Player Roster
+                </h2>
+<div class="flex gap-2">
+<button class="bg-white border border-slate-200 text-slate-600 px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wide hover:border-primary hover:text-primary transition-colors shadow-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-base">filter_list</span> Filter
+                    </button>
+<button class="bg-white border border-slate-200 text-slate-600 px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wide hover:border-primary hover:text-primary transition-colors shadow-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-base">sort</span> Sort
+                    </button>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pb-12">
+<article class="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col group h-full cursor-pointer">
+<div class="relative h-56 bg-gradient-to-b from-slate-50 to-white flex items-end justify-center overflow-hidden border-b border-slate-100">
+<div class="absolute inset-0 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-orange-50/50 via-transparent to-transparent opacity-50"></div>
+<span class="absolute top-4 right-4 bg-white/90 backdrop-blur px-2.5 py-1 rounded-md text-[0.65rem] font-bold text-slate-600 uppercase tracking-wider border border-slate-100 shadow-sm z-20">All Rounder</span>
+<span class="absolute top-8 left-4 font-display font-black text-6xl text-slate-100 -rotate-90 origin-top-left select-none z-0">DOE</span>
+<img alt="John Doe" class="h-[110%] w-auto object-contain relative z-10 drop-shadow-xl group-hover:scale-105 transition-transform duration-500" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCudm2BHCoOm7okfcUZ2pSoessYoD2p76oO8TphgEQc1Q7W_M4xbf_O9oKCqVLZ8cH9g2Arz957qCl9zrTKgzLpQEv3hc1kI1tv_mb__o_OmqAyYIZgtOwR4qZ3WtOJPF5RQuM51jJ_XmdrUqE0PQqHL09xB3hZW97dKmIUwXU3gMrB9aJqJdMacV0qfQx_SpaIMgbhE3oZfBlZduRdJyVwipKDhnLjO8RaChPShs8ktP0uxf5UHnUQzLBTIVRsZza0RS408l3fEqU"/>
+</div>
+<div class="p-5 flex flex-col flex-1">
+<div class="mb-4">
+<h3 class="font-display font-bold text-xl text-slate-900 leading-tight mb-1 group-hover:text-primary transition-colors">John Doe</h3>
+<div class="flex items-center gap-2">
+<span class="size-2 bg-green-500 rounded-full animate-pulse"></span>
+<span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Available</span>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-0 mb-5 bg-slate-50 rounded-xl border border-slate-100 divide-x divide-slate-200 overflow-hidden">
+<div class="p-2.5 text-center">
+<div class="text-[0.6rem] uppercase font-bold text-slate-400 mb-0.5">Mat</div>
+<div class="font-display font-bold text-lg text-slate-800">84</div>
+</div>
+<div class="p-2.5 text-center">
+<div class="text-[0.6rem] uppercase font-bold text-slate-400 mb-0.5">Runs</div>
+<div class="font-display font-bold text-lg text-slate-800">2450</div>
+</div>
+<div class="p-2.5 text-center">
+<div class="text-[0.6rem] uppercase font-bold text-slate-400 mb-0.5">Wkts</div>
+<div class="font-display font-bold text-lg text-slate-800">32</div>
+</div>
+</div>
+<div class="space-y-3 mb-6 text-sm flex-1">
+<div class="flex items-center justify-between text-slate-600 pb-2 border-b border-slate-50">
+<span class="text-xs font-semibold text-slate-400 uppercase tracking-wide">Batting</span>
+<span class="font-bold text-slate-700 flex items-center gap-1.5">
+                                    Right Hand Bat
+                                    <span class="material-symbols-outlined text-lg text-slate-400">sports_cricket</span>
+</span>
+</div>
+<div class="flex items-center justify-between text-slate-600 pb-2 border-b border-slate-50">
+<span class="text-xs font-semibold text-slate-400 uppercase tracking-wide">Bowling</span>
+<span class="font-bold text-slate-700 flex items-center gap-1.5">
+                                    Right Arm Fast
+                                    <span class="material-symbols-outlined text-lg text-slate-400">sports_baseball</span>
+</span>
+</div>
+<div class="flex items-center justify-between text-slate-600">
+<span class="text-xs font-semibold text-slate-400 uppercase tracking-wide">Fav Team</span>
+<span class="font-bold text-primary flex items-center gap-1.5">
+                                    Mumbai Indians
+                                    <span class="material-symbols-outlined text-lg text-red-400">favorite</span>
+</span>
+</div>
+</div>
+<a class="mt-auto flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-slate-900 text-white font-bold text-sm hover:bg-primary transition-colors group/btn shadow-md hover:shadow-lg hover:shadow-primary/30" href="#">
+<span>View Profile</span>
+<span class="material-symbols-outlined text-lg group-hover/btn:translate-x-0.5 transition-transform">arrow_outward</span>
+</a>
+</div>
+</article>
+<article class="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col group h-full">
+<div class="relative h-56 bg-gradient-to-b from-blue-50 to-white flex items-end justify-center overflow-hidden border-b border-slate-100">
+<div class="absolute inset-0 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-blue-50/50 via-transparent to-transparent opacity-50"></div>
+<span class="absolute top-4 right-4 bg-white/90 backdrop-blur px-2.5 py-1 rounded-md text-[0.65rem] font-bold text-slate-600 uppercase tracking-wider border border-slate-100 shadow-sm z-20">Batsman</span>
+<div class="absolute inset-0 flex items-center justify-center z-0 opacity-10">
+<span class="material-symbols-outlined text-9xl">person</span>
+</div>
+<img alt="Steve Smith" class="size-32 rounded-full mb-8 shadow-2xl z-10 border-4 border-white" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDHhggQIzN2D2cywJBirw2lCgQxfEQ7NuyonJK5LO3ursuwEm2HyIWc1zUAJoSIDJ_E_qp-mPe2i7scFvaVookiiZLKB5qgYvB_cPiZXF6iDVKuEkCTBAYjnfZ8XsGn76M8NhgRbzbWwU03ibY5hg826N3NtkWuKqPBL5cNdK7p48M81J9ewINI5AqjbS8YZ9-1Zciwci2S-nmcBH_e4B9Gj6gWHLe1rtWH7fD7mSDNOU1UZTvj5ficPEPc9ExhrN-W2MsTo2apXk8"/>
+</div>
+<div class="p-5 flex flex-col flex-1">
+<div class="mb-4">
+<h3 class="font-display font-bold text-xl text-slate-900 leading-tight mb-1 group-hover:text-primary transition-colors">Steve Smith</h3>
+<div class="flex items-center gap-2">
+<span class="size-2 bg-green-500 rounded-full animate-pulse"></span>
+<span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Available</span>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-0 mb-5 bg-slate-50 rounded-xl border border-slate-100 divide-x divide-slate-200 overflow-hidden">
+<div class="p-2.5 text-center">
+<div class="text-[0.6rem] uppercase font-bold text-slate-400 mb-0.5">Mat</div>
+<div class="font-display font-bold text-lg text-slate-800">102</div>
+</div>
+<div class="p-2.5 text-center">
+<div class="text-[0.6rem] uppercase font-bold text-slate-400 mb-0.5">Runs</div>
+<div class="font-display font-bold text-lg text-slate-800">3800</div>
+</div>
+<div class="p-2.5 text-center">
+<div class="text-[0.6rem] uppercase font-bold text-slate-400 mb-0.5">Avg</div>
+<div class="font-display font-bold text-lg text-slate-800">42.5</div>
+</div>
+</div>
+<div class="space-y-3 mb-6 text-sm flex-1">
+<div class="flex items-center justify-between text-slate-600 pb-2 border-b border-slate-50">
+<span class="text-xs font-semibold text-slate-400 uppercase tracking-wide">Batting</span>
+<span class="font-bold text-slate-700 flex items-center gap-1.5">
+                                    Right Hand Bat
+                                    <span class="material-symbols-outlined text-lg text-slate-400">sports_cricket</span>
+</span>
+</div>
+<div class="flex items-center justify-between text-slate-600 pb-2 border-b border-slate-50">
+<span class="text-xs font-semibold text-slate-400 uppercase tracking-wide">Bowling</span>
+<span class="font-bold text-slate-700 flex items-center gap-1.5">
+                                    Leg Spin
+                                    <span class="material-symbols-outlined text-lg text-slate-400">sports_baseball</span>
+</span>
+</div>
+<div class="flex items-center justify-between text-slate-600">
+<span class="text-xs font-semibold text-slate-400 uppercase tracking-wide">Fav Team</span>
+<span class="font-bold text-primary flex items-center gap-1.5">
+                                    Sydney Sixers
+                                    <span class="material-symbols-outlined text-lg text-red-400">favorite</span>
+</span>
+</div>
+</div>
+<a class="mt-auto flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-slate-900 text-white font-bold text-sm hover:bg-primary transition-colors group/btn shadow-md hover:shadow-lg hover:shadow-primary/30" href="#">
+<span>View Profile</span>
+<span class="material-symbols-outlined text-lg group-hover/btn:translate-x-0.5 transition-transform">arrow_outward</span>
+</a>
+</div>
+</article>
+<article class="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col group h-full">
+<div class="relative h-56 bg-gradient-to-b from-green-50 to-white flex items-end justify-center overflow-hidden border-b border-slate-100">
+<div class="absolute inset-0 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-green-50/50 via-transparent to-transparent opacity-50"></div>
+<span class="absolute top-4 right-4 bg-white/90 backdrop-blur px-2.5 py-1 rounded-md text-[0.65rem] font-bold text-slate-600 uppercase tracking-wider border border-slate-100 shadow-sm z-20">Bowler</span>
+<div class="absolute inset-0 flex items-center justify-center z-0 opacity-10">
+<span class="material-symbols-outlined text-9xl">person</span>
+</div>
+<img alt="Trent Boult" class="size-32 rounded-full mb-8 shadow-2xl z-10 border-4 border-white" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4SyTaIoIEWet_XqWkHDrCdodu1EodCKkRoADqM8uoMKk9zcZN0YGi5w6jE_ESmPKCjSUSIR5yrjcUi7XLr3Ffnv1N7odIo1MRW86OheLtrAdQfdiUtPwjvp_NikXdtyfS2vSmxXz85ZkAj82iKBi-YurwPRBVTYfVzQ1iBlLCD066xMUeKpHogc958SVOXfg5w1zGxmJdRW-ed6RGsKHUfw0VVdXJLptTWCHpl6gifRj0rzgbLMOvyBECNksWkpDwo8ZFkxMxP60"/>
+</div>
+<div class="p-5 flex flex-col flex-1">
+<div class="mb-4">
+<h3 class="font-display font-bold text-xl text-slate-900 leading-tight mb-1 group-hover:text-primary transition-colors">Trent Boult</h3>
+<div class="flex items-center gap-2">
+<span class="size-2 bg-green-500 rounded-full animate-pulse"></span>
+<span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Available</span>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-0 mb-5 bg-slate-50 rounded-xl border border-slate-100 divide-x divide-slate-200 overflow-hidden">
+<div class="p-2.5 text-center">
+<div class="text-[0.6rem] uppercase font-bold text-slate-400 mb-0.5">Mat</div>
+<div class="font-display font-bold text-lg text-slate-800">78</div>
+</div>
+<div class="p-2.5 text-center">
+<div class="text-[0.6rem] uppercase font-bold text-slate-400 mb-0.5">Wkts</div>
+<div class="font-display font-bold text-lg text-slate-800">112</div>
+</div>
+<div class="p-2.5 text-center">
+<div class="text-[0.6rem] uppercase font-bold text-slate-400 mb-0.5">Econ</div>
+<div class="font-display font-bold text-lg text-slate-800">7.8</div>
+</div>
+</div>
+<div class="space-y-3 mb-6 text-sm flex-1">
+<div class="flex items-center justify-between text-slate-600 pb-2 border-b border-slate-50">
+<span class="text-xs font-semibold text-slate-400 uppercase tracking-wide">Batting</span>
+<span class="font-bold text-slate-700 flex items-center gap-1.5">
+                                    Right Hand Bat
+                                    <span class="material-symbols-outlined text-lg text-slate-400">sports_cricket</span>
+</span>
+</div>
+<div class="flex items-center justify-between text-slate-600 pb-2 border-b border-slate-50">
+<span class="text-xs font-semibold text-slate-400 uppercase tracking-wide">Bowling</span>
+<span class="font-bold text-slate-700 flex items-center gap-1.5">
+                                    Left Arm Fast
+                                    <span class="material-symbols-outlined text-lg text-slate-400">sports_baseball</span>
+</span>
+</div>
+<div class="flex items-center justify-between text-slate-600">
+<span class="text-xs font-semibold text-slate-400 uppercase tracking-wide">Fav Team</span>
+<span class="font-bold text-primary flex items-center gap-1.5">
+                                    CSK
+                                    <span class="material-symbols-outlined text-lg text-red-400">favorite</span>
+</span>
+</div>
+</div>
+<a class="mt-auto flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-slate-900 text-white font-bold text-sm hover:bg-primary transition-colors group/btn shadow-md hover:shadow-lg hover:shadow-primary/30" href="#">
+<span>View Profile</span>
+<span class="material-symbols-outlined text-lg group-hover/btn:translate-x-0.5 transition-transform">arrow_outward</span>
+</a>
+</div>
+</article>
+<article class="bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl hover:shadow-primary/5 hover:-translate-y-1 transition-all duration-300 overflow-hidden flex flex-col group h-full">
+<div class="relative h-56 bg-gradient-to-b from-purple-50 to-white flex items-end justify-center overflow-hidden border-b border-slate-100">
+<div class="absolute inset-0 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-purple-50/50 via-transparent to-transparent opacity-50"></div>
+<span class="absolute top-4 right-4 bg-white/90 backdrop-blur px-2.5 py-1 rounded-md text-[0.65rem] font-bold text-slate-600 uppercase tracking-wider border border-slate-100 shadow-sm z-20">All Rounder</span>
+<div class="absolute inset-0 flex items-center justify-center z-0 opacity-10">
+<span class="material-symbols-outlined text-9xl">person</span>
+</div>
+<img alt="Glenn Maxwell" class="size-32 rounded-full mb-8 shadow-2xl z-10 border-4 border-white" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCVRjxM-FOy7-Sxb6MuYypeHjUkL-Lkv7nBacKjYpVR3f5pvqjyjpSJRHAEnO6lVWxpFejETcnoMvO2IGmDWae5vHJhqSb0J1Wujf6dD4rPpky649Y5C5IUvuhC93aWh-xn-nA7lIjoUIG45tNycGvCuQlZ1uL6NE9MLPSQNZLBrczAZjFNEaGR8LZT3C_fs47cru2oUQ05XXg67-xPVQSSbqUcheVKmH6Z8_ViOQnQNbzcLTNEZctsbl4M6JufeMLiiIDPsWqKuB4"/>
+</div>
+<div class="p-5 flex flex-col flex-1">
+<div class="mb-4">
+<h3 class="font-display font-bold text-xl text-slate-900 leading-tight mb-1 group-hover:text-primary transition-colors">Glenn Maxwell</h3>
+<div class="flex items-center gap-2">
+<span class="size-2 bg-green-500 rounded-full animate-pulse"></span>
+<span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Available</span>
+</div>
+</div>
+<div class="grid grid-cols-3 gap-0 mb-5 bg-slate-50 rounded-xl border border-slate-100 divide-x divide-slate-200 overflow-hidden">
+<div class="p-2.5 text-center">
+<div class="text-[0.6rem] uppercase font-bold text-slate-400 mb-0.5">Runs</div>
+<div class="font-display font-bold text-lg text-slate-800">2200</div>
+</div>
+<div class="p-2.5 text-center">
+<div class="text-[0.6rem] uppercase font-bold text-slate-400 mb-0.5">SR</div>
+<div class="font-display font-bold text-lg text-slate-800">155</div>
+</div>
+<div class="p-2.5 text-center">
+<div class="text-[0.6rem] uppercase font-bold text-slate-400 mb-0.5">Wkts</div>
+<div class="font-display font-bold text-lg text-slate-800">28</div>
+</div>
+</div>
+<div class="space-y-3 mb-6 text-sm flex-1">
+<div class="flex items-center justify-between text-slate-600 pb-2 border-b border-slate-50">
+<span class="text-xs font-semibold text-slate-400 uppercase tracking-wide">Batting</span>
+<span class="font-bold text-slate-700 flex items-center gap-1.5">
+                                    Right Hand Bat
+                                    <span class="material-symbols-outlined text-lg text-slate-400">sports_cricket</span>
+</span>
+</div>
+<div class="flex items-center justify-between text-slate-600 pb-2 border-b border-slate-50">
+<span class="text-xs font-semibold text-slate-400 uppercase tracking-wide">Bowling</span>
+<span class="font-bold text-slate-700 flex items-center gap-1.5">
+                                    Off Spin
+                                    <span class="material-symbols-outlined text-lg text-slate-400">sports_baseball</span>
+</span>
+</div>
+<div class="flex items-center justify-between text-slate-600">
+<span class="text-xs font-semibold text-slate-400 uppercase tracking-wide">Fav Team</span>
+<span class="font-bold text-primary flex items-center gap-1.5">
+                                    RCB
+                                    <span class="material-symbols-outlined text-lg text-red-400">favorite</span>
+</span>
+</div>
+</div>
+<a class="mt-auto flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-slate-900 text-white font-bold text-sm hover:bg-primary transition-colors group/btn shadow-md hover:shadow-lg hover:shadow-primary/30" href="#">
+<span>View Profile</span>
+<span class="material-symbols-outlined text-lg group-hover/btn:translate-x-0.5 transition-transform">arrow_outward</span>
+</a>
+</div>
+</article>
+</div>
+</div>
+</main>
+<div aria-labelledby="modal-title" aria-modal="true" class="fixed inset-0 z-[100] flex items-center justify-center" role="dialog">
+<div class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity"></div>
+<div class="relative z-10 w-full max-w-4xl transform overflow-hidden rounded-2xl bg-white shadow-2xl transition-all m-4 flex flex-col md:flex-row h-auto max-h-[90vh]">
+<button class="absolute top-4 right-4 z-50 p-2 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/40 text-slate-600 hover:text-slate-900 transition-colors md:text-white md:hover:text-white">
+<span class="material-symbols-outlined">close</span>
+</button>
+<div class="relative w-full md:w-2/5 bg-slate-100 flex items-end justify-center overflow-hidden h-64 md:h-auto min-h-[300px]">
+<div class="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent"></div>
+<span class="absolute top-8 left-4 font-display font-black text-8xl text-slate-200/50 -rotate-90 origin-top-left select-none z-0">DOE</span>
+<img alt="John Doe Full" class="h-full w-auto object-cover md:object-contain relative z-10 object-bottom drop-shadow-2xl" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCudm2BHCoOm7okfcUZ2pSoessYoD2p76oO8TphgEQc1Q7W_M4xbf_O9oKCqVLZ8cH9g2Arz957qCl9zrTKgzLpQEv3hc1kI1tv_mb__o_OmqAyYIZgtOwR4qZ3WtOJPF5RQuM51jJ_XmdrUqE0PQqHL09xB3hZW97dKmIUwXU3gMrB9aJqJdMacV0qfQx_SpaIMgbhE3oZfBlZduRdJyVwipKDhnLjO8RaChPShs8ktP0uxf5UHnUQzLBTIVRsZza0RS408l3fEqU"/>
+<div class="absolute bottom-0 left-0 right-0 h-24 bg-gradient-to-t from-black/60 to-transparent z-10 md:hidden"></div>
+<div class="absolute bottom-4 left-4 z-20 md:hidden text-white">
+<h2 class="text-3xl font-display font-bold">John Doe</h2>
+<p class="text-sm font-medium opacity-90">All Rounder</p>
+</div>
+</div>
+<div class="w-full md:w-3/5 p-6 md:p-10 flex flex-col overflow-y-auto bg-white custom-scrollbar">
+<div class="hidden md:flex items-start justify-between mb-6">
+<div>
+<div class="flex items-center gap-3 mb-1">
+<span class="bg-primary/10 text-primary text-[0.65rem] font-bold px-2 py-0.5 rounded uppercase tracking-wider">All Rounder</span>
+<div class="flex items-center gap-1.5 px-2 py-0.5 rounded bg-green-50 border border-green-100">
+<span class="size-1.5 bg-green-500 rounded-full animate-pulse"></span>
+<span class="text-[0.65rem] font-bold text-green-700 uppercase tracking-wide">Available</span>
+</div>
+</div>
+<h2 class="text-4xl font-display font-black text-slate-900">John Doe</h2>
+</div>
+<div class="flex flex-col items-end">
+<span class="text-[0.6rem] font-bold text-slate-400 uppercase tracking-widest mb-1">Favorite Team</span>
+<div class="flex items-center gap-2 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
+<span class="font-bold text-slate-800 text-sm">Mumbai Indians</span>
+<span class="material-symbols-outlined text-red-500 text-lg">favorite</span>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-4 gap-4 mb-8">
+<div class="bg-slate-50 rounded-xl p-3 border border-slate-100 text-center hover:bg-slate-100 transition-colors">
+<div class="text-[0.65rem] uppercase font-bold text-slate-400 mb-1">Matches</div>
+<div class="font-display font-black text-2xl text-slate-800">84</div>
+</div>
+<div class="bg-slate-50 rounded-xl p-3 border border-slate-100 text-center hover:bg-slate-100 transition-colors">
+<div class="text-[0.65rem] uppercase font-bold text-slate-400 mb-1">Runs</div>
+<div class="font-display font-black text-2xl text-slate-800">2450</div>
+</div>
+<div class="bg-slate-50 rounded-xl p-3 border border-slate-100 text-center hover:bg-slate-100 transition-colors">
+<div class="text-[0.65rem] uppercase font-bold text-slate-400 mb-1">Wickets</div>
+<div class="font-display font-black text-2xl text-slate-800">32</div>
+</div>
+<div class="bg-slate-50 rounded-xl p-3 border border-slate-100 text-center hover:bg-slate-100 transition-colors">
+<div class="text-[0.65rem] uppercase font-bold text-slate-400 mb-1">Average</div>
+<div class="font-display font-black text-2xl text-slate-800">35.2</div>
+</div>
+</div>
+<div class="h-px bg-slate-100 w-full mb-8"></div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+<div>
+<h3 class="font-display font-bold text-lg text-slate-900 mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-xl">sports_cricket</span> Batting Style
+                    </h3>
+<div class="space-y-3">
+<div class="flex justify-between items-center text-sm border-b border-slate-50 pb-2">
+<span class="text-slate-500 font-medium">Hand</span>
+<span class="font-bold text-slate-800">Right Hand Bat</span>
+</div>
+<div class="flex justify-between items-center text-sm border-b border-slate-50 pb-2">
+<span class="text-slate-500 font-medium">Top Score</span>
+<span class="font-bold text-slate-800">112*</span>
+</div>
+<div class="flex justify-between items-center text-sm">
+<span class="text-slate-500 font-medium">Strike Rate</span>
+<span class="font-bold text-slate-800">138.5</span>
+</div>
+</div>
+</div>
+<div>
+<h3 class="font-display font-bold text-lg text-slate-900 mb-4 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-xl">sports_baseball</span> Bowling Style
+                    </h3>
+<div class="space-y-3">
+<div class="flex justify-between items-center text-sm border-b border-slate-50 pb-2">
+<span class="text-slate-500 font-medium">Style</span>
+<span class="font-bold text-slate-800">Right Arm Fast</span>
+</div>
+<div class="flex justify-between items-center text-sm border-b border-slate-50 pb-2">
+<span class="text-slate-500 font-medium">Best Bowling</span>
+<span class="font-bold text-slate-800">4/22</span>
+</div>
+<div class="flex justify-between items-center text-sm">
+<span class="text-slate-500 font-medium">Economy</span>
+<span class="font-bold text-slate-800">7.2</span>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-auto pt-6 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+<div class="text-xs text-slate-400 font-medium text-center sm:text-left">
+                    Registered for KCC Season 5 Auction
+                 </div>
+<a class="w-full sm:w-auto bg-[#1b2430] hover:bg-[#2c3847] text-white px-6 py-3 rounded-xl font-bold text-sm shadow-lg shadow-slate-200 transition-all flex items-center justify-center gap-2 group" href="https://cricheroes.in" target="_blank">
+<img alt="CricHeroes" class="w-5 h-5 rounded-full grayscale group-hover:grayscale-0 transition-all" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAdylxP_zNbPta4JHdT-8fklGygvQz5ON2wZMc3xpF2FYNwLGidYHabl87V967sEBn4Lg7jIluVOrgdKyJY90v12C0MlL21ZxoqQf_7k9PieYnmvjH94w0ZdFVZNudUh_OoLdxnTTv02yaXTh-PFsEvTuYafv8nWnGB-MXnGsIIeo3eTdHMsA686mtw8Dilk9TlXjFU81XHDaklmvGyw7Lt5Xt2swCMjbn4P9oIlfTqWsIgTwQArQm12XzTv3gqRvOXF0pAeS7krO8"/>
+                    View CricHeroes Profile
+                    <span class="material-symbols-outlined text-lg group-hover:translate-x-0.5 transition-transform">open_in_new</span>
+</a>
+</div>
+</div>
+</div>
+</div>
+</body></html>

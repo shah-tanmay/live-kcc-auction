@@ -2,11 +2,19 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { formatPoints } from '@/utils/formatPoints';
+import PlayerModal from '@/components/PlayerModal';
 
 export default function DesktopPlayersUI({ players }) {
     const router = useRouter();
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedRole, setSelectedRole] = useState('All');
+    const [selectedPlayer, setSelectedPlayer] = useState(null);
+    const [modalOpen, setModalOpen] = useState(false);
+
+    const handlePlayerClick = (player) => {
+        setSelectedPlayer(player);
+        setModalOpen(true);
+    };
 
     const filteredPlayers = players.filter(p => {
         const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -100,7 +108,6 @@ export default function DesktopPlayersUI({ players }) {
                                     <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Player</th>
                                     <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Role</th>
                                     <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Hand Skills</th>
-                                    <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-center">Stats (M/R/W)</th>
                                     <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Fav Team</th>
                                     <th className="px-6 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">Base Price</th>
                                     <th className="px-8 py-4 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Auction Status</th>
@@ -108,7 +115,11 @@ export default function DesktopPlayersUI({ players }) {
                             </thead>
                             <tbody>
                                 {filteredPlayers.map((player) => (
-                                    <tr key={player._id} className="group hover:bg-slate-50/80 transition-colors border-b border-slate-50">
+                                    <tr 
+                                        key={player._id} 
+                                        onClick={() => handlePlayerClick(player)}
+                                        className="group hover:bg-slate-50/80 transition-colors border-b border-slate-50 cursor-pointer"
+                                    >
                                         <td className="px-8 py-5">
                                             <div className="flex items-center gap-4">
                                                 <div className="size-14 rounded-2xl bg-slate-100 overflow-hidden border border-slate-200 group-hover:scale-105 transition-transform duration-300 flex items-center justify-center">
@@ -137,24 +148,7 @@ export default function DesktopPlayersUI({ players }) {
                                                 <p className="text-xs font-bold text-slate-700">Bowl: <span className="text-slate-500 font-medium">{player.bowlingHand}</span></p>
                                             </div>
                                         </td>
-                                        <td className="px-6 py-5">
-                                            <div className="flex items-center gap-3">
-                                                <div className="text-center">
-                                                    <p className="text-lg font-black text-slate-900 leading-tight">{player.stats?.matches || 0}</p>
-                                                    <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tighter">Mat</p>
-                                                </div>
-                                                <div className="w-px h-6 bg-slate-200"></div>
-                                                <div className="text-center">
-                                                    <p className="text-lg font-black text-slate-900 leading-tight">{player.stats?.runs || 0}</p>
-                                                    <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tighter">Runs</p>
-                                                </div>
-                                                <div className="w-px h-6 bg-slate-200"></div>
-                                                <div className="text-center">
-                                                    <p className="text-lg font-black text-slate-900 leading-tight">{player.stats?.wickets || 0}</p>
-                                                    <p className="text-[8px] font-bold text-slate-400 uppercase tracking-tighter">Wkts</p>
-                                                </div>
-                                            </div>
-                                        </td>
+
                                         <td className="px-6 py-5">
                                             <div className="flex items-center gap-2">
                                                 <span className="material-symbols-outlined text-slate-300 text-sm">favorite</span>
@@ -201,6 +195,13 @@ export default function DesktopPlayersUI({ players }) {
                     <p className="text-xs font-bold text-slate-500 uppercase tracking-widest">Updated {new Date().toLocaleDateString()}</p>
                 </div>
             </footer>
+
+            {/* Player Modal */}
+            <PlayerModal 
+                player={selectedPlayer}
+                isOpen={modalOpen}
+                onClose={() => setModalOpen(false)}
+            />
         </div>
     );
 }

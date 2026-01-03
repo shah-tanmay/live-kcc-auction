@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Player Profile - KCC Season 5</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#F97316", // Orange extracted from logo/tags
+                        "background-light": "#F3F4F6",
+                        "background-dark": "#0F172A",
+                        "surface-light": "#FFFFFF",
+                        "surface-dark": "#1E293B",
+                    },
+                    fontFamily: {
+                        display: ["Inter", "sans-serif"],
+                        body: ["Inter", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.5rem",
+                        'xl': '0.75rem',
+                        '2xl': '1rem',
+                        '3xl': '1.5rem',
+                    },
+                },
+            },
+        };
+    </script>
+<style>.no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-gray-200 dark:bg-gray-900 font-body flex justify-center min-h-screen">
+<div class="w-full max-w-md bg-background-light dark:bg-background-dark min-h-screen shadow-2xl relative overflow-y-auto no-scrollbar">
+<div class="relative h-[400px]">
+<img alt="Portrait of cricket player John Doe standing on the field" class="w-full h-full object-cover object-top" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAu5PHUco2X7f1K2ejibyUrC41wqviQ3PHbI-WMqkm7aeVLPbIEYEoYFY9kKzF2rDQ6P9e3-62lqFvsjwE3ipQqzM0uyktv3diQeYapjbo_SnXgavXwwcCLzoijHycnfZypZ8qO0FxzNyMTgu794mtuUx9cnsAi2eJFfy2n-Bh0qM9UeVtVwgKGC5Bt3TZbTGjP-Bp-s05J4us_fJRhIz0OOJqskq1QA7Q0IiPmzuMotOO3zOdbNI1QF6Pl5e_E7DMl5eAftMME5qE"/>
+<div class="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-background-light dark:to-background-dark"></div>
+<div class="absolute top-0 left-0 w-full p-6 flex justify-between items-center z-10">
+<button class="bg-white/20 dark:bg-black/40 backdrop-blur-md p-2 rounded-full text-white hover:bg-white/30 transition">
+<span class="material-icons-round">arrow_back</span>
+</button>
+<div class="bg-white/20 dark:bg-black/40 backdrop-blur-md px-4 py-1 rounded-full">
+<span class="text-white text-sm font-medium tracking-wide">KCC Season 5</span>
+</div>
+<button class="bg-white/20 dark:bg-black/40 backdrop-blur-md p-2 rounded-full text-white hover:bg-white/30 transition">
+<span class="material-icons-round">share</span>
+</button>
+</div>
+</div>
+<div class="relative -mt-12 bg-surface-light dark:bg-surface-dark rounded-t-[2.5rem] px-6 pt-8 pb-10 shadow-inner">
+<div class="absolute top-3 left-1/2 transform -translate-x-1/2 w-12 h-1.5 bg-gray-300 dark:bg-gray-600 rounded-full"></div>
+<div class="flex flex-col items-start space-y-3 mb-8">
+<div class="flex flex-wrap gap-2">
+<span class="bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                        All Rounder
+                    </span>
+<span class="bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-green-500"></span> Available
+                    </span>
+</div>
+<div class="w-full flex justify-between items-end">
+<h1 class="text-3xl font-bold text-gray-900 dark:text-white">John Doe</h1>
+<div class="flex flex-col items-end">
+<span class="text-[10px] text-gray-400 uppercase tracking-widest font-semibold mb-1">Favorite Team</span>
+<div class="bg-gray-50 dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-lg px-3 py-1.5 flex items-center gap-2 shadow-sm">
+<span class="text-sm font-semibold text-gray-700 dark:text-gray-200">Mumbai Indians</span>
+<span class="material-icons-round text-red-500 text-sm">favorite</span>
+</div>
+</div>
+</div>
+</div>
+<div class="grid grid-cols-4 gap-3 mb-8">
+<div class="bg-gray-50 dark:bg-slate-800/50 rounded-2xl p-3 flex flex-col items-center justify-center text-center">
+<span class="text-[10px] uppercase text-gray-400 font-bold mb-1">Matches</span>
+<span class="text-xl font-bold text-gray-900 dark:text-white">84</span>
+</div>
+<div class="bg-gray-50 dark:bg-slate-800/50 rounded-2xl p-3 flex flex-col items-center justify-center text-center">
+<span class="text-[10px] uppercase text-gray-400 font-bold mb-1">Runs</span>
+<span class="text-xl font-bold text-gray-900 dark:text-white">2450</span>
+</div>
+<div class="bg-gray-50 dark:bg-slate-800/50 rounded-2xl p-3 flex flex-col items-center justify-center text-center">
+<span class="text-[10px] uppercase text-gray-400 font-bold mb-1">Wickets</span>
+<span class="text-xl font-bold text-gray-900 dark:text-white">32</span>
+</div>
+<div class="bg-gray-50 dark:bg-slate-800/50 rounded-2xl p-3 flex flex-col items-center justify-center text-center">
+<span class="text-[10px] uppercase text-gray-400 font-bold mb-1">Average</span>
+<span class="text-xl font-bold text-gray-900 dark:text-white">35.2</span>
+</div>
+</div>
+<div class="space-y-6">
+<div class="border-b border-gray-100 dark:border-slate-800 pb-6">
+<div class="flex items-center gap-2 mb-4 text-primary">
+<span class="material-icons-round text-xl">sports_cricket</span>
+<h3 class="text-lg font-bold text-gray-900 dark:text-white">Batting Style</h3>
+</div>
+<div class="space-y-3">
+<div class="flex justify-between items-center">
+<span class="text-sm text-gray-500 dark:text-gray-400">Hand</span>
+<span class="text-sm font-semibold text-gray-900 dark:text-gray-200">Right Hand Bat</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-sm text-gray-500 dark:text-gray-400">Top Score</span>
+<span class="text-sm font-semibold text-gray-900 dark:text-gray-200">112*</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-sm text-gray-500 dark:text-gray-400">Strike Rate</span>
+<span class="text-sm font-semibold text-gray-900 dark:text-gray-200">138.5</span>
+</div>
+</div>
+</div>
+<div class="pb-2">
+<div class="flex items-center gap-2 mb-4 text-primary">
+<span class="material-icons-round text-xl">sports_baseball</span>
+<h3 class="text-lg font-bold text-gray-900 dark:text-white">Bowling Style</h3>
+</div>
+<div class="space-y-3">
+<div class="flex justify-between items-center">
+<span class="text-sm text-gray-500 dark:text-gray-400">Style</span>
+<span class="text-sm font-semibold text-gray-900 dark:text-gray-200">Right Arm Fast</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-sm text-gray-500 dark:text-gray-400">Best Bowling</span>
+<span class="text-sm font-semibold text-gray-900 dark:text-gray-200">4/22</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="text-sm text-gray-500 dark:text-gray-400">Economy</span>
+<span class="text-sm font-semibold text-gray-900 dark:text-gray-200">7.2</span>
+</div>
+</div>
+</div>
+</div>
+<div class="mt-10">
+<p class="text-xs text-center text-gray-400 mb-3">Registered for KCC Season 5 Auction</p>
+<a class="group relative flex items-center justify-between w-full bg-[#111827] dark:bg-black text-white p-4 rounded-xl shadow-lg hover:shadow-xl transition-all active:scale-[0.98]" href="#">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-gray-800 flex items-center justify-center border border-gray-700">
+<img alt="Cricket Icon" class="w-6 h-6 invert opacity-80" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCM9WsL4K4OFMINlkEZW5honLfFulK5KLURETNeW_vfKZxvfCy2JBYR5XVCWst3hr4b4Ephoc33wTXJGMwTewDQisVOOxVT55xEpEWFJzLCTVfI7RpTFAwCiSZbMeyxd8NJElR4Qr3yRSxd6LTju14az_R4dBFZHqmfxDGsosaDaz1JmUlG6ezwm0Fv2aGyr78xx87oUwnUnciJlCS_hMtIU8m27Ape0Bjgxpk975i_Gihj7h9iJI6nFAegAxoaGRBlAdXdCMUll1E"/>
+</div>
+<div class="flex flex-col items-start">
+<span class="text-xs text-gray-400 font-medium">Verified Profile</span>
+<span class="font-bold text-sm">View CricHeroes Profile</span>
+</div>
+</div>
+<span class="material-icons-round text-gray-400 group-hover:text-white transition-colors">open_in_new</span>
+</a>
+</div>
+</div>
+</div>
+
+</body></html>

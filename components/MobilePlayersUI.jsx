@@ -2,11 +2,19 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { formatPoints } from '@/utils/formatPoints';
+import PlayerModal from '@/components/PlayerModal';
 
 export default function MobilePlayersUI({ players, refreshData }) {
     const router = useRouter();
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedRole, setSelectedRole] = useState('All');
+    const [selectedPlayer, setSelectedPlayer] = useState(null);
+    const [modalOpen, setModalOpen] = useState(false);
+
+    const handlePlayerClick = (player) => {
+        setSelectedPlayer(player);
+        setModalOpen(true);
+    };
 
     const roles = ['All', 'Batsmen', 'Bowler', 'AllRounder', 'Wicketkeeper'];
 
@@ -77,7 +85,11 @@ export default function MobilePlayersUI({ players, refreshData }) {
             {/* List */}
             <div className="px-4 grid grid-cols-1 sm:grid-cols-2 gap-6">
                 {filteredPlayers.map((player) => (
-                    <div key={player._id} className="bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm relative group">
+                    <div 
+                        key={player._id} 
+                        onClick={() => handlePlayerClick(player)}
+                        className="bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm relative group cursor-pointer active:scale-95 transition-transform"
+                    >
                         <div className={`h-44 bg-gradient-to-b ${getRoleGradient(player.role)} relative flex items-end justify-center pt-8`}>
                             {player.isSold ? (
                                 <span className="absolute top-3 left-3 bg-green-500 text-white text-[10px] font-black px-2.5 py-1 rounded-lg shadow-md z-10 uppercase tracking-tighter border border-green-400">
@@ -124,22 +136,7 @@ export default function MobilePlayersUI({ players, refreshData }) {
                                 </div>
                             </div>
 
-                            <div className="bg-gray-50/50 rounded-xl p-3 flex items-center justify-between border border-gray-100/50">
-                                <div className="flex gap-4">
-                                    <div className="text-center">
-                                        <p className="text-[8px] font-bold text-gray-400 uppercase">Runs</p>
-                                        <p className="text-sm font-black text-gray-900">{player.stats?.runs || 0}</p>
-                                    </div>
-                                    <div className="text-center">
-                                        <p className="text-[8px] font-bold text-gray-400 uppercase">Wkts</p>
-                                        <p className="text-sm font-black text-gray-900">{player.stats?.wickets || 0}</p>
-                                    </div>
-                                    <div className="text-center">
-                                        <p className="text-[8px] font-bold text-gray-400 uppercase">SR</p>
-                                        <p className="text-sm font-black text-gray-900">{player.stats?.sr || 0}</p>
-                                    </div>
-                                </div>
-                            </div>
+
 
                             {player.isSold && (
                                 <div className="mt-3 bg-green-50 rounded-xl p-3 border border-green-100 flex items-center justify-between">
@@ -204,6 +201,13 @@ export default function MobilePlayersUI({ players, refreshData }) {
                     <span className="text-[10px] font-black uppercase tracking-widest">Squads</span>
                 </button>
             </nav>
+
+            {/* Player Modal */}
+            <PlayerModal 
+                player={selectedPlayer}
+                isOpen={modalOpen}
+                onClose={() => setModalOpen(false)}
+            />
 
             <style jsx>{`
                 .hide-scrollbar::-webkit-scrollbar {
