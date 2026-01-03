@@ -782,7 +782,7 @@ function PreAuctionLobby({ teams, onStart, loading }) {
                                     <p className="text-[9px] uppercase tracking-widest text-slate-400 font-bold mb-1 italic">Status</p>
                                     <p className="text-slate-700 text-xs font-bold flex items-center gap-2">
                                         <span className="size-2 rounded-full bg-green-500 animate-pulse"></span>
-                                        Owner: [Placeholder]
+                                        Owner: {team.owner || 'Verified'}
                                     </p>
                                 </div>
                             </div>

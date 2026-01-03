@@ -13,7 +13,8 @@ const MobileAuctionUI = ({
     remainingPlayersCount,
     formatPoints,
     getTeamTheme,
-    router
+    router,
+    isLoading
 }) => {
     const currentTeamTheme = getTeamTheme(playerSold ? playerSold.teamName : currentBidTeamName);
 
@@ -43,7 +44,13 @@ const MobileAuctionUI = ({
 
             <main className="px-4 pt-6 space-y-6">
                 {!currentPlayer ? (
-                    <MobilePreAuctionLobby teams={purseData} getTeamTheme={getTeamTheme} formatPoints={formatPoints} />
+                    <MobilePreAuctionLobby 
+                        teams={purseData} 
+                        getTeamTheme={getTeamTheme} 
+                        formatPoints={formatPoints} 
+                        router={router}
+                        isLoading={isLoading}
+                    />
                 ) : (
                     <>
                         {/* Live Status Indicator */}
@@ -172,7 +179,7 @@ const MobileAuctionUI = ({
                             </div>
                             <div className="flex overflow-x-auto hide-scrollbar gap-3 pb-2 -mx-4 px-4 snap-x">
                                 {purseData.map((team, idx) => {
-                                    const theme = getTeamTheme(team.name);
+                                    const theme = getTeamTheme(team.name, team.logoUrl);
                                     return (
                                         <div key={idx} className="snap-center shrink-0 w-64 bg-white p-4 rounded-xl border border-gray-100 flex items-center justify-between shadow-sm">
                                             <div className="flex items-center gap-3">
@@ -284,7 +291,7 @@ const MobileAuctionUI = ({
     );
 };
 
-const MobilePreAuctionLobby = ({ teams, getTeamTheme, formatPoints }) => {
+const MobilePreAuctionLobby = ({ teams, getTeamTheme, formatPoints, router, isLoading }) => {
     return (
         <div className="space-y-8 pb-10">
             {/* Hero Section */}
@@ -306,7 +313,7 @@ const MobilePreAuctionLobby = ({ teams, getTeamTheme, formatPoints }) => {
                                     </p>
                                     
                                     <button 
-                                        onClick={() => router.push('/players')}
+                                        onClick={() => router && router.push('/players')}
                                         className="mt-4 w-full bg-white border border-slate-200 hover:border-primary/50 text-slate-700 font-black py-4 px-6 rounded-2xl shadow-sm transition-all flex items-center justify-center gap-3 uppercase tracking-wider text-xs active:scale-95"
                                     >
                                         <span>View Players Pool</span>
@@ -322,39 +329,54 @@ const MobilePreAuctionLobby = ({ teams, getTeamTheme, formatPoints }) => {
                         <span className="material-icons-round text-primary">diversity_3</span>
                         Franchises
                     </h2>
-                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest bg-gray-100 px-3 py-1 rounded-full">{teams.length} Teams</span>
+                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest bg-gray-100 px-3 py-1 rounded-full">{teams?.length || 0} Teams</span>
                 </div>
                 
                 <div className="grid grid-cols-1 gap-4">
-                    {teams.map((team, idx) => {
-                        const theme = getTeamTheme(team.name);
-                        return (
-                            <div key={idx} className="bg-white rounded-3xl p-5 border border-gray-100 shadow-sm flex items-center justify-between group active:scale-95 transition-transform duration-200">
-                                <div className="flex items-center gap-4">
-                                    {theme.logo ? (
-                                        <div className="size-14 rounded-2xl bg-white overflow-hidden shadow-inner border border-gray-100 flex items-center justify-center p-1">
-                                            <img src={theme.logo} alt={team.name} className="w-full h-full object-contain" />
-                                        </div>
-                                    ) : (
-                                        <div className={`size-14 rounded-2xl flex items-center justify-center font-black text-2xl shadow-inner border border-white/10 ${theme.bg} ${theme.color}`}>
-                                            {theme.char || team.name[0]}
-                                        </div>
-                                    )}
-                                    <div>
-                                        <h3 className="font-display font-bold text-lg text-gray-900 leading-tight mb-1">{team.name}</h3>
-                                        <div className="flex items-center gap-1.5">
-                                            <span className="size-2 rounded-full bg-green-500"></span>
-                                            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Owner: [Placeholder]</span>
-                                        </div>
+                    {(isLoading || !teams.length) ? (
+                        // Skeleton Loading State
+                        Array.from({ length: 6 }).map((_, idx) => (
+                            <div key={`skeleton-${idx}`} className="bg-white rounded-3xl p-5 border border-gray-100 shadow-sm flex items-center justify-between animate-pulse">
+                                <div className="flex items-center gap-4 w-full">
+                                    <div className="size-14 rounded-2xl bg-gray-200 shrink-0"></div>
+                                    <div className="flex-1 space-y-2">
+                                        <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                                        <div className="h-3 bg-gray-200 rounded w-1/2"></div>
                                     </div>
                                 </div>
-                                <div className="text-right">
-                                    <p className="text-[9px] uppercase tracking-widest text-gray-400 font-black mb-1">Purse</p>
-                                    <p className="font-display font-bold text-gray-900 border-b border-orange-100">{formatPoints(team.remainingPurse)}</p>
-                                </div>
                             </div>
-                        );
-                    })}
+                        ))
+                    ) : (
+                        teams.map((team, idx) => {
+                            const theme = getTeamTheme(team.name, team.logoUrl);
+                            return (
+                                <div key={idx} className="bg-white rounded-3xl p-5 border border-gray-100 shadow-sm flex items-center justify-between group active:scale-95 transition-transform duration-200">
+                                    <div className="flex items-center gap-4">
+                                        {theme.logo ? (
+                                            <div className="size-14 rounded-2xl bg-white overflow-hidden shadow-inner border border-gray-100 flex items-center justify-center p-1">
+                                                <img src={theme.logo} alt={team.name} className="w-full h-full object-contain" />
+                                            </div>
+                                        ) : (
+                                            <div className={`size-14 rounded-2xl flex items-center justify-center font-black text-2xl shadow-inner border border-white/10 ${theme.bg} ${theme.color}`}>
+                                                {theme.char || team.name[0]}
+                                            </div>
+                                        )}
+                                        <div>
+                                            <h3 className="font-display font-bold text-lg text-gray-900 leading-tight mb-1">{team.name}</h3>
+                                            <div className="flex items-center gap-1.5">
+                                                <span className="size-2 rounded-full bg-green-500"></span>
+                                                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">{team.owner || 'Verified Owner'}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="text-right">
+                                        <p className="text-[9px] uppercase tracking-widest text-gray-400 font-black mb-1">Purse</p>
+                                        <p className="font-display font-bold text-gray-900 border-b border-orange-100">{formatPoints(team.remainingPurse)}</p>
+                                    </div>
+                                </div>
+                            );
+                        })
+                    )}
                 </div>
             </div>
         </div>

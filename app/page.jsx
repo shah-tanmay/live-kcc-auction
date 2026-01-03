@@ -199,6 +199,7 @@ export default function AuctionUI() {
                     formatPoints={formatPoints}
                     getTeamTheme={getTeamTheme}
                     router={router}
+                    isLoading={isLoading}
                 />
                 
             </>
