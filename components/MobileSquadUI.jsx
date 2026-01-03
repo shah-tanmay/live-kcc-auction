@@ -79,7 +79,7 @@ const MobileSquadUI = ({
                             <h1 className="text-2xl font-bold tracking-tight text-slate-900">{selectedTeam.name}</h1>
                             <div className="flex items-center gap-2 mt-1">
                                 <span className="material-icons-round text-sm text-slate-400">person</span>
-                                <span className="text-xs text-slate-500 font-medium">Owner: John Doe</span>
+                                <span className="text-xs text-slate-500 font-medium">Owner: {selectedTeam.owner || 'Verified'}</span>
                             </div>
                         </div>
                     </div>

@@ -20,13 +20,13 @@ export default function PlayerModal({ player, isOpen, onClose }) {
                 {/* Close Button */}
                 <button 
                     onClick={onClose}
-                    className="absolute top-4 right-4 z-50 p-2 rounded-full bg-white/20 backdrop-blur-sm hover:bg-white/40 text-slate-600 hover:text-slate-900 transition-colors md:text-white md:hover:text-white"
+                    className="absolute top-4 right-4 z-50 p-2 rounded-full bg-slate-100/50 backdrop-blur-md hover:bg-slate-200 text-slate-500 hover:text-slate-900 transition-colors"
                 >
                     <span className="material-symbols-outlined">close</span>
                 </button>
 
                 {/* Left Side - Player Image */}
-                <div className="relative w-full md:w-2/5 bg-slate-100 flex items-end justify-center overflow-hidden h-64 md:h-auto min-h-[300px]">
+                <div className="relative w-full md:w-2/5 bg-slate-100 flex items-end justify-center overflow-hidden h-64 md:h-auto min-h-[300px] p-4">
                     <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent"></div>
                     <span className="absolute top-8 left-4 font-display font-black text-8xl text-slate-200/50 -rotate-90 origin-top-left select-none z-0">
                         {player.name.split(' ').pop().toUpperCase()}
@@ -35,7 +35,7 @@ export default function PlayerModal({ player, isOpen, onClose }) {
                     {player.photoUrl ? (
                         <img 
                             alt={player.name}
-                            className="h-full w-auto object-cover md:object-contain relative z-10 object-bottom drop-shadow-2xl" 
+                            className="h-auto max-h-full w-auto max-w-full object-contain object-bottom relative z-10 drop-shadow-2xl" 
                             src={player.photoUrl}
                         />
                     ) : (

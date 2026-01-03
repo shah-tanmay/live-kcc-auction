@@ -11,7 +11,7 @@ export async function GET() {
 
   // 2) load every team, projecting only the fields we need
   let teams = await Team.find()
-    .select("name purseLeft squad ") // or "purseLeft" if you prefer that field
+    .select("name purseLeft squad owner logoUrl") 
     .lean();
 
   teams = teams.map((team) => {
@@ -32,8 +32,10 @@ export async function GET() {
     teams.map((t) => ({
       id: t._id,
       name: t.name,
-      remainingPurse: t.purseLeft, // or t.purseLeft
+      remainingPurse: t.purseLeft,
       maxBidAllowed: t.maxBidAllowed,
+      owner: t.owner,
+      logoUrl: t.logoUrl
     })),
     { status: 200 }
   );

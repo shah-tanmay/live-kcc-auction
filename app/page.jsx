@@ -273,7 +273,7 @@ export default function AuctionUI() {
                             </div>
                             <div className="flex-1 overflow-y-auto p-3 space-y-2.5 custom-scrollbar">
                                 {purseData.map((team, idx) => {
-                                    const theme = getTeamTheme(team.name);
+                                    const theme = getTeamTheme(team.name, team.logoUrl);
                                     return (
                                         <div key={idx} className="flex items-center justify-between p-3 rounded-xl bg-white border border-slate-100 shadow-sm hover:border-primary/20 transition-colors group">
                                             <div className="flex items-center gap-3 overflow-hidden">
@@ -523,8 +523,25 @@ function PreAuctionLobby({ teams }) {
                     </div>
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                        {/* Skeleton Loader */}
+                        {teams.length === 0 && Array(8).fill(0).map((_, i) => (
+                            <div key={i} className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm animate-pulse">
+                                <div className="flex items-start justify-between mb-5">
+                                    <div className="size-14 rounded-2xl bg-slate-100"></div>
+                                    <div className="size-8 rounded-full bg-slate-100"></div>
+                                </div>
+                                <div className="h-4 w-3/4 bg-slate-100 rounded mb-4"></div>
+                                <div className="h-px w-full bg-slate-50 my-3"></div>
+                                <div className="flex justify-between">
+                                    <div className="h-3 w-1/3 bg-slate-100 rounded"></div>
+                                    <div className="h-3 w-1/4 bg-slate-100 rounded"></div>
+                                </div>
+                            </div>
+                        ))}
+
+                        {/* Real Teams */}
                         {teams.map((team, idx) => {
-                             const theme = getTeamTheme(team.name);
+                             const theme = getTeamTheme(team.name, team.logoUrl);
                              return (
                                 <div key={team.id || idx} className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm hover:shadow-xl hover:border-primary/20 hover:-translate-y-1 transition-all duration-300 group">
                                     <div className="flex items-start justify-between mb-5">
@@ -549,7 +566,7 @@ function PreAuctionLobby({ teams }) {
                                                 <p className="text-[9px] uppercase tracking-widest text-slate-400 font-black mb-1">Status</p>
                                                 <div className="flex items-center gap-1.5">
                                                     <span className="size-2 rounded-full bg-green-500 animate-pulse"></span>
-                                                    <span className="text-xs font-bold text-slate-600">Owner: [Placeholder]</span>
+                                                    <span className="text-xs font-bold text-slate-600">Owner: {team.owner || 'Verified'}</span>
                                                 </div>
                                             </div>
                                             <div className="text-right">
@@ -561,6 +578,42 @@ function PreAuctionLobby({ teams }) {
                                 </div>
                              );
                         })}
+
+                        {/* Mystery Team Card - 'Revealing Soon' */}
+                        {process.env.NEXT_PUBLIC_SHOW_MYSTERY_TEAM === 'true' && (
+                            <div className="bg-white rounded-3xl p-6 border border-slate-200 shadow-xl relative overflow-hidden group hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 ring-4 ring-slate-50">
+                                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-slate-100 via-transparent to-transparent opacity-50"></div>
+                                
+                                <div className="flex items-start justify-between mb-5 relative z-10">
+                                    <div className="size-14 rounded-2xl bg-slate-50 flex items-center justify-center font-black text-2xl text-slate-400 border border-slate-100 shadow-inner group-hover:scale-110 transition-transform duration-300">
+                                        <span className="material-symbols-outlined text-3xl animate-pulse text-slate-400">que_mark</span>
+                                    </div>
+                                    <div className="px-2 py-1 rounded-lg bg-slate-100 text-slate-500 text-[0.65rem] font-black uppercase tracking-widest border border-slate-200">
+                                        Soon
+                                    </div>
+                                </div>
+                                
+                                <div className="relative z-10">
+                                    <h3 className="font-display font-bold text-lg text-slate-900 mb-1 group-hover:text-primary transition-colors">Revealing Soon...</h3>
+                                    <p className="text-xs text-slate-500 font-medium">New Franchise</p>
+                                    
+                                    <div className="h-px w-full bg-slate-100 my-3"></div>
+                                    
+                                    <div className="flex items-center justify-between opacity-50 blur-[2px] group-hover:blur-none transition-all duration-500 cursor-help">
+                                        <div>
+                                            <p className="text-[9px] uppercase tracking-widest text-slate-400 font-black mb-1">Owner</p>
+                                            <div className="flex items-center gap-1.5">
+                                                <span className="text-xs font-bold text-slate-600">Hidden</span>
+                                            </div>
+                                        </div>
+                                        <div className="text-right">
+                                            <p className="text-[9px] uppercase tracking-widest text-slate-400 font-black mb-1">Purse</p>
+                                            <p className="text-xs font-black text-slate-600">--</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

@@ -129,6 +129,7 @@ function parseExcelFile(filePath) {
 
   const players = [];
   const errors = [];
+  const seenNames = new Set();
 
   data.forEach((row, index) => {
     const rowNum = index + 2; // Excel row number (1-indexed + header)
@@ -140,6 +141,13 @@ function parseExcelFile(filePath) {
         errors.push(`Row ${rowNum}: Missing player name`);
         return;
       }
+
+      // Check for duplicates
+      if (seenNames.has(name.toLowerCase())) {
+        console.warn(`⚠️  Row ${rowNum}: Duplicate player "${name}" skipped`);
+        return;
+      }
+      seenNames.add(name.toLowerCase());
 
       // Extract role and normalize
       const rawRole = row[COLUMN_MAP.role];
@@ -160,17 +168,38 @@ function parseExcelFile(filePath) {
       const normalizedBowlingHand = normalize(rawBowlingHand);
       const bowlingHand = BOWLING_HAND_MAP[normalizedBowlingHand] || "Right-arm Fast";
 
-      // Extract photo URL (Google Drive link or generate from name)
+      // Extract photo URL
       let photoUrl = row[COLUMN_MAP.photoUrl]?.trim();
       
-      // If it's a Google Drive link, we'll use the generated URL instead
-      // User will need to download photos separately
-      if (!photoUrl || photoUrl.includes("drive.google.com")) {
-        photoUrl = generatePhotoUrl(name);
-        if (photoUrl.includes("drive.google.com")) {
-          console.warn(`⚠️  Row ${rowNum}: Google Drive link detected for ${name}, using generated URL: ${photoUrl}`);
+      // Transform Google Drive links to direct viewable format
+      // From: https://drive.google.com/file/d/FILE_ID/view
+      // To: https://lh3.googleusercontent.com/d/FILE_ID
+      if (photoUrl && photoUrl.includes("drive.google.com")) {
+        let fileId = null;
+        // Try to match /d/FILE_ID format
+        const fileIdMatch = photoUrl.match(/\/d\/([a-zA-Z0-9_-]+)/);
+        if (fileIdMatch && fileIdMatch[1]) {
+           fileId = fileIdMatch[1];
+        } else {
+           // Try to match id=FILE_ID format
+           const idParamMatch = photoUrl.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+           if (idParamMatch && idParamMatch[1]) {
+               fileId = idParamMatch[1];
+           }
         }
+
+        if (fileId) {
+           photoUrl = `https://lh3.googleusercontent.com/d/${fileId}`;
+        } else {
+           // Fallback if regex fails but it is a drive link
+           console.warn(`⚠️  Row ${rowNum}: Could not extract ID from Drive link: ${photoUrl}`);
+           photoUrl = generatePhotoUrl(name);
+        }
+      } else if (!photoUrl) {
+        // Only generate local path if no URL provided
+        photoUrl = generatePhotoUrl(name);
       }
+      // If it's not a drive link and not empty, we assume it's a valid URL or path already
 
       // Extract favorite team and clean it (remove bracketed content)
       const rawFavTeam = row[COLUMN_MAP.favTeam]?.trim() || "";

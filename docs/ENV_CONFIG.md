@@ -13,6 +13,12 @@
 - **Default**: `2026`
 - **Note**: Only applies to real mode. Mock mode always uses standard collections.
 
+### NEXT_PUBLIC_SHOW_MYSTERY_TEAM
+- **Purpose**: Show/Hide the "Revealing Soon" mystery team card on the main page
+- **Values**: `true` or `false`
+- **Default**: `false` (hidden)
+
+
 ## Configuration Examples
 
 ### Mock Mode (Testing)

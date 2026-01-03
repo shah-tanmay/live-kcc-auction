@@ -5,6 +5,7 @@ import { db } from '@/lib/firebase';
 import { ref, onValue } from 'firebase/database';
 import MobileSquadUI from '@/components/MobileSquadUI';
 import LoadingScreen from '@/components/LoadingScreen';
+import { getTeamTheme } from '@/utils/teamTheme';
 
 // Helper to format currency/points
 const formatPoints = (points) => {
@@ -16,35 +17,7 @@ const formatPoints = (points) => {
     return `₹${val}`;
 };
 
-// Helper to get team visual properties (Shared with Home)
-const getTeamTheme = (teamName) => {
-    if (!teamName) return { color: 'text-slate-600', bg: 'bg-slate-100', char: '?' };
-    
-    // Normalize string for matching
-    const name = teamName.toLowerCase();
-    
-    // Checks for keywords in the team name
-    if (name.includes('aj turf')) return { logo: '/logos/ajturf.jpg', color: 'text-slate-800', bg: 'bg-white' };
-    if (name.includes('champion')) return { logo: '/logos/champion.jpg', color: 'text-slate-800', bg: 'bg-white' };
-    if (name.includes('kcc')) return { logo: '/logos/kcc.jpg', color: 'text-slate-800', bg: 'bg-white' };
-    if (name.includes('kumar')) return { logo: '/logos/kumar.jpg', color: 'text-slate-800', bg: 'bg-white' };
-    if (name.includes('oswal')) return { logo: '/logos/oswal.jpg', color: 'text-slate-800', bg: 'bg-white' };
-    if (name.includes('solanki')) return { logo: '/logos/solanki.jpg', color: 'text-slate-800', bg: 'bg-white' };
-    if (name.includes('upadhyay')) return { logo: '/logos/upadhyay.jpg', color: 'text-slate-800', bg: 'bg-white' };
-    if (name.includes('firehawks')) return { color: 'text-orange-600', bg: 'bg-orange-100', char: 'F' };
-    
-    // Fallback themes
-    const themes = {
-        'Titans': { color: 'text-blue-600', bg: 'bg-blue-100', char: 'T' },
-        'Warriors': { color: 'text-green-600', bg: 'bg-green-100', char: 'W' },
-        'Royals': { color: 'text-purple-600', bg: 'bg-purple-100', char: 'R' },
-        'Kings': { color: 'text-red-600', bg: 'bg-red-100', char: 'K' },
-        'Strikers': { color: 'text-yellow-600', bg: 'bg-yellow-100', char: 'S' },
-        'Giants': { color: 'text-gray-600', bg: 'bg-gray-100', char: 'G' },
-    };
-    
-    return themes[teamName] || { color: 'text-slate-600', bg: 'bg-slate-100', char: teamName?.[0] || '?' };
-};
+
 
 export default function SquadPage() {
     const router = useRouter();
@@ -102,7 +75,7 @@ export default function SquadPage() {
     }, []);
 
     // Derived state for the selected team
-    const currentTeamTheme = selectedTeam ? getTeamTheme(selectedTeam.name) : {};
+    const currentTeamTheme = selectedTeam ? getTeamTheme(selectedTeam.name, selectedTeam.logoUrl) : {};
     
     // Calculate stats
     const items = selectedTeam?.squad || [];
@@ -175,7 +148,7 @@ export default function SquadPage() {
                     </div>
                     <div className="flex-1 overflow-y-auto custom-scrollbar px-4 pb-6 space-y-2">
                         {teams.map((team) => {
-                            const theme = getTeamTheme(team.name);
+                            const theme = getTeamTheme(team.name, team.logoUrl);
                             const isSelected = selectedTeam?._id === team._id;
                             return (
                                 <button 
@@ -237,7 +210,7 @@ export default function SquadPage() {
                                                 <div className="flex items-center gap-6 text-sm text-slate-500">
                                                     <div className="flex items-center gap-1.5 bg-slate-50 px-3 py-1 rounded-lg border border-slate-100">
                                                         <span className="material-symbols-outlined text-[18px] text-slate-400">person</span>
-                                                        <span className="font-medium text-slate-700">Owner:</span> John Doe
+                                                        <span className="font-medium text-slate-700">Owner:</span> {selectedTeam.owner || 'Verified'}
                                                     </div>
                                                 </div>
                                             </div>

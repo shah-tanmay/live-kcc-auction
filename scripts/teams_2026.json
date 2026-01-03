@@ -2,7 +2,7 @@
     {
         "name": "Raval Royals",
         "motto": "",
-        "logoUrl": "/logos/champion.jpg",
+        "logoUrl": "/logos/ravalroyals.jpeg",
         "owner": "Parth Raval",
         "purseLeft": 100000,
         "squad": []
@@ -10,7 +10,7 @@
     {
         "name": "Siddha Strikers",
         "motto": "",
-        "logoUrl": "/logos/upadhyay.jpg",
+        "logoUrl": "/logos/siddha.jpeg",
         "owner": "Sahil Gugale",
         "purseLeft": 100000,
         "squad": []
@@ -18,7 +18,7 @@
     {
         "name": "House of V.R",
         "motto": "",
-        "logoUrl": "/logos/solanki.jpg",
+        "logoUrl": "/logos/houseofvr.jpeg",
         "owner": "Viren Palesa, Rushabh Bora",
         "purseLeft": 100000,
         "squad": []
@@ -26,7 +26,7 @@
     {
         "name": "Oswal Avengers",
         "motto": "",
-        "logoUrl": "/logos/ajturf.jpg",
+        "logoUrl": "/logos/oswalavengers.jpeg",
         "owner": "Chirag Oswal",
         "purseLeft": 100000,
         "squad": []
@@ -34,7 +34,7 @@
     {
         "name": "Samrat Titans",
         "motto": "",
-        "logoUrl": "/logos/oswal.jpg",
+        "logoUrl": "/logos/samrattitans.jpeg",
         "owner": "Samrat Darda",
         "purseLeft": 100000,
         "squad": []
@@ -42,7 +42,7 @@
     {
         "name": "AJ Turt Titans",
         "motto": "Play Bold",
-        "logoUrl": "/logos/kumar.jpg",
+        "logoUrl": "/logos/ajturf.jpg",
         "owner": "Akshay Jain",
         "purseLeft": 100000,
         "squad": []

@@ -608,15 +608,16 @@ export default function AdminDashboard() {
                         <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/30">
                             {teams.map(team => {
                                 const isHighest = team.name === currentBidTeam;
+                                const theme = getTeamTheme(team.name, team.logoUrl);
                                 return (
                                     <div key={team.id} className={`w-full text-left p-3 rounded-xl border transition-all group shadow-sm ${isHighest ? 'bg-white border-2 border-primary/20 shadow-lg shadow-blue-100' : 'bg-white hover:bg-gray-50 border-gray-200 hover:border-gray-300'}`}>
                                         <div className="flex items-center justify-between mb-3">
                                             <div className="flex items-center gap-3 min-w-0">
-                                                <div className={`size-10 rounded-lg flex items-center justify-center text-white font-black text-xs shadow-sm shrink-0 ${getTeamTheme(team.name).bg} ${getTeamTheme(team.name).color}`}>
-                                                    {getTeamTheme(team.name).logo ? (
-                                                        <img src={getTeamTheme(team.name).logo} alt={team.name} className="w-full h-full object-contain p-0.5" />
+                                                <div className={`size-10 rounded-lg flex items-center justify-center text-white font-black text-xs shadow-sm shrink-0 ${theme.bg} ${theme.color}`}>
+                                                    {theme.logo ? (
+                                                        <img src={theme.logo} alt={team.name} className="w-full h-full object-contain p-0.5" />
                                                     ) : (
-                                                        getTeamTheme(team.name).char
+                                                        theme.char
                                                     )}
                                                 </div>
                                                 <div className="min-w-0">
@@ -759,18 +760,20 @@ function PreAuctionLobby({ teams, onStart, loading }) {
                     </div>
                     
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                        {teams.map((team, idx) => (
-                            <div key={team.id || idx} className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm hover:shadow-lg hover:border-primary/20 hover:-translate-y-1 transition-all duration-300 group">
-                                <div className="flex items-start justify-between mb-4">
-                                    {getTeamTheme(team.name).logo ? (
-                                        <div className="size-12 rounded-xl bg-white overflow-hidden shadow-inner border border-slate-100 flex items-center justify-center p-1 group-hover:scale-110 transition-transform duration-300">
-                                            <img src={getTeamTheme(team.name).logo} alt={team.name} className="w-full h-full object-contain" />
-                                        </div>
-                                    ) : (
-                                        <div className={`size-12 rounded-xl flex items-center justify-center font-black text-xl shadow-inner group-hover:scale-110 transition-transform duration-300 border border-white/10 ${getTeamTheme(team.name).bg} ${getTeamTheme(team.name).color}`}>
-                                            {getTeamTheme(team.name).char}
-                                        </div>
-                                    )}
+                        {teams.map((team, idx) => {
+                            const theme = getTeamTheme(team.name, team.logoUrl);
+                            return (
+                                <div key={team.id || idx} className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm hover:shadow-lg hover:border-primary/20 hover:-translate-y-1 transition-all duration-300 group">
+                                    <div className="flex items-start justify-between mb-4">
+                                        {theme.logo ? (
+                                            <div className="size-12 rounded-xl bg-white overflow-hidden shadow-inner border border-slate-100 flex items-center justify-center p-1 group-hover:scale-110 transition-transform duration-300">
+                                                <img src={theme.logo} alt={team.name} className="w-full h-full object-contain" />
+                                            </div>
+                                        ) : (
+                                            <div className={`size-12 rounded-xl flex items-center justify-center font-black text-xl shadow-inner group-hover:scale-110 transition-transform duration-300 border border-white/10 ${theme.bg} ${theme.color}`}>
+                                                {theme.char}
+                                            </div>
+                                        )}
                                     <span className="material-symbols-outlined text-slate-200 group-hover:text-primary transition-colors text-lg">verified</span>
                                 </div>
                                 <div>
@@ -783,7 +786,8 @@ function PreAuctionLobby({ teams, onStart, loading }) {
                                     </p>
                                 </div>
                             </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 </div>
             </div>
