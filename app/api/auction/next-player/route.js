@@ -46,7 +46,9 @@ export async function GET() {
                 photoUrl: randomPlayer.photoUrl || '',
                 stats: safeStats,
                 _id: randomPlayer._id.toString(),
-                basePrice: randomPlayer.basePrice || 4000
+                basePrice: randomPlayer.basePrice || 4000,
+                lastYearSoldPrice: randomPlayer.lastYearSoldPrice || 0,
+                lastYearSoldTeam: randomPlayer.lastYearSoldTeam || ''
             }),
             set(ref(db, 'auction/currentBid'), { amount: 'No Bids Yet', teamName: 'No Team Yet' }),
             set(ref(db, 'auction/status'), null)

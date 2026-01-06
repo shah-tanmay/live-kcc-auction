@@ -370,8 +370,16 @@ export default function AuctionUI() {
                                                 <p className="text-2xl font-black text-slate-800">{currentPlayer?.stats?.wickets || '-'}</p>
                                             </div>
                                         </div>
-                                        <div className="inline-block pt-3 border-t border-slate-100 pr-8">
+                                        <div className="flex flex-col gap-2 pt-3 border-t border-slate-100 pr-8">
                                             <p className="text-xs font-medium text-slate-400 uppercase tracking-wide">Base Price: <span className="text-slate-900 font-bold ml-1">{formatPoints(currentPlayer?.basePrice || 4000)}</span></p>
+                                            {currentPlayer?.lastYearSoldPrice > 0 && (
+                                                <div className="flex flex-col gap-0.5 mt-1 bg-amber-50/50 p-2.5 rounded-xl border border-amber-100/50 shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-500">
+                                                    <p className="text-[10px] font-black text-amber-600 uppercase tracking-[0.1em]">Last Season (Purse: 1L)</p>
+                                                    <p className="text-[11px] font-bold text-slate-800 leading-tight">
+                                                        Sold at <span className="text-primary font-black text-sm">{formatPoints(currentPlayer.lastYearSoldPrice)}</span> to <span className="uppercase text-[9px] font-black bg-slate-900 text-white px-2 py-0.5 rounded-md ml-1 shadow-sm">{currentPlayer.lastYearSoldTeam}</span>
+                                                    </p>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                 </div>

@@ -46,5 +46,21 @@
         "owner": "Akshay Jain",
         "purseLeft": 100000,
         "squad": []
+    },
+    {
+        "name": "Boundary Smashers",
+        "motto": "Hit Hard",
+        "logoUrl": "/logos/boundarysmashers.jpeg",
+        "owner": "Sagar Lodha",
+        "purseLeft": 100000,
+        "squad": []
+    },
+    {
+        "name": "Dunakhe Dynamos",
+        "motto": "",
+        "logoUrl": "/logos/dunakhedynamos.jpeg",
+        "owner": "Abhishek Dunakhe",
+        "purseLeft": 100000,
+        "squad": []
     }
 ]

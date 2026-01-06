@@ -11,6 +11,8 @@ import Player2026 from "../lib/models/player2026.js";
 import Team2026 from "../lib/models/team2026.js";
 import MockPlayer from "../lib/models/mockPlayer.js";
 import MockTeam from "../lib/models/mockTeam.js";
+import Player from "../lib/models/player.js";
+import Team from "../lib/models/team.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -21,6 +23,7 @@ const isMockMode = process.argv.includes("--mock");
 // Configuration
 const EXCEL_FILE = path.join(__dirname, "..", "KCC Tournament Season #5 (Responses).xlsx");
 const TEAMS_JSON = path.join(__dirname, "teams_2026.json");
+const PLAYERS_JSON = path.join(__dirname, "players_seed_data.json");
 
 // Select appropriate models based on mode
 // Mock mode: Use standard mock collections (mock_players, mock_teams)
@@ -55,33 +58,19 @@ const ROLE_MAP = {
   "wk": "Wicketkeeper",
 };
 
-// Batting hand normalization
-const BATTING_HAND_MAP = {
-  "right": "Right",
-  "left": "Left",
-  "right hand": "Right",
-  "left hand": "Left",
-  "right handed": "Right",
-  "left handed": "Left",
-};
+// Helper to parse batting style
+function parseBattingStyle(raw) {
+  const norm = normalize(raw);
+  if (norm.includes('left')) return 'Left';
+  return 'Right';
+}
 
-// Bowling hand normalization
-const BOWLING_HAND_MAP = {
-  "right arm fast": "Right-arm Fast",
-  "right-arm fast": "Right-arm Fast",
-  "right fast": "Right-arm Fast",
-  "fast": "Right-arm Fast",
-  "right arm spin": "Right-arm Spin",
-  "right-arm spin": "Right-arm Spin",
-  "right spin": "Right-arm Spin",
-  "spin": "Right-arm Spin",
-  "left arm fast": "Left-arm Fast",
-  "left-arm fast": "Left-arm Fast",
-  "left fast": "Left-arm Fast",
-  "left arm spin": "Left-arm Spin",
-  "left-arm spin": "Left-arm Spin",
-  "left spin": "Left-arm Spin",
-};
+// Helper to parse bowling style
+function parseBowlingStyle(raw) {
+  const norm = normalize(raw);
+  if (norm.includes('left')) return 'Left';
+  return 'Right';
+}
 
 /**
  * Normalize a string value (trim, lowercase)
@@ -90,6 +79,7 @@ function normalize(value) {
   if (!value) return "";
   return String(value).trim().toLowerCase();
 }
+
 
 /**
  * Clean favorite team name by removing bracketed content
@@ -111,9 +101,66 @@ function generatePhotoUrl(name) {
 }
 
 /**
+ * Load manual player stats override from JSON
+ */
+function loadManualStats() {
+  if (!fs.existsSync(PLAYERS_JSON)) {
+    console.warn(`⚠️  Manual stats file not found: ${PLAYERS_JSON}`);
+    return {};
+  }
+
+  try {
+    const raw = fs.readFileSync(PLAYERS_JSON, "utf8");
+    const players = JSON.parse(raw);
+    const statsMap = {};
+
+    players.forEach(p => {
+      if (p.name && p.stats) {
+        // Use normalized name as key for lookup
+        statsMap[normalize(p.name)] = p.stats;
+      }
+    });
+
+    console.log(`✅ Loaded manual stats for ${Object.keys(statsMap).length} players from JSON`);
+    return statsMap;
+  } catch (err) {
+    console.error(`❌ Failed to load manual stats from JSON: ${err.message}`);
+    return {};
+  }
+}
+
+/**
+ * Fetch sold players from last season (Player collection)
+ */
+async function fetchHistoricalData() {
+  console.log("\n📡 Fetching historical auction data from MongoDB...");
+  try {
+    const soldPlayers = await Player.find({ isSold: true }).populate("soldTo");
+    const historyMap = {};
+
+    soldPlayers.forEach(p => {
+      // Even if soldTo is missing (broken reference), if they have a price, we want it.
+      if (p.name && (p.soldTo || p.soldFor > 0)) {
+        historyMap[normalize(p.name)] = {
+          price: p.soldFor,
+          team: p.soldTo ? p.soldTo.name : 'Unknown Team',
+          photoUrl: p.photoUrl
+        };
+      }
+    });
+
+    console.log(`✅ Found historical data for ${Object.keys(historyMap).length} players`);
+    return historyMap;
+  } catch (err) {
+    console.error(`❌ Failed to fetch historical data: ${err.message}`);
+    return {};
+  }
+}
+
+/**
  * Parse Excel file and extract player data
  */
-function parseExcelFile(filePath) {
+function parseExcelFile(filePath, historyMap = {}) {
   console.log(`\n📄 Reading Excel file: ${filePath}`);
   
   if (!fs.existsSync(filePath)) {
@@ -126,6 +173,9 @@ function parseExcelFile(filePath) {
   const data = xlsx.utils.sheet_to_json(worksheet);
 
   console.log(`✅ Found ${data.length} rows in Excel file`);
+
+  // Load manual stats lookup map
+  const manualStatsMap = loadManualStats();
 
   const players = [];
   const errors = [];
@@ -158,52 +208,45 @@ function parseExcelFile(filePath) {
         console.warn(`⚠️  Row ${rowNum}: Unknown role "${rawRole}", defaulting to AllRounder`);
       }
 
-      // Extract batting hand and normalize
+      // Parse Batting Hand (Robust)
       const rawBattingHand = row[COLUMN_MAP.battingHand];
-      const normalizedBattingHand = normalize(rawBattingHand);
-      const battingHand = BATTING_HAND_MAP[normalizedBattingHand] || "Right";
+      const battingHand = parseBattingStyle(rawBattingHand);
 
-      // Extract bowling hand and normalize
+      // Parse Bowling Hand (Robust)
       const rawBowlingHand = row[COLUMN_MAP.bowlingHand];
-      const normalizedBowlingHand = normalize(rawBowlingHand);
-      const bowlingHand = BOWLING_HAND_MAP[normalizedBowlingHand] || "Right-arm Fast";
-
-      // Extract photo URL
-      let photoUrl = row[COLUMN_MAP.photoUrl]?.trim();
-      
-      // Transform Google Drive links to direct viewable format
-      // From: https://drive.google.com/file/d/FILE_ID/view
-      // To: https://lh3.googleusercontent.com/d/FILE_ID
-      if (photoUrl && photoUrl.includes("drive.google.com")) {
-        let fileId = null;
-        // Try to match /d/FILE_ID format
-        const fileIdMatch = photoUrl.match(/\/d\/([a-zA-Z0-9_-]+)/);
-        if (fileIdMatch && fileIdMatch[1]) {
-           fileId = fileIdMatch[1];
-        } else {
-           // Try to match id=FILE_ID format
-           const idParamMatch = photoUrl.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-           if (idParamMatch && idParamMatch[1]) {
-               fileId = idParamMatch[1];
-           }
-        }
-
-        if (fileId) {
-           photoUrl = `https://lh3.googleusercontent.com/d/${fileId}`;
-        } else {
-           // Fallback if regex fails but it is a drive link
-           console.warn(`⚠️  Row ${rowNum}: Could not extract ID from Drive link: ${photoUrl}`);
-           photoUrl = generatePhotoUrl(name);
-        }
-      } else if (!photoUrl) {
-        // Only generate local path if no URL provided
-        photoUrl = generatePhotoUrl(name);
-      }
-      // If it's not a drive link and not empty, we assume it's a valid URL or path already
+      const bowlingHand = parseBowlingStyle(rawBowlingHand);
 
       // Extract favorite team and clean it (remove bracketed content)
       const rawFavTeam = row[COLUMN_MAP.favTeam]?.trim() || "";
       const favTeam = cleanFavTeam(rawFavTeam);
+
+      // Map base price
+      const basePrice = 4000;
+
+      // Get manual stats override if available
+      const normalizedName = normalize(name);
+
+      // Photo URL - ALWAYS use Google Drive URL from Excel
+      const driveUrl = row[COLUMN_MAP.photoUrl]?.trim();
+      let photoUrl = '';
+      
+      if (driveUrl && driveUrl.includes("drive.google.com")) {
+        let fileId = null;
+        const fileIdMatch = driveUrl.match(/\/d\/([a-zA-Z0-9_-]+)/);
+        if (fileIdMatch && fileIdMatch[1]) {
+          fileId = fileIdMatch[1];
+        } else {
+          const idParamMatch = driveUrl.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+          if (idParamMatch && idParamMatch[1]) {
+            fileId = idParamMatch[1];
+          }
+        }
+        if (fileId) {
+          photoUrl = `https://lh3.googleusercontent.com/d/${fileId}`;
+        }
+      }
+
+      const manualStats = manualStatsMap[normalizedName] || {};
 
       // Create player object
       const player = {
@@ -213,19 +256,39 @@ function parseExcelFile(filePath) {
         battingHand,
         bowlingHand,
         favTeam,
-        basePrice: 4000, // Default base price
+        basePrice,
         stats: {
-          matches: 0,
-          runs: 0,
-          wickets: 0,
-          avg: 0,
-          sr: 0,
+          matches: manualStats.matches || 0,
+          runs: manualStats.runs || 0,
+          wickets: manualStats.wickets || 0,
+          avg: manualStats.avg || 0,
+          sr: manualStats.sr || 0,
         },
         unSold: false,
         isSold: false,
         soldTo: null,
         soldFor: 0,
+        lastYearSoldPrice: historyMap[normalizedName]?.price || 0,
+        lastYearSoldTeam: historyMap[normalizedName]?.team || '',
       };
+
+      // Debug history matching for specific users
+      if (name.toLowerCase().includes("rushabh") || name.toLowerCase().includes("chirag") || name.toLowerCase().includes("parth")) {
+        console.log(`\n🔍 Debug History Match for "${name}" (Normalized: "${normalizedName}"):`);
+        if (historyMap[normalizedName]) {
+           console.log(`   ✅ Match Found! Price: ${historyMap[normalizedName].price}`);
+        } else {
+           console.log(`   ❌ No Match Found.`);
+           // Try to find close matches in historyMap keys
+           const keys = Object.keys(historyMap);
+           const closeMatches = keys.filter(k => k.includes(normalizedName.split(" ")[0]));
+           console.log(`   ❓ Potential matches in DB: ${closeMatches.join(", ")}`);
+        }
+      }
+
+      if (Object.keys(manualStats).length > 0) {
+        console.log(`✨ Applied manual stats override for: ${name}`);
+      }
 
       players.push(player);
     } catch (error) {
@@ -240,7 +303,14 @@ function parseExcelFile(filePath) {
   }
 
   console.log(`✅ Successfully parsed ${players.length} players`);
-  return players;
+  
+  // Limit to first 72 players
+  const limitedPlayers = players.slice(0, 72);
+  if (players.length > 72) {
+    console.log(`⚠️  Limiting to first 72 players (dropped ${players.length - 72} players)`);
+  }
+  
+  return limitedPlayers;
 }
 
 /**
@@ -294,8 +364,16 @@ async function seed2026() {
   }
 
   try {
+    // Connect to database first to fetch historical data
+    console.log("\n🔌 Connecting to MongoDB...");
+    await connectToDB();
+    console.log("✅ Connected to database");
+
+    // Fetch historical data
+    const historyMap = await fetchHistoricalData();
+
     // Parse data files
-    const players = parseExcelFile(EXCEL_FILE);
+    const players = parseExcelFile(EXCEL_FILE, historyMap);
     const teams = parseTeamsJSON(TEAMS_JSON);
 
     // Adjust purse for mock mode
@@ -335,9 +413,7 @@ async function seed2026() {
     }
 
     // Connect to database
-    console.log("\n🔌 Connecting to MongoDB...");
-    await connectToDB();
-    console.log("✅ Connected to database");
+    // (Already connected above)
 
     // Clear existing data if reset flag is set
     if (isReset) {

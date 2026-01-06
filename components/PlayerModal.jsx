@@ -1,5 +1,6 @@
 'use client';
 import React from 'react';
+import { formatPoints } from '@/utils/formatPoints';
 
 export default function PlayerModal({ player, isOpen, onClose }) {
     if (!isOpen || !player) return null;
@@ -100,6 +101,30 @@ export default function PlayerModal({ player, isOpen, onClose }) {
                             <div className="font-display font-black text-2xl text-slate-800">{player.stats?.avg || 0}</div>
                         </div>
                     </div>
+
+                    {player.lastYearSoldPrice > 0 && (
+                        <div className="mb-8 p-5 bg-amber-50/50 rounded-2xl border border-amber-100/50 animate-in fade-in slide-in-from-bottom-2 duration-700">
+                            <div className="flex items-center gap-2 mb-3">
+                                <span className="material-symbols-outlined text-amber-600 text-lg">history</span>
+                                <span className="text-xs font-black text-amber-600 uppercase tracking-widest">KCC SEASON 4 (Purse: 1L)</span>
+                            </div>
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                    <div className="size-10 bg-white rounded-xl border border-amber-100 flex items-center justify-center shadow-sm">
+                                        <span className="material-symbols-outlined text-slate-400">groups</span>
+                                    </div>
+                                    <div>
+                                        <p className="text-[10px] font-bold text-slate-400 uppercase leading-none mb-1">Sold To</p>
+                                        <p className="font-black text-slate-900 text-sm uppercase tracking-tight">{player.lastYearSoldTeam}</p>
+                                    </div>
+                                </div>
+                                <div className="text-right">
+                                    <p className="text-[10px] font-bold text-slate-400 uppercase leading-none mb-1">Price</p>
+                                    <p className="font-black text-primary text-lg tracking-tighter">{formatPoints(player.lastYearSoldPrice)}</p>
+                                </div>
+                            </div>
+                        </div>
+                    )}
 
                     <div className="h-px bg-slate-100 w-full mb-8"></div>
 

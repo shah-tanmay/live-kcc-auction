@@ -136,6 +136,15 @@ export default function MobilePlayersUI({ players, refreshData }) {
                                 </div>
                             </div>
 
+                            {player.lastYearSoldPrice > 0 && (
+                                <div className="mx-1 mb-4 bg-amber-50/50 rounded-xl p-2.5 border border-amber-100/50">
+                                    <p className="text-[8px] font-black text-amber-600 uppercase tracking-widest mb-1">KCC SEASON 4 (Purse: 1L)</p>
+                                    <p className="text-[10px] font-bold text-slate-700 leading-tight">
+                                        Sold for <span className="text-primary font-black">{formatPoints(player.lastYearSoldPrice)}</span> to <span className="text-slate-900 font-black uppercase text-[9px]">{player.lastYearSoldTeam}</span>
+                                    </p>
+                                </div>
+                            )}
+
 
 
                             {player.isSold && (

@@ -168,6 +168,25 @@ const MobileAuctionUI = ({
                                     <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Base Price</span>
                                     <span className="font-display font-bold text-2xl text-gray-900">{formatPoints(currentPlayer.basePrice || 4000)}</span>
                                 </div>
+                                {currentPlayer.lastYearSoldPrice > 0 && (
+                                    <div className="mt-4 p-4 bg-amber-50 rounded-2xl border border-amber-100 shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-500">
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <span className="material-icons-round text-amber-600 text-sm">history_edu</span>
+                                            <p className="text-[10px] font-black text-amber-600 uppercase tracking-widest">Last Season Auction Info</p>
+                                        </div>
+                                        <div className="flex justify-between items-end">
+                                            <div>
+                                                <p className="text-sm font-black text-gray-900">
+                                                    Sold: <span className="text-primary">{formatPoints(currentPlayer.lastYearSoldPrice)}</span>
+                                                </p>
+                                                <p className="text-[10px] font-bold text-gray-500 uppercase mt-0.5">Team: <span className="text-gray-900">{currentPlayer.lastYearSoldTeam}</span></p>
+                                            </div>
+                                            <div className="text-right">
+                                                <span className="text-[8px] font-black bg-amber-100 text-amber-700 px-2 py-1 rounded-full uppercase tracking-tighter">1L Purse</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
 

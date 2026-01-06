@@ -86,6 +86,8 @@ export default function AdminPanel() {
           role: data.role,
           basePrice: data.basePrice,
           photoUrl: data.photoUrl,
+          lastYearSoldPrice: data.lastYearSoldPrice,
+          lastYearSoldTeam: data.lastYearSoldTeam,
         };
         setPlayer(player);
       })
@@ -194,6 +196,12 @@ export default function AdminPanel() {
                           label="Base Price"
                           value={formatPoints(player.basePrice || 4000)}
                         />
+                        {player.lastYearSoldPrice > 0 && (
+                          <DetailItem
+                            label="Last Year (Purse: 1L)"
+                            value={`${formatPoints(player.lastYearSoldPrice)} (${player.lastYearSoldTeam})`}
+                          />
+                        )}
                       </Grid>
                     </Grid>
                   </Grid>

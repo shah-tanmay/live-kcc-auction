@@ -134,6 +134,13 @@ export default function DesktopPlayersUI({ players }) {
                                                 <div>
                                                     <p className="font-black text-slate-900 text-base leading-tight mb-1">{player.name}</p>
                                                     <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">ID: {player._id.toString().slice(-6)}</p>
+                                                    {player.lastYearSoldPrice > 0 && (
+                                                        <div className="mt-1.5 flex items-center gap-1.5">
+                                                            <span className="text-[9px] font-black bg-amber-50 text-amber-600 px-1.5 py-0.5 rounded border border-amber-100 uppercase tracking-tighter">
+                                                                KCC SEASON 4: {formatPoints(player.lastYearSoldPrice)} ({player.lastYearSoldTeam})
+                                                            </span>
+                                                        </div>
+                                                    )}
                                                 </div>
                                             </div>
                                         </td>

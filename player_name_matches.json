@@ -1,0 +1,433 @@
+{
+  "summary": {
+    "exactMatches": 25,
+    "firstNameMatches": 21,
+    "fuzzyMatches": 12,
+    "totalCurrentPlayers": 63,
+    "totalHistoricalPlayers": 53
+  },
+  "exactMatches": [
+    {
+      "current": "Sangram",
+      "historical": "Sangram",
+      "matchType": "EXACT",
+      "historicalPrice": 10000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "AKSHAY JAIN",
+      "historical": "AKSHAY JAIN",
+      "matchType": "EXACT",
+      "historicalPrice": 10000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Sahil gugale",
+      "historical": "Sahil gugale",
+      "matchType": "EXACT",
+      "historicalPrice": 14000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Chirag Bharat Shah",
+      "historical": "Chirag Bharat Shah",
+      "matchType": "EXACT",
+      "historicalPrice": 45000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Anand Phatak",
+      "historical": "Anand Phatak",
+      "matchType": "EXACT",
+      "historicalPrice": 2000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Nirav Mehta",
+      "historical": "Nirav Mehta",
+      "matchType": "EXACT",
+      "historicalPrice": 9000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Nishant Gandhi",
+      "historical": "Nishant Gandhi",
+      "matchType": "EXACT",
+      "historicalPrice": 21000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Chirag oswal",
+      "historical": "Chirag oswal",
+      "matchType": "EXACT",
+      "historicalPrice": 26000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Kumar Waghresha",
+      "historical": "Kumar Waghresha",
+      "matchType": "EXACT",
+      "historicalPrice": 5000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Ankush s Upadhyay",
+      "historical": "Ankush S Upadhyay",
+      "matchType": "EXACT",
+      "historicalPrice": 12000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Yash Oswal",
+      "historical": "Yash Oswal",
+      "matchType": "EXACT",
+      "historicalPrice": 5000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Shubham Sharma",
+      "historical": "Shubham Sharma",
+      "matchType": "EXACT",
+      "historicalPrice": 6000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Ashish Brahme",
+      "historical": "Ashish Brahme",
+      "matchType": "EXACT",
+      "historicalPrice": 12000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Siddhant Oswal",
+      "historical": "Siddhant Oswal",
+      "matchType": "EXACT",
+      "historicalPrice": 11000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Kalpesh oswal",
+      "historical": "Kalpesh Oswal",
+      "matchType": "EXACT",
+      "historicalPrice": 8000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Sudhanshu Mitkar",
+      "historical": "Sudhanshu Mitkar",
+      "matchType": "EXACT",
+      "historicalPrice": 35000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "SANKET OSWAL",
+      "historical": "Sanket oswal",
+      "matchType": "EXACT",
+      "historicalPrice": 2000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Abhishek Dunakhe",
+      "historical": "Abhishek Dunakhe",
+      "matchType": "EXACT",
+      "historicalPrice": 40000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Giten kawediya",
+      "historical": "Giten Kawediya",
+      "matchType": "EXACT",
+      "historicalPrice": 2000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Akshay Oswal",
+      "historical": "Akshay Oswal",
+      "matchType": "EXACT",
+      "historicalPrice": 10000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Onkar pasalkar",
+      "historical": "Onkar Pasalkar",
+      "matchType": "EXACT",
+      "historicalPrice": 10000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Sagar Lodha",
+      "historical": "Sagar Lodha",
+      "matchType": "EXACT",
+      "historicalPrice": 23000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Ansh Solanki",
+      "historical": "Ansh Solanki",
+      "matchType": "EXACT",
+      "historicalPrice": 10000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Mahaveer Oswal",
+      "historical": "Mahaveer Oswal",
+      "matchType": "EXACT",
+      "historicalPrice": 23000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "piyush jain",
+      "historical": "Piyush Jain",
+      "matchType": "EXACT",
+      "historicalPrice": 3000,
+      "historicalTeam": "N/A"
+    }
+  ],
+  "firstNameMatches": [
+    {
+      "current": "AKSHAY JAIN",
+      "historical": "Akshay Oswal",
+      "matchType": "FIRST_NAME",
+      "historicalPrice": 10000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Akshay Ramesh Oswal",
+      "historical": "AKSHAY JAIN",
+      "matchType": "FIRST_NAME",
+      "historicalPrice": 10000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Akshay Ramesh Oswal",
+      "historical": "Akshay Oswal",
+      "matchType": "FIRST_NAME",
+      "historicalPrice": 10000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Chirag Bharat Shah",
+      "historical": "Chirag oswal",
+      "matchType": "FIRST_NAME",
+      "historicalPrice": 26000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "ARPIT PATEL",
+      "historical": "Arpit",
+      "matchType": "FIRST_NAME",
+      "historicalPrice": 6000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Parth Tanna",
+      "historical": "Parth Rawal",
+      "matchType": "FIRST_NAME",
+      "historicalPrice": 41000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Bhavin mukesh shah",
+      "historical": "Bhavin m shah",
+      "matchType": "FIRST_NAME",
+      "historicalPrice": 2000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Chirag oswal",
+      "historical": "Chirag Bharat Shah",
+      "matchType": "FIRST_NAME",
+      "historicalPrice": 45000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Siddharth",
+      "historical": "Siddharth (Devil)",
+      "matchType": "FIRST_NAME",
+      "historicalPrice": 2000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Gaurav Rajkumar Sarani",
+      "historical": "Gaurav Jog",
+      "matchType": "FIRST_NAME",
+      "historicalPrice": 8000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Kalpesh Javarilal Chhajed",
+      "historical": "Kalpesh Oswal",
+      "matchType": "FIRST_NAME",
+      "historicalPrice": 8000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Yash Oswal",
+      "historical": "Yash Shah",
+      "matchType": "FIRST_NAME",
+      "historicalPrice": 5000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Yogesh Fulchand Gandhi",
+      "historical": "Yogesh f Gandhi",
+      "matchType": "FIRST_NAME",
+      "historicalPrice": 9000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Bhavik Jitesh Oswal",
+      "historical": "Bhavik Oswal",
+      "matchType": "FIRST_NAME",
+      "historicalPrice": 2000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Ronit",
+      "historical": "Ronit Balai",
+      "matchType": "FIRST_NAME",
+      "historicalPrice": 5000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "SANKET OSWAL",
+      "historical": "Sanket Kothari",
+      "matchType": "FIRST_NAME",
+      "historicalPrice": 2000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Karan Kishore Oswal",
+      "historical": "Karan jain",
+      "matchType": "FIRST_NAME",
+      "historicalPrice": 5000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Akshay Oswal",
+      "historical": "AKSHAY JAIN",
+      "matchType": "FIRST_NAME",
+      "historicalPrice": 10000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Tarun Rajkumar Ghumnani",
+      "historical": "Tarun Ghumnani",
+      "matchType": "FIRST_NAME",
+      "historicalPrice": 6000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Parth Raval",
+      "historical": "Parth Rawal",
+      "matchType": "FIRST_NAME",
+      "historicalPrice": 41000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Karan",
+      "historical": "Karan jain",
+      "matchType": "FIRST_NAME",
+      "historicalPrice": 5000,
+      "historicalTeam": "N/A"
+    }
+  ],
+  "fuzzyMatches": [
+    {
+      "current": "Aayush Jain",
+      "historical": "Piyush Jain",
+      "matchType": "FUZZY",
+      "distance": 2,
+      "historicalPrice": 3000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Ricky jain",
+      "historical": "rickyjain",
+      "matchType": "FUZZY",
+      "distance": 1,
+      "historicalPrice": 14000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Bharat Jain",
+      "historical": "Karan jain",
+      "matchType": "FUZZY",
+      "distance": 3,
+      "historicalPrice": 5000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Jay Oswal",
+      "historical": "Yash Oswal",
+      "matchType": "FUZZY",
+      "distance": 3,
+      "historicalPrice": 5000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Yash Oswal",
+      "historical": "Yash Shah",
+      "matchType": "FUZZY",
+      "distance": 3,
+      "historicalPrice": 5000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Ronit",
+      "historical": "Arpit",
+      "matchType": "FUZZY",
+      "distance": 3,
+      "historicalPrice": 6000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Ronit",
+      "historical": "Romil",
+      "matchType": "FUZZY",
+      "distance": 2,
+      "historicalPrice": 4000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Aryan Jain",
+      "historical": "Karan jain",
+      "matchType": "FUZZY",
+      "distance": 2,
+      "historicalPrice": 5000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Aryan Jain",
+      "historical": "Rohan Jain",
+      "matchType": "FUZZY",
+      "distance": 3,
+      "historicalPrice": 6000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Parth Raval",
+      "historical": "Parth Rawal",
+      "matchType": "FUZZY",
+      "distance": 1,
+      "historicalPrice": 41000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Karan",
+      "historical": "Kalpak",
+      "matchType": "FUZZY",
+      "distance": 3,
+      "historicalPrice": 6000,
+      "historicalTeam": "N/A"
+    },
+    {
+      "current": "Ishaan Gandhi",
+      "historical": "Nishant Gandhi",
+      "matchType": "FUZZY",
+      "distance": 3,
+      "historicalPrice": 21000,
+      "historicalTeam": "N/A"
+    }
+  ]
+}
