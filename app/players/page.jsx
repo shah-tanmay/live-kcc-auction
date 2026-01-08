@@ -13,7 +13,7 @@ export default function PlayersPage() {
 
     const fetchPlayers = async () => {
         try {
-            const res = await fetch('/api/players');
+            const res = await fetch('/api/players', { cache: 'no-store' });
             const data = await res.json();
             setPlayers(data);
         } catch (error) {

@@ -1,31 +1,19 @@
-// app/api/players/unsold/route.js
-
-import { NextResponse } from 'next/server';
-import connectToDB from '@/lib/db';
+import connectToDB from "@/lib/db";
 import { getModel } from "@/lib/getModel";
 
-export async function GET(request) {
-    // 1) Ensure DB is connected
-    await connectToDB();
-    const Player = getModel('Player');
+export const dynamic = 'force-dynamic';
 
-    // 2) Find all players who haven't been sold yet
-    const remainingPlayers = await Player.find({ isSold: false })
-        .select('name role photoUrl basePrice stats') // pick any fields you need
-        .lean();
-
-    // 3) Return them
-    return NextResponse.json(
-        {
-            count: remainingPlayers.length,
-            players: remainingPlayers.map((p) => {
-                return {
-                    name: p.name,
-                    role: p.role,
-                    price: 4000,
-                };
-            }),
-        },
-        { status: 200 }
-    );
+export async function GET() {
+  await connectToDB();
+  const Player = getModel('Player');
+  
+  // Players who are not sold
+  const count = await Player.countDocuments({ 
+    isSold: false
+  });
+  
+  return new Response(JSON.stringify({ count }), {
+    status: 200,
+    headers: { "Content-Type": "application/json" },
+  });
 }

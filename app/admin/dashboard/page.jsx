@@ -20,6 +20,8 @@ export default function AdminDashboard() {
     const [actionLoading, setActionLoading] = useState(false);
     const [lastAction, setLastAction] = useState(null);
     const [isSimulating, setIsSimulating] = useState(false);
+    const [remainingPlayersCount, setRemainingPlayers] = useState(0);
+    const [isBidding, setIsBidding] = useState(false);
     const isMock = process.env.NEXT_PUBLIC_MOCK_MODE === 'true';
 
     const fetchTeams = async () => {
@@ -32,6 +34,18 @@ export default function AdminDashboard() {
         }
     };
 
+    const fetchRemainingPlayers = async () => {
+        try {
+            const res = await fetch('/api/auction/remaining');
+            if (res.ok) {
+                const data = await res.json();
+                setRemainingPlayers(data.count);
+            }
+        } catch (error) {
+            console.error("Failed to fetch remaining players:", error);
+        }
+    };
+
     // Initial Data Fetch
     useEffect(() => {
         const token = Cookies.get('adminToken');
@@ -41,7 +55,10 @@ export default function AdminDashboard() {
         }
 
         const init = async () => {
-            await fetchTeams();
+            await Promise.all([
+                fetchTeams(),
+                fetchRemainingPlayers()
+            ]);
             setLoading(false);
         };
         init();
@@ -78,6 +95,7 @@ export default function AdminDashboard() {
                     fetchTeams(); // Refetch teams to update Max Bid allowed
                 } else if (data.type === 'UNSOLD') {
                     setLastAction('UNSOLD');
+                    fetchRemainingPlayers();
                 }
             }
         });
@@ -99,11 +117,13 @@ export default function AdminDashboard() {
             if (data.message === 'All players sold') {
                 alert('Auction Finished!');
             }
+            fetchRemainingPlayers();
             setLastAction(null); // Clear action status
         } catch (error) {
             console.error(error);
         } finally {
             setActionLoading(false);
+            fetchRemainingPlayers();
         }
     };
 
@@ -134,7 +154,10 @@ export default function AdminDashboard() {
             return alert(`Bid ₹${bidValue} exceeds ${targetTeam.name}'s max allowed limit (₹${targetTeam.maxBidAllowed})`);
         }
 
+        if (isBidding) return;
+        
         try {
+            setIsBidding(true);
             const res = await fetch('/api/auction/post-bid', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -146,8 +169,11 @@ export default function AdminDashboard() {
             });
             const data = await res.json();
             if (data.error) alert(data.error);
+            fetchRemainingPlayers();
         } catch (error) {
             console.error(error);
+        } finally {
+            setIsBidding(false);
         }
     };
 
@@ -226,11 +252,24 @@ export default function AdminDashboard() {
     };
 
     const handleResetAuction = async () => {
-        if (!confirm('Are you sure you want to RESET the Mock Auction? This will clear all bids and reset purses.')) return;
+        const mode = isMock ? 'mock' : 'real';
+        const message = isMock 
+            ? 'Are you sure you want to RESET the Mock Auction? This will clear all bids and reset purses.'
+            : '⚠️ DANGER: Are you sure you want to RESET the REAL Auction? This will WIPE ALL DATA and restart from scratch.';
+
+        if (!confirm(message)) return;
+        
+        // Double confirmation for real mode
+        if (!isMock && !confirm('Type YES to confirm you really want to reset the LIVE database to initial seed.')) return;
+
         try {
             setLoading(true);
-            await fetch('/api/mock/seed', { method: 'POST' });
-            alert('Mock Auction Reset Successfully!');
+            await fetch('/api/mock/seed', { 
+                method: 'POST', 
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ mode }) 
+            });
+            alert('Auction Reset Successfully!');
             window.location.reload();
         } catch (e) {
             console.error(e);
@@ -303,20 +342,28 @@ export default function AdminDashboard() {
                             <span className="text-xs text-slate-500 font-medium tracking-wide uppercase">Admin Console • Live</span>
                         </div>
                     </div>
-                    {/* Mock Mode Reset Button */}
-                    {process.env.NEXT_PUBLIC_MOCK_MODE === 'true' && (
-                        <button 
-                            onClick={handleResetAuction}
-                            className="ml-4 px-3 py-1 bg-amber-100 text-amber-800 text-xs font-bold rounded-lg border border-amber-200 hover:bg-amber-200 transition-colors"
-                        >
-                            Reset Mock Auction
-                        </button>
-                    )}
+                    {/* Reset Button (All Modes) */}
+                    <button 
+                        onClick={handleResetAuction}
+                        className={`ml-4 px-3 py-1 text-xs font-bold rounded-lg border transition-colors ${
+                            process.env.NEXT_PUBLIC_MOCK_MODE === 'true' 
+                            ? 'bg-amber-100 text-amber-800 border-amber-200 hover:bg-amber-200'
+                            : 'bg-red-100 text-red-800 border-red-200 hover:bg-red-200'
+                        }`}
+                    >
+                        {process.env.NEXT_PUBLIC_MOCK_MODE === 'true' ? 'Reset Mock Auction' : 'Reset Real Auction'}
+                    </button>
                 </div>
                 <div className="flex flex-1 justify-end gap-6 items-center">
-                     <div className="hidden md:flex flex-col items-end border-r border-gray-200 pr-6">
-                        <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Total Teams</span>
-                        <span className="text-lg font-mono font-bold text-slate-800">{teams.length}</span>
+                    <div className="hidden md:flex items-center gap-6 border-r border-gray-200 pr-6">
+                        <div className="flex flex-col items-end">
+                            <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Remaining Players</span>
+                            <span className="text-xl font-mono font-bold text-primary">{remainingPlayersCount ?? '--'}</span>
+                        </div>
+                        <div className="flex flex-col items-end">
+                            <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Total Teams</span>
+                            <span className="text-lg font-mono font-bold text-slate-800">{teams.length}</span>
+                        </div>
                     </div>
                     <div className="flex items-center gap-3">
                          <div className="flex items-center gap-3 pl-3">
@@ -600,55 +647,88 @@ export default function AdminDashboard() {
 
                 {/* Right Sidebar - Active Bidders */}
                 {currentPlayer && (
-                    <aside className="hidden lg:flex flex-col w-80 border-l border-gray-200 bg-white shadow-xl z-20 overflow-hidden">
+                    <aside className="hidden lg:flex flex-col w-[450px] border-l border-gray-200 bg-white shadow-xl z-20 overflow-hidden">
                         <div className="p-4 border-b border-gray-200 flex justify-between items-center bg-gray-50/80">
-                            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">Active Teams</h3>
+                            <div className="flex items-center gap-2">
+                                <span className="material-symbols-outlined text-primary text-xl">account_balance_wallet</span>
+                                <h3 className="text-xs font-bold uppercase tracking-wider text-slate-800">Franchise Purses</h3>
+                            </div>
                             <span className="text-[10px] bg-white border border-gray-200 px-2.5 py-1 rounded-md text-slate-800 font-bold shadow-sm">{teams.length} Teams</span>
                         </div>
-                        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/30">
-                            {teams.map(team => {
-                                const isHighest = team.name === currentBidTeam;
-                                const theme = getTeamTheme(team.name, team.logoUrl);
-                                return (
-                                    <div key={team.id} className={`w-full text-left p-3 rounded-xl border transition-all group shadow-sm ${isHighest ? 'bg-white border-2 border-primary/20 shadow-lg shadow-blue-100' : 'bg-white hover:bg-gray-50 border-gray-200 hover:border-gray-300'}`}>
-                                        <div className="flex items-center justify-between mb-3">
-                                            <div className="flex items-center gap-3 min-w-0">
-                                                <div className={`size-10 rounded-lg flex items-center justify-center text-white font-black text-xs shadow-sm shrink-0 ${theme.bg} ${theme.color}`}>
+                        <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50/30 custom-scrollbar">
+                            <div className="grid grid-cols-1 xl:grid-cols-2 gap-3">
+                                {teams.map(team => {
+                                    const isHighest = team.name === currentBidTeam;
+                                    const theme = getTeamTheme(team.name, team.logoUrl);
+                                    return (
+                                        <div key={team.id} className={`w-full text-left p-3 rounded-2xl border transition-all group shadow-sm flex flex-col justify-between ${isHighest ? 'bg-white border-2 border-primary/40 shadow-lg shadow-blue-100 ring-2 ring-primary/5' : 'bg-white hover:bg-gray-50 border-gray-100 hover:border-gray-200'} ${team.squadCount >= 9 ? 'opacity-75' : ''}`}>
+                                            <div className="flex items-start justify-between mb-2">
+                                                <div className="flex items-center gap-2.5 min-w-0">
                                                     {theme.logo ? (
-                                                        <img src={theme.logo} alt={team.name} className="w-full h-full object-contain p-0.5" />
+                                                        <div className="size-10 rounded-xl bg-white overflow-hidden shadow-inner border border-slate-100 flex items-center justify-center p-1 shrink-0">
+                                                            <img 
+                                                                src={theme.logo} 
+                                                                alt={team.name} 
+                                                                referrerPolicy="no-referrer"
+                                                                className="w-full h-full object-contain" 
+                                                            />
+                                                        </div>
                                                     ) : (
-                                                        theme.char
+                                                        <div className={`size-10 rounded-xl ${theme.bg} ${theme.color} flex items-center justify-center font-black text-xs shadow-inner shrink-0`}>
+                                                            {theme.char}
+                                                        </div>
                                                     )}
+                                                    <div className="flex flex-col min-w-0">
+                                                        <h4 className="text-slate-900 font-bold text-xs truncate leading-tight uppercase tracking-tight">{team.name}</h4>
+                                                        <span className="text-[8px] font-bold text-slate-400 uppercase">{team.squadCount}/9 Players</span>
+                                                    </div>
                                                 </div>
-                                                <div className="min-w-0">
-                                                    <h4 className="text-slate-900 font-bold text-sm truncate">{team.name}</h4>
-                                                    <p className="text-[10px] text-slate-500 font-medium">Purse: <span className="font-mono text-slate-900">{formatPoints(team.remainingPurse)}</span></p>
+                                                {team.squadCount >= 9 && (
+                                                    <span className="bg-slate-900 text-white text-[8px] font-black px-1.5 py-0.5 rounded uppercase tracking-tighter">FULL</span>
+                                                )}
+                                            </div>
+                                            
+                                            <div className="space-y-1.5 mb-2">
+                                                <div className="flex items-center justify-between">
+                                                    <span className="text-[8px] text-slate-400 uppercase font-black">Purse</span>
+                                                    <span className="font-display font-black text-sm text-slate-900 truncate ml-1">{formatPoints(team.remainingPurse)}</span>
+                                                </div>
+                                                <div className="pt-1.5 border-t border-slate-100 flex flex-col">
+                                                    <span className="text-[8px] text-blue-500 uppercase font-black mb-0.5">Max Bid</span>
+                                                    <span className="font-display font-black text-sm text-blue-600 truncate">{formatPoints(team.maxBidAllowed)}</span>
                                                 </div>
                                             </div>
+
+                                            {isHighest ? (
+                                                <div className="text-[9px] text-primary font-black bg-blue-50 py-1.5 rounded-lg text-center border border-blue-100 uppercase tracking-tighter">
+                                                    Highest Bidder
+                                                </div>
+                                            ) : team.squadCount >= 9 ? (
+                                                <div className="text-[9px] text-slate-400 font-black bg-slate-100 py-1.5 rounded-lg text-center border border-slate-200 uppercase tracking-tighter cursor-not-allowed">
+                                                    Squad Full
+                                                </div>
+                                            ) : (
+                                                <div className="grid grid-cols-2 gap-1.5 mt-auto">
+                                                    <button 
+                                                        disabled={isBidding || actionLoading}
+                                                        onClick={() => handleBid(currentBid === 0 ? (currentPlayer.basePrice || 0) : Number(currentBid) + 1000, team.id)}
+                                                        className={`py-1.5 rounded-lg border border-slate-200 text-[8px] font-black uppercase text-slate-500 hover:bg-primary hover:text-white hover:border-primary transition-all shadow-sm ${isBidding || actionLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                                    >
+                                                        {currentBid === 0 ? 'BP' : '+1k'}
+                                                    </button>
+                                                    <button 
+                                                        disabled={isBidding || actionLoading}
+                                                        onClick={() => handleBid(currentBid === 0 ? (currentPlayer.basePrice || 0) + 2000 : Number(currentBid) + 2000, team.id)}
+                                                        className={`py-1.5 rounded-lg border border-slate-200 text-[8px] font-black uppercase text-slate-500 hover:bg-primary hover:text-white hover:border-primary transition-all shadow-sm ${isBidding || actionLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                                    >
+                                                        {currentBid === 0 ? '+2k' : '+2k'}
+                                                    </button>
+                                                </div>
+                                            )}
                                         </div>
-                                        {isHighest ? (
-                                            <div className="text-xs text-primary font-bold bg-blue-50 p-2 rounded-lg text-center border border-blue-100">
-                                                Highest Bidder
-                                            </div>
-                                        ) : (
-                                            <div className="grid grid-cols-2 gap-2">
-                                                <button 
-                                                    onClick={() => handleBid(currentBid === 0 ? (currentPlayer.basePrice || 0) : Number(currentBid) + 100, team.id)}
-                                                    className="py-2 rounded-lg border border-slate-200 text-[10px] font-black uppercase text-slate-500 hover:bg-primary hover:text-white hover:border-primary transition-all"
-                                                >
-                                                    {currentBid === 0 ? 'Start' : '+100'}
-                                                </button>
-                                                <button 
-                                                    onClick={() => handleBid(currentBid === 0 ? (currentPlayer.basePrice || 0) + 500 : Number(currentBid) + 500, team.id)}
-                                                    className="py-2 rounded-lg border border-slate-200 text-[10px] font-black uppercase text-slate-500 hover:bg-primary hover:text-white hover:border-primary transition-all"
-                                                >
-                                                    {currentBid === 0 ? 'Start+500' : '+500'}
-                                                </button>
-                                            </div>
-                                        )}
-                                    </div>
-                                );
-                            })}
+                                    );
+                                })}
+                            </div>
                         </div>
                     </aside>
                 )}

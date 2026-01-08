@@ -2,9 +2,6 @@
 
 import connectDB from "@/lib/db";
 import { getModel } from "@/lib/getModel";
-import Bid from "@/lib/models/bid"; // We might need a MockBid, let's stick to simple Bid for now or create one.
-// To avoid complexity, let's assume we can reuse Bid or I should quickly make a MockBid. 
-// Actually, easier to make MockBid now.
 
 import { NextResponse } from "next/server";
 import { db } from "@/lib/firebase";
@@ -51,9 +48,18 @@ export async function POST(req) {
     return NextResponse.json({ error: "Team not found" }, { status: 404 });
   }
 
-  // ✅ Enforce budget cutoff logic
+  // ✅ Enforce budget cutoff logic & squad limit
   const playersOwned = team.squad.length;
-  const remainingSlots = 8 - playersOwned - 1; // -1 for current player
+  
+  if (playersOwned >= 9) {
+    return NextResponse.json(
+      { error: `Team ${team.name} already has maximum of 9 players. Cannot place more bids.` },
+      { status: 400 }
+    );
+  }
+
+  const totalSlots = 9;
+  const remainingSlots = totalSlots - playersOwned - 1; // -1 for current player
   const minReserve = remainingSlots > 0 ? remainingSlots * 4000 : 0;
   const maxBidAllowed = team.purseLeft - minReserve;
 

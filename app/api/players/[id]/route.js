@@ -1,8 +1,9 @@
 import connectDB from "@/lib/db";
-import Player from "@/lib/models/player";
+import { getModel } from "@/lib/getModel";
 
 export async function GET(request, context) {
   await connectDB();
+  const Player = getModel('Player');
 
   const { id } = context.params;
 

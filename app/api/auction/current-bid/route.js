@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
-import Player from "@/lib/models/player";
-import Team from "@/lib/models/team";
+import { getModel } from "@/lib/getModel";
 import connectToDB from "@/lib/db";
 import currentauction from "@/lib/models/currentauction";
 
 export async function GET() {
   await connectToDB();
+  const Player = getModel('Player');
+  const Team = getModel('Team');
 
   try {
     const current = await currentauction.findOne();

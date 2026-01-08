@@ -6,12 +6,20 @@ import { ref, remove } from 'firebase/database';
 
 const execAsync = promisify(exec);
 
-export async function POST() {
+export async function POST(req) {
     try {
-        console.log('Running seed2026.js script in mock mode...');
+        const body = await req.json().catch(() => ({}));
+        const mode = body.mode || 'mock';
+        const isReal = mode === 'real';
+
+        console.log(`Running seed2026.js script in ${mode.toUpperCase()} mode...`);
         
-        // Run the seed2026 script with mock and reset flags
-        const { stdout, stderr } = await execAsync('node scripts/seed2026.js --mock --reset', {
+        // Run the seed2026 script based on mode
+        const command = isReal 
+            ? 'node scripts/seed2026.js --reset'
+            : 'node scripts/seed2026.js --mock --reset';
+
+        const { stdout, stderr } = await execAsync(command, {
             cwd: process.cwd()
         });
         

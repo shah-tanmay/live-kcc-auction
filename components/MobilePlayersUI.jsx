@@ -8,6 +8,7 @@ export default function MobilePlayersUI({ players, refreshData }) {
     const router = useRouter();
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedRole, setSelectedRole] = useState('All');
+    const [selectedStatus, setSelectedStatus] = useState('All');
     const [selectedPlayer, setSelectedPlayer] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
 
@@ -21,8 +22,14 @@ export default function MobilePlayersUI({ players, refreshData }) {
     const filteredPlayers = players.filter(p => {
         const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesRole = selectedRole === 'All' || p.role === selectedRole;
-        return matchesSearch && matchesRole;
+        const matchesStatus = selectedStatus === 'All' || 
+            (selectedStatus === 'Sold' && p.isSold) || 
+            (selectedStatus === 'Unsold' && p.unSold) || 
+            (selectedStatus === 'Available' && !p.isSold && !p.unSold);
+        return matchesSearch && matchesRole && matchesStatus;
     });
+
+    const statuses = ['All', 'Available', 'Sold', 'Unsold'];
 
     const getRoleGradient = (role) => {
         switch (role) {
@@ -49,20 +56,36 @@ export default function MobilePlayersUI({ players, refreshData }) {
                 </div>
             </header>
 
-            {/* Filters */}
-            <div className="bg-white px-4 py-3 border-b border-gray-100 overflow-x-auto hide-scrollbar sticky top-[65px] z-40">
-                <div className="flex gap-2 min-w-max">
+            <div className="bg-white px-4 py-3 border-b border-gray-100 flex flex-col gap-3 sticky top-[65px] z-40 shadow-sm">
+                <div className="flex gap-2 overflow-x-auto hide-scrollbar pb-1">
+                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest self-center mr-1">Role:</span>
                     {roles.map(role => (
                         <button
                             key={role}
                             onClick={() => setSelectedRole(role)}
-                            className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all border ${
+                            className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase whitespace-nowrap transition-all border ${
                                 selectedRole === role 
-                                ? 'bg-primary border-primary text-white shadow-md shadow-orange-500/20 scale-105' 
+                                ? 'bg-primary border-primary text-white shadow-md shadow-orange-500/20' 
                                 : 'bg-gray-50 border-gray-100 text-gray-500'
                             }`}
                         >
                             {role}
+                        </button>
+                    ))}
+                </div>
+                <div className="flex gap-2 overflow-x-auto hide-scrollbar pb-1">
+                    <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest self-center mr-1">Status:</span>
+                    {statuses.map(status => (
+                        <button
+                            key={status}
+                            onClick={() => setSelectedStatus(status)}
+                            className={`px-4 py-2 rounded-xl text-[10px] font-black uppercase whitespace-nowrap transition-all border ${
+                                selectedStatus === status 
+                                ? 'bg-slate-900 border-slate-900 text-white shadow-md shadow-slate-900/20' 
+                                : 'bg-gray-50 border-gray-100 text-gray-500'
+                            }`}
+                        >
+                            {status}
                         </button>
                     ))}
                 </div>
@@ -106,7 +129,7 @@ export default function MobilePlayersUI({ players, refreshData }) {
                             )}
                             
                             {player.photoUrl ? (
-                                <img src={player.photoUrl} alt={player.name} className="h-40 object-contain drop-shadow-2xl filter contrast-125 transition-transform group-hover:scale-110 duration-500" />
+                                <img src={player.photoUrl} alt={player.name} referrerPolicy="no-referrer" className="h-40 object-contain drop-shadow-2xl filter contrast-125 transition-transform group-hover:scale-110 duration-500" />
                             ) : (
                                 <div className="h-40 w-full flex items-center justify-center relative">
                                     <div className="size-24 rounded-full bg-white/30 backdrop-blur-md flex items-center justify-center border-2 border-white/50 shadow-xl">

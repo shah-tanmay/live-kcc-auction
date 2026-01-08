@@ -36,6 +36,7 @@ export default function PlayerModal({ player, isOpen, onClose }) {
                     {player.photoUrl ? (
                         <img 
                             alt={player.name}
+                            referrerPolicy="no-referrer"
                             className="h-auto max-h-full w-auto max-w-full object-contain object-bottom relative z-10 drop-shadow-2xl" 
                             src={player.photoUrl}
                         />
@@ -83,22 +84,30 @@ export default function PlayerModal({ player, isOpen, onClose }) {
                     </div>
 
                     {/* Stats Grid */}
-                    <div className="grid grid-cols-4 gap-4 mb-8">
+                    <div className="grid grid-cols-3 gap-4 mb-8">
                         <div className="bg-slate-50 rounded-xl p-3 border border-slate-100 text-center hover:bg-slate-100 transition-colors">
                             <div className="text-[0.65rem] uppercase font-bold text-slate-400 mb-1">Matches</div>
                             <div className="font-display font-black text-2xl text-slate-800">{player.stats?.matches || 0}</div>
+                        </div>
+                        <div className="bg-slate-50 rounded-xl p-3 border border-slate-100 text-center hover:bg-slate-100 transition-colors">
+                            <div className="text-[0.65rem] uppercase font-bold text-slate-400 mb-1">Innings</div>
+                            <div className="font-display font-black text-2xl text-slate-800">{player.stats?.innings || 0}</div>
                         </div>
                         <div className="bg-slate-50 rounded-xl p-3 border border-slate-100 text-center hover:bg-slate-100 transition-colors">
                             <div className="text-[0.65rem] uppercase font-bold text-slate-400 mb-1">Runs</div>
                             <div className="font-display font-black text-2xl text-slate-800">{player.stats?.runs || 0}</div>
                         </div>
                         <div className="bg-slate-50 rounded-xl p-3 border border-slate-100 text-center hover:bg-slate-100 transition-colors">
+                            <div className="text-[0.65rem] uppercase font-bold text-slate-400 mb-1">Strike Rate</div>
+                            <div className="font-display font-black text-2xl text-slate-800">{player.stats?.sr || 0}</div>
+                        </div>
+                        <div className="bg-slate-50 rounded-xl p-3 border border-slate-100 text-center hover:bg-slate-100 transition-colors">
                             <div className="text-[0.65rem] uppercase font-bold text-slate-400 mb-1">Wickets</div>
                             <div className="font-display font-black text-2xl text-slate-800">{player.stats?.wickets || 0}</div>
                         </div>
                         <div className="bg-slate-50 rounded-xl p-3 border border-slate-100 text-center hover:bg-slate-100 transition-colors">
-                            <div className="text-[0.65rem] uppercase font-bold text-slate-400 mb-1">Average</div>
-                            <div className="font-display font-black text-2xl text-slate-800">{player.stats?.avg || 0}</div>
+                            <div className="text-[0.65rem] uppercase font-bold text-slate-400 mb-1">Economy</div>
+                            <div className="font-display font-black text-2xl text-slate-800">{player.stats?.economy || 0}</div>
                         </div>
                     </div>
 
@@ -135,13 +144,9 @@ export default function PlayerModal({ player, isOpen, onClose }) {
                                 <span className="material-symbols-outlined text-primary text-xl">sports_cricket</span> Batting Style
                             </h3>
                             <div className="space-y-3">
-                                <div className="flex justify-between items-center text-sm border-b border-slate-50 pb-2">
+                                <div className="flex justify-between items-center text-sm">
                                     <span className="text-slate-500 font-medium">Hand</span>
                                     <span className="font-bold text-slate-800">{player.battingHand || 'Right'}</span>
-                                </div>
-                                <div className="flex justify-between items-center text-sm">
-                                    <span className="text-slate-500 font-medium">Strike Rate</span>
-                                    <span className="font-bold text-slate-800">{player.stats?.sr || 0}</span>
                                 </div>
                             </div>
                         </div>
@@ -150,7 +155,7 @@ export default function PlayerModal({ player, isOpen, onClose }) {
                                 <span className="material-symbols-outlined text-primary text-xl">sports_baseball</span> Bowling Style
                             </h3>
                             <div className="space-y-3">
-                                <div className="flex justify-between items-center text-sm border-b border-slate-50 pb-2">
+                                <div className="flex justify-between items-center text-sm">
                                     <span className="text-slate-500 font-medium">Style</span>
                                     <span className="font-bold text-slate-800">{player.bowlingHand || 'Right-arm Fast'}</span>
                                 </div>

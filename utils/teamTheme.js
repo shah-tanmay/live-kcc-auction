@@ -30,6 +30,8 @@ export const getTeamTheme = (teamName, logoUrl = null) => {
     if (name.includes('oswal')) return { logo: '/logos/oswalavengers.jpeg', color: 'text-slate-800', bg: 'bg-white', char: 'OA' };
     if (name.includes('samrat')) return { logo: '/logos/samrattitans.jpeg', color: 'text-slate-800', bg: 'bg-white', char: 'ST' };
     if (name.includes('aj') || name.includes('turf')) return { logo: '/logos/ajturf.jpg', color: 'text-slate-800', bg: 'bg-white', char: 'AT' };
+    if (name.includes('boundary')) return { logo: '/logos/boundarysmashers.jpeg', color: 'text-slate-800', bg: 'bg-white', char: 'BS' };
+    if (name.includes('dunakhe')) return { logo: '/logos/dunakhedynamos.jpeg', color: 'text-slate-800', bg: 'bg-white', char: 'DD' };
 
     // Previous matches kept for compatibility or reference
     if (name.includes('champion')) return { logo: '/logos/champion.jpg', color: 'text-slate-800', bg: 'bg-white', char: 'CH' };

@@ -28,6 +28,7 @@ export async function GET() {
         }
 
         if (!randomPlayer) {
+            await set(ref(db, 'auction/isFinished'), true);
             return new Response(JSON.stringify({ message: 'All players sold' }), {
                 status: 200,
                 headers: { 'Content-Type': 'application/json' },

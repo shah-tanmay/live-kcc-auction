@@ -27,8 +27,12 @@ export async function GET() {
         {
             count: topPlayers.length,
             players: topPlayers.map((p) => ({
-                player: p.name,
-                team: p.soldTo.name,
+                player: {
+                    name: p.name,
+                    role: p.role,
+                    photoUrl: p.photoUrl
+                },
+                teamName: p.soldTo?.name || 'N/A',
                 amount: p.soldFor,
             })),
         },

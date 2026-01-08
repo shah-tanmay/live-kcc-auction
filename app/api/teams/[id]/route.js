@@ -1,11 +1,12 @@
 // app/api/teams/[id]/route.js
 
 import connectToDB from "@/lib/db";
-import Team from "@/lib/models/team";
-import Player from "@/lib/models/player"; // Important for .populate()
+import { getModel } from "@/lib/getModel";
 
 export async function GET(req, { params }) {
-  const id = params.id; // This should be fine as params is already resolved
+  const Player = getModel('Player');
+  const Team = getModel('Team');
+  const id = params.id; 
 
   try {
     await connectToDB();

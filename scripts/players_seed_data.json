@@ -1,22 +1,554 @@
 [
     {
-        "name": "Chirag shah",
+        "name": "Abhay Ramesh Bhonde",
         "stats": {
-            "matches": 15,
-            "runs": 450,
-            "wickets": 12,
-            "avg": 34.5,
-            "sr": 142.8
+            "matches": 6,
+            "runs": 54,
+            "wickets": 1,
+            "avg": 13.50,
+            "sr": 96.43,
+            "innings": 6,
+            "economy": 9.33
         }
     },
     {
-        "name": "Tanmay",
+        "name": "Tanmay Shah",
+        "stats": {
+            "matches": 14,
+            "runs": 90,
+            "wickets": 8,
+            "avg": 9,
+            "sr": 126.76,
+            "innings": 11,
+            "economy": 7.21
+        }
+    },
+    {
+        "name": "Ankush s Upadhyay",
+        "stats": {
+            "matches": 68,
+            "runs": 131,
+            "wickets": 32,
+            "avg": 5.24,
+            "sr": 65.17,
+            "innings": 41,
+            "economy": 7.03
+        }
+    },
+    {
+        "name": "Bhavik Jitesh Oswal",
+        "stats": {
+            "matches": 47,
+            "runs": 120,
+            "wickets": 17,
+            "avg": 7.06,
+            "sr": 106.19,
+            "innings": 32,
+            "economy": 5.79
+        }
+    },
+    {
+        "name": "Sahil gugale",
+        "stats": {
+            "matches": 41,
+            "innings": 35,
+            "runs": 335,
+            "sr": 97.67,
+            "avg": 12.41,
+            "wickets": 13,
+            "economy": 9.31
+        }
+    },
+    {
+        "name": "Shubham Sharma",
+        "stats": {
+            "matches": 8,
+            "innings": 5,
+            "runs": 21,
+            "sr": 91.30,
+            "avg": 5.25,
+            "wickets": 2,
+            "economy": 8.60
+        }
+    },
+    {
+        "name": "Sudhanshu Mitkar",
         "stats": {
             "matches": 20,
-            "runs": 600,
+            "innings": 16,
+            "runs": 239,
+            "sr": 144.85,
+            "avg": 19.92,
+            "wickets": 7,
+            "economy": 7.32
+        }
+    },
+    {
+        "name": "Vinay Garg",
+        "stats": {
+            "matches": 106,
+            "innings": 83,
+            "runs": 610,
+            "sr": 131.18,
+            "avg": 10,
+            "wickets": 58,
+            "economy": 7.22
+        }
+    },
+    {
+        "name": "Ashish Brahme",
+        "stats": {
+            "matches": 70,
+            "innings": 50,
+            "runs": 541,
+            "sr": 134.24,
+            "avg": 18.03,
+            "wickets": 38,
+            "economy": 6.41
+        }
+    },
+    {
+        "name": "Chirag Bharat Shah",
+        "stats": {
+            "matches": 35,
+            "innings": 24,
+            "runs": 126,
+            "sr": 85.14,
+            "avg": 5.73,
             "wickets": 15,
-            "avg": 40.0,
-            "sr": 155.2
+            "economy": 8.86
+        }
+    },
+    {
+        "name": "Giten kawediya",
+        "stats": {
+            "matches": 42,
+            "innings": 36,
+            "runs": 222,
+            "sr": 112.20,
+            "avg": 8.22,
+            "wickets": 15,
+            "economy": 6.62
+        }
+    },
+    {
+        "name": "Nishant Gandhi",
+        "stats": {
+            "matches": 65,
+            "innings": 58,
+            "runs": 494,
+            "sr": 121.08,
+            "avg": 12.05,
+            "wickets": 22,
+            "economy": 6.97
+        }
+    },
+    {
+        "name": "Nishant Gandhi",
+        "stats": {
+            "matches": 136,
+            "innings": 109,
+            "runs": 832,
+            "sr": 122.17,
+            "avg": 8.85,
+            "wickets": 52,
+            "economy": 8.48
+        }
+    },
+    {
+        "name": "Sagar Lodha",
+        "stats": {
+            "matches": 56,
+            "innings": 46,
+            "runs": 648,
+            "sr": 144.97,
+            "avg": 18.51,
+            "wickets": 30,
+            "economy": 5.30
+        }
+    },
+    {
+        "name": "Anand Phatak",
+        "stats": {
+            "matches": 13,
+            "innings": 10,
+            "runs": 126,
+            "sr": 144.83,
+            "avg": 18,
+            "wickets": 3,
+            "economy": 10.74
+        }
+    },
+    {
+        "name": "Ansh Solanki",
+        "stats": {
+            "matches": 48,
+            "innings": 29,
+            "runs": 187,
+            "sr": 99.47,
+            "avg": 9.84,
+            "wickets": 22,
+            "economy": 8.42
+        }
+    },
+    {
+        "name": "Ricky jain",
+        "stats": {
+            "matches": 159,
+            "innings": 90,
+            "runs": 673,
+            "sr": 101.97,
+            "avg": 10.68,
+            "wickets": 80,
+            "economy": 8.82
+        }
+    },
+    {
+        "name": "Parth Raval",
+        "stats": {
+            "matches": 20,
+            "innings": 17,
+            "runs": 244,
+            "sr": 146.11,
+            "avg": 17.43,
+            "wickets": 6,
+            "economy": 8.46
+        }
+    },
+    {
+        "name": "Ronit",
+        "stats": {
+            "matches": 15,
+            "innings": 9,
+            "runs": 9,
+            "sr": 31.03,
+            "avg": 1.50,
+            "wickets": 8,
+            "economy": 9.23
+        }
+    },
+    {
+        "name": "Shailesh chhajed",
+        "stats": {
+            "matches": 69,
+            "innings": 35,
+            "runs": 79,
+            "sr": 52.67,
+            "avg": 3.59,
+            "wickets": 42,
+            "economy": 9.38
+        }
+    },
+    {
+        "name": "Piyush Jain",
+        "stats": {
+            "matches": 136,
+            "innings": 109,
+            "runs": 832,
+            "sr": 122.17,
+            "avg": 8.85,
+            "wickets": 52,
+            "economy": 8.48
+        }
+    },
+    {
+        "name": "Siddhant Oswal",
+        "stats": {
+            "matches": 26,
+            "innings": 19,
+            "runs": 185,
+            "sr": 145.67,
+            "avg": 14.23,
+            "wickets": 5,
+            "economy": 8.62
+        }
+    },
+    {
+        "name": "Yogesh Fulchand Gandhi",
+        "stats": {
+            "matches": 43,
+            "innings": 30,
+            "runs": 93,
+            "sr": 81.58,
+            "avg": 4.89,
+            "wickets": 25,
+            "economy": 8.66
+        }
+    },
+    {
+        "name": "AKSHAY JAIN",
+        "stats": {
+            "matches": 9,
+            "innings": 8,
+            "runs": 93,
+            "sr": 120.78,
+            "avg": 23.25,
+            "wickets": 8,
+            "economy": 11.67
+        }
+    },
+    {
+        "name": "ARPIT PATEL",
+        "stats": {
+            "matches": 7,
+            "innings": 2,
+            "runs": 1,
+            "sr": 25,
+            "avg": 1,
+            "wickets": 5,
+            "economy": 9.35
+        }
+    },
+    {
+        "name": "Chirag oswal",
+        "stats": {
+            "matches": 99,
+            "innings": 68,
+            "runs": 425,
+            "sr": 111.55,
+            "avg": 10.37,
+            "wickets": 45,
+            "economy": 8.11
+        }
+    },
+    {
+        "name": "Karan",
+        "stats": {
+            "matches": 16,
+            "innings": 10,
+            "runs": 64,
+            "sr": 120.75,
+            "avg": 12.80,
+            "wickets": 5,
+            "economy": 11.30
+        }
+    },
+    {
+        "name": "Nirav Mehta",
+        "stats": {
+            "matches": 84,
+            "innings": 57,
+            "runs": 382,
+            "sr": 107.61,
+            "avg": 8.68,
+            "wickets": 27,
+            "economy": 8.13
+        }
+    },
+    {
+        "name": "Sandeep jain",
+        "stats": {
+            "matches": 45,
+            "innings": 36,
+            "runs": 491,
+            "sr": 129.55,
+            "avg": 17.54,
+            "wickets": 17,
+            "economy": 10.27
+        }
+    },
+    {
+        "name": "Sangram",
+        "stats": {
+            "matches": 134,
+            "innings": 128,
+            "runs": 1269,
+            "sr": 129.49,
+            "avg": 13.36,
+            "wickets": 68,
+            "economy": 7.07
+        }
+    },
+    {
+        "name": "Viren Palesa",
+        "stats": {
+            "matches": 187,
+            "innings": 132,
+            "runs": 1967,
+            "sr": 179.14,
+            "avg": 21.15,
+            "wickets": 72,
+            "economy": 11.29
+        }
+    },
+    {
+        "name": "Akshay Oswal",
+        "stats": {
+            "matches": 40,
+            "innings": 31,
+            "runs": 155,
+            "sr": 101.31,
+            "avg": 6.20,
+            "wickets": 14,
+            "economy": 6.89
+        }
+    },
+    {
+        "name": "Mahaveer Oswal",
+        "stats": {
+            "matches": 26,
+            "innings": 22,
+            "runs": 232,
+            "sr": 121.47,
+            "avg": 12.21,
+            "wickets": 18,
+            "economy": 7.08
+        }
+    },
+    {
+        "name": "Tarun Rajkumar Ghumnani",
+        "stats": {
+            "matches": 5,
+            "innings": 2,
+            "runs": 0,
+            "sr": 0,
+            "avg": 0,
+            "wickets": 5,
+            "economy": 10.17
+        }
+    },
+    {
+        "name": "Abhishek Dunakhe",
+        "stats": {
+            "matches": 23,
+            "innings": 22,
+            "runs": 441,
+            "sr": 135.69,
+            "avg": 31.50,
+            "wickets": 13,
+            "economy": 6.66
+        }
+    },
+    {
+        "name": "Bhavin mukesh shah",
+        "stats": {
+            "matches": 33,
+            "innings": 21,
+            "runs": 57,
+            "sr": 66.28,
+            "avg": 3.35,
+            "wickets": 13,
+            "economy": 8.31
+        }
+    },
+    {
+        "name": "Kalpesh oswal",
+        "stats": {
+            "matches": 278,
+            "innings": 250,
+            "runs": 3173,
+            "sr": 138.50,
+            "avg": 16.03,
+            "wickets": 145,
+            "economy": 7.93
+        }
+    },
+    {
+        "name": "Kumar Waghresha",
+        "stats": {
+            "matches": 70,
+            "innings": 46,
+            "runs": 229,
+            "sr": 86.74,
+            "avg": 7.63,
+            "wickets": 36,
+            "economy": 7.40
+        }
+    },
+    {
+        "name": "Onkar pasalkar",
+        "stats": {
+            "matches": 11,
+            "stats": 8,
+            "runs": 11,
+            "sr": 37.93,
+            "avg": 1.57,
+            "wickets": 3,
+            "economy": 8.64
+        }
+    },
+    {
+        "name": "SANKET OSWAL",
+        "stats": {
+            "matches": 58,
+            "innings": 38,
+            "runs": 184,
+            "sr": 67.15,
+            "avg": 6.13,
+            "wickets": 20,
+            "economy": 6.25
+        }
+    },
+    {
+        "name": "Siddharth",
+        "stats": {
+            "matches": 29,
+            "innings": 21,
+            "runs": 70,
+            "sr": 79.55,
+            "avg": 3.89,
+            "wickets": 13,
+            "economy": 7.69
+        }
+    },
+    {
+        "name": "Pranay Chhajed",
+        "stats": {
+            "matches": 32,
+            "innings": 25,
+            "runs": 148,
+            "sr": 98.67,
+            "avg": 7.69,
+            "wickets": 17,
+            "economy": 9.42
+        }
+    },
+    {
+        "name": "Rushabh Kothari",
+        "stats": {
+            "matches": 80,
+            "innings": 66,
+            "runs": 337,
+            "sr": 78.74,
+            "avg": 6.48,
+            "wickets": 32,
+            "economy": 8.91
+        }
+    },
+    {
+        "name": "Rushubh bora",
+        "stats": {
+            "matches": 27,
+            "innings": 15,
+            "runs": 25,
+            "sr": 60,
+            "avg": 3.46,
+            "wickets": 14,
+            "economy": 7.83
+        }
+    },
+    {
+        "name": "Yash Oswal",
+        "stats": {
+            "matches": 290,
+            "innings": 261,
+            "runs": 4375,
+            "sr": 168.46,
+            "avg": 20.16,
+            "wickets": 136,
+            "economy": 6.56
+        }
+    },
+    {
+        "name": "Samrat Darda",
+        "stats": {
+            "matches": 16,
+            "innings": 13,
+            "runs": 61,
+            "sr": 98.39,
+            "avg": 6.78,
+            "wickets": 3,
+            "economy": 11.19
         }
     }
 ]

@@ -1,115 +1,73 @@
 'use client';
 import React from 'react';
 
-const AuctionFinishedScreen = ({ topBids, formatPoints, getTeamTheme, isLoadingTopBids }) => (
-    <div className="flex-1 flex flex-col items-center p-0 text-center animate-in fade-in zoom-in duration-700 min-h-screen bg-[#F3F4F6] font-display overflow-y-auto pb-20 relative">
-        {/* Top Gradient Bar */}
-        <div className="w-full h-1 bg-gradient-to-r from-slate-900 via-primary to-slate-900 sticky top-0 z-50"></div>
-
-        {/* Background Elements */}
-        <div className="absolute top-0 left-0 w-full h-48 bg-gradient-to-b from-orange-50 to-transparent opacity-50 pointer-events-none"></div>
+const AuctionFinishedScreen = ({ topBids, formatPoints }) => (
+    <div className="flex-1 flex flex-col items-center p-4 text-center animate-in fade-in zoom-in duration-700 min-h-screen bg-white dark:bg-slate-900 font-display overflow-y-auto pb-20">
+        <div className="absolute top-0 left-0 w-full h-48 bg-gradient-to-b from-orange-50 to-transparent dark:from-slate-800 dark:to-transparent opacity-50 pointer-events-none"></div>
         
-        <div className="relative z-10 flex flex-col items-center pt-12 px-4 text-center w-full">
-            {/* Status Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-green-500/30 bg-green-50 text-green-700 font-semibold text-sm mb-8 shadow-sm tracking-widest uppercase">
+        <div className="relative z-10 flex flex-col items-center pt-12 px-2 text-center w-full">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-green-500/30 bg-green-50 dark:bg-green-900/20 text-green-700 dark:text-green-400 font-semibold text-[10px] mb-6 shadow-sm tracking-widest uppercase">
                 <span className="material-icons-outlined text-sm">check_circle</span>
-                AUCTION CONCLUDED
+                Auction Concluded
             </div>
             
-            {/* Title Section */}
-            <h1 className="text-4xl font-extrabold tracking-tight mb-1 text-slate-900 leading-none">
-                KCC <span className="text-primary">Season 5</span>
+            <h1 className="text-4xl font-extrabold tracking-tight mb-1 text-slate-900 dark:text-white uppercase leading-none">
+                KCC <span className="text-primary italic">Season 5</span>
             </h1>
-            <h2 className="text-sm font-bold text-slate-400 mb-6 font-display">
+            <h2 className="text-sm font-bold text-slate-400 dark:text-slate-400 mb-6 uppercase tracking-widest">
                 Official Player Auction
             </h2>
             
-            {/* Description */}
-            <p className="max-w-xs mx-auto text-slate-500 text-sm mb-8 font-medium leading-relaxed font-body">
+            <p className="max-w-xs mx-auto text-slate-500 dark:text-slate-300 text-sm mb-8 font-medium leading-relaxed">
                 The hammer has fallen, and the squads are locked! Explore the record-breaking bids below.
             </p>
             
-            {/* Action Buttons */}
-            <div className="flex flex-col gap-3 w-full max-w-xs mb-10 px-4">
-                <button 
-                    onClick={() => window.location.href = '/squad'}
-                    className="group relative inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-slate-900 border border-slate-200 rounded-xl font-bold text-lg shadow-sm hover:shadow-md hover:border-primary/50 transition-all duration-300 transform active:scale-95"
-                >
-                    <span>View Squads</span>
-                    <span className="material-icons-outlined group-hover:translate-x-1 transition-transform text-primary text-2xl">groups</span>
-                </button>
+            <div className="flex flex-col gap-3 w-full max-w-xs mb-10">
+                <a href="/squad" className="group relative inline-flex items-center justify-center gap-3 px-6 py-4 bg-slate-900 text-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-2xl font-black shadow-lg active:scale-95 transition-all duration-300">
+                    <span className="uppercase tracking-widest text-xs">View Squads</span>
+                    <span className="material-icons-outlined text-primary text-xl">groups</span>
+                </a>
+                <a href="/players" className="group relative inline-flex items-center justify-center gap-3 px-6 py-4 bg-white text-slate-800 border-2 border-slate-100 rounded-2xl font-black shadow-lg active:scale-95 transition-all duration-300">
+                    <span className="uppercase tracking-widest text-xs">Player Pool</span>
+                    <span className="material-icons-outlined text-orange-500 text-xl">analytics</span>
+                </a>
             </div>
 
-            {/* Divider */}
-            <div className="w-full max-w-[150px] h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent mb-10"></div>
+            <div className="w-full max-w-[150px] h-px bg-gradient-to-r from-transparent via-slate-200 dark:via-slate-700 to-transparent mb-10"></div>
 
-            {/* Top Acquisitions Section */}
             <div className="w-full">
                 <div className="flex items-center justify-center gap-2 mb-6">
                     <span className="material-icons-outlined text-primary text-2xl">emoji_events</span>
-                    <h3 className="text-xl font-black text-slate-800 uppercase tracking-tight">Top Acquisitions</h3>
+                    <h3 className="text-xl font-black text-slate-800 dark:text-slate-100 uppercase tracking-tight">Top Acquisitions</h3>
                 </div>
                 
                 <div className="flex flex-col gap-4 w-full max-w-md mx-auto px-2">
-                    {isLoadingTopBids ? (
-                        Array(5).fill(0).map((_, i) => (
-                            <div key={i} className={`bg-white rounded-2xl p-1 border ${i === 0 ? 'border-2 border-primary/20 shadow-lg' : 'border border-slate-100 shadow-md'} animate-pulse`}>
-                                <div className="bg-slate-50 rounded-xl p-4 flex items-center gap-4">
-                                    <div className="size-14 rounded-full bg-slate-200 shrink-0"></div>
-                                    <div className="flex-1 space-y-2">
-                                        <div className="h-4 w-3/4 bg-slate-200 rounded"></div>
-                                        <div className="h-3 w-1/2 bg-slate-200 rounded"></div>
+                    {topBids.slice(0, 5).map((bid, i) => (
+                        <div key={i} className={`bg-white dark:bg-slate-800 rounded-2xl p-0.5 border ${i === 0 ? 'border-primary/20 shadow-lg' : 'border-slate-100 shadow-md'} relative overflow-hidden flex items-center`}>
+                            <div className={`absolute top-0 right-0 ${i === 0 ? 'bg-primary' : 'bg-slate-200'} text-white text-[8px] font-black px-2 py-0.5 rounded-bl-lg z-20`}>#{i + 1}</div>
+                            <div className="flex-1 bg-slate-50/50 dark:bg-slate-900/50 rounded-xl p-3 flex items-center gap-4">
+                                <div className="size-14 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden border-2 border-white shadow-sm shrink-0">
+                                    <img src={bid.player?.photoUrl || '/player_placeholder.png'} alt={bid.player?.name} className="w-full h-full object-cover" />
+                                </div>
+                                <div className="flex-1 text-left">
+                                    <h4 className="font-black text-slate-900 dark:text-white text-sm leading-tight uppercase">{bid.player?.name}</h4>
+                                    <p className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">{bid.player?.role}</p>
+                                    <div className="flex items-center gap-1.5 mt-1.5 flex-wrap">
+                                        <div className={`size-1.5 rounded-full bg-primary shrink-0`}></div> 
+                                        <span className="text-[8px] font-black text-slate-600 dark:text-slate-300 uppercase truncate max-w-[100px]">{bid.teamName}</span>
                                     </div>
-                                    <div className="h-6 w-16 bg-slate-200 rounded text-right"></div>
+                                </div>
+                                <div className="text-right whitespace-nowrap">
+                                    <span className={`text-lg font-black ${i === 0 ? 'text-primary' : 'text-slate-800 dark:text-white'}`}>{formatPoints(bid.amount)}</span>
                                 </div>
                             </div>
-                        ))
-                    ) : (
-                        topBids.slice(0, 5).map((bid, i) => {
-                            const theme = getTeamTheme(bid.teamName);
-                            const isFirst = i === 0;
-                            return (
-                                <div key={i} className={isFirst 
-                                    ? "bg-white rounded-2xl p-1 border-2 border-primary/20 shadow-lg relative overflow-hidden group hover:shadow-glow transition-all duration-300 transform active:scale-95"
-                                    : "bg-white rounded-2xl p-1 border border-slate-100 shadow-md relative overflow-hidden group hover:shadow-lg transition-all duration-300 transform active:scale-95"
-                                }>
-                                    <div className={isFirst 
-                                        ? "absolute top-0 right-0 bg-primary text-white text-[8px] font-black px-3 py-1 rounded-bl-lg z-20"
-                                        : "absolute top-0 right-0 bg-slate-200 text-slate-600 text-[8px] font-black px-3 py-1 rounded-bl-lg z-20"
-                                    }>#{i + 1}</div>
-                                    <div className="flex-1 bg-slate-50/50 rounded-xl p-3 flex items-center gap-4">
-                                        <div className={isFirst ? "size-16 rounded-full bg-slate-100 overflow-hidden border-2 border-white shadow-sm shrink-0 relative" : "size-14 rounded-full bg-slate-100 overflow-hidden border-2 border-white shadow-sm shrink-0 relative"}>
-                                            <img src={bid.player?.photoUrl || '/player_placeholder.png'} alt={bid.player?.name} className="size-full object-cover" />
-                                        </div>
-                                        <div className="flex-1 text-left min-w-0">
-                                            <h4 className="font-bold text-slate-900 text-sm leading-tight uppercase truncate">{bid.player?.name}</h4>
-                                            <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest">{bid.player?.role}</p>
-                                            <div className="flex items-center gap-1.5 mt-1.5">
-                                                {theme.logo ? (
-                                                    <div className="size-4 rounded-full overflow-hidden shrink-0 border border-slate-100">
-                                                        <img src={theme.logo} alt="" className="size-full object-contain" />
-                                                    </div>
-                                                ) : (
-                                                    <div className={`size-2 rounded-full ${theme.bg} shrink-0`}></div> 
-                                                )}
-                                                <span className="text-[8px] font-bold text-slate-600 uppercase truncate tracking-tight">{bid.teamName}</span>
-                                            </div>
-                                        </div>
-                                        <div className="text-right shrink-0">
-                                            <span className={isFirst ? "text-lg font-black text-primary" : "text-base font-black text-slate-800"}>{formatPoints(bid.amount)}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            );
-                        })
-                    )}
+                        </div>
+                    ))}
                 </div>
             </div>
         </div>
     </div>
 );
-
-
 
 
 const MobileAuctionUI = ({
@@ -126,7 +84,6 @@ const MobileAuctionUI = ({
     getTeamTheme,
     router,
     isLoading,
-    isLoadingTopBids,
     isFinished
 }) => {
     const currentTeamTheme = getTeamTheme(playerSold ? playerSold.teamName : currentBidTeamName);
@@ -134,7 +91,7 @@ const MobileAuctionUI = ({
     return (
         <div className="bg-[#F3F4F6] text-gray-800 font-body min-h-screen pb-20 overflow-y-auto">
             {isFinished ? (
-                <AuctionFinishedScreen topBids={topBids} formatPoints={formatPoints} getTeamTheme={getTeamTheme} isLoadingTopBids={isLoadingTopBids} />
+                <AuctionFinishedScreen />
             ) : (
                 <>
                     {/* Header */}
@@ -399,8 +356,8 @@ const MobileAuctionUI = ({
                                         {topBids.length > 0 ? topBids.slice(0, 5).map((bid, i) => (
                                             <div key={i} className="flex items-center justify-between p-2 rounded-lg hover:bg-gray-50 transition-colors">
                                                 <div className="flex flex-col">
-                                                    <span className="text-sm font-semibold text-gray-700">{typeof bid.player === 'object' ? bid.player.name : bid.player}</span>
-                                                    <span className="text-[10px] text-gray-400 uppercase font-bold">{bid.teamName || bid.team || '-'}</span>
+                                                    <span className="text-sm font-semibold text-gray-700">{bid.player}</span>
+                                                    <span className="text-[10px] text-gray-400 uppercase font-bold">{bid.team || '-'}</span>
                                                 </div>
                                                 <span className="font-display font-bold text-lg text-gray-900">{formatPoints(bid.amount)}</span>
                                             </div>

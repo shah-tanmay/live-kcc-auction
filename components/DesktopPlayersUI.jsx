@@ -8,6 +8,7 @@ export default function DesktopPlayersUI({ players }) {
     const router = useRouter();
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedRole, setSelectedRole] = useState('All');
+    const [selectedStatus, setSelectedStatus] = useState('All');
     const [selectedPlayer, setSelectedPlayer] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
 
@@ -19,10 +20,15 @@ export default function DesktopPlayersUI({ players }) {
     const filteredPlayers = players.filter(p => {
         const matchesSearch = p.name.toLowerCase().includes(searchTerm.toLowerCase());
         const matchesRole = selectedRole === 'All' || p.role === selectedRole;
-        return matchesSearch && matchesRole;
+        const matchesStatus = selectedStatus === 'All' || 
+            (selectedStatus === 'Sold' && p.isSold) || 
+            (selectedStatus === 'Unsold' && p.unSold) || 
+            (selectedStatus === 'Available' && !p.isSold && !p.unSold);
+        return matchesSearch && matchesRole && matchesStatus;
     });
 
     const roles = ['All', 'Batsmen', 'Bowler', 'AllRounder', 'Wicketkeeper'];
+    const statuses = ['All', 'Available', 'Sold', 'Unsold'];
 
     return (
         <div className="min-h-screen bg-slate-50 font-display flex flex-col">
@@ -83,20 +89,43 @@ export default function DesktopPlayersUI({ players }) {
                 {/* Filter & Table Area */}
                 <div className="flex-1 bg-white rounded-[40px] border border-slate-200 shadow-xl overflow-hidden flex flex-col">
                     <div className="flex-none p-8 border-b border-slate-100 flex items-center justify-between">
-                        <div className="flex gap-2">
-                            {roles.map(role => (
-                                <button
-                                    key={role}
-                                    onClick={() => setSelectedRole(role)}
-                                    className={`px-5 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all border ${
-                                        selectedRole === role 
-                                        ? 'bg-primary border-primary text-white shadow-lg shadow-primary/20' 
-                                        : 'bg-white border-slate-200 text-slate-500 hover:border-slate-300'
-                                    }`}
-                                >
-                                    {role}
-                                </button>
-                            ))}
+                        <div className="flex flex-col gap-4">
+                            <div className="flex items-center gap-4">
+                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest min-w-16">Role:</span>
+                                <div className="flex gap-2">
+                                    {roles.map(role => (
+                                        <button
+                                            key={role}
+                                            onClick={() => setSelectedRole(role)}
+                                            className={`px-5 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all border ${
+                                                selectedRole === role 
+                                                ? 'bg-primary border-primary text-white shadow-lg shadow-primary/20' 
+                                                : 'bg-white border-slate-200 text-slate-500 hover:border-slate-300'
+                                            }`}
+                                        >
+                                            {role}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-4">
+                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest min-w-16">Status:</span>
+                                <div className="flex gap-2">
+                                    {statuses.map(status => (
+                                        <button
+                                            key={status}
+                                            onClick={() => setSelectedStatus(status)}
+                                            className={`px-5 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all border ${
+                                                selectedStatus === status 
+                                                ? 'bg-slate-900 border-slate-900 text-white shadow-lg shadow-slate-900/20' 
+                                                : 'bg-white border-slate-200 text-slate-500 hover:border-slate-300'
+                                            }`}
+                                        >
+                                            {status}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
                         <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Showing {filteredPlayers.length} Players</p>
                     </div>
@@ -124,7 +153,7 @@ export default function DesktopPlayersUI({ players }) {
                                             <div className="flex items-center gap-4">
                                                 <div className="size-14 rounded-2xl bg-slate-100 overflow-hidden border border-slate-200 group-hover:scale-105 transition-transform duration-300 flex items-center justify-center">
                                                     {player.photoUrl ? (
-                                                        <img src={player.photoUrl} alt={player.name} className="w-full h-full object-cover" />
+                                                        <img src={player.photoUrl} alt={player.name} referrerPolicy="no-referrer" className="w-full h-full object-cover" />
                                                     ) : (
                                                         <div className="w-full h-full bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center text-slate-500 font-black text-xl shadow-inner uppercase tracking-tighter">
                                                             {player.name[0]}

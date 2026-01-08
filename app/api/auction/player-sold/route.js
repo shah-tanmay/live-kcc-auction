@@ -1,9 +1,10 @@
 import connectDB from "@/lib/db";
-import Player from "@/lib/models/player";
+import { getModel } from "@/lib/getModel";
 import { getAdminFromRequest } from "@/lib/auth";
 
 export async function POST(req) {
   await connectDB();
+  const Player = getModel('Player');
 
   const admin = await getAdminFromRequest(req);
   if (!admin) {

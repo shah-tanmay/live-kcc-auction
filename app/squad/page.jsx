@@ -5,6 +5,7 @@ import { db } from '@/lib/firebase';
 import { ref, onValue } from 'firebase/database';
 import MobileSquadUI from '@/components/MobileSquadUI';
 import LoadingScreen from '@/components/LoadingScreen';
+import PlayerModal from '@/components/PlayerModal';
 import { getTeamTheme } from '@/utils/teamTheme';
 
 // Helper to format currency/points
@@ -17,14 +18,17 @@ const formatPoints = (points) => {
     return `₹${val}`;
 };
 
-
-
 export default function SquadPage() {
     const router = useRouter();
     const [teams, setTeams] = useState([]);
     const [selectedTeam, setSelectedTeam] = useState(null);
     const [loading, setLoading] = useState(true);
     const [isMobile, setIsMobile] = useState(false);
+
+    // Filter & Modal State
+    const [searchQuery, setSearchQuery] = useState('');
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedPlayer, setSelectedPlayerForModal] = useState(null);
 
     // Responsive Handlers
     useEffect(() => {
@@ -39,18 +43,22 @@ export default function SquadPage() {
 
     const getTeams = async () => {
         try {
-            const res = await fetch('/api/teams');
+            const res = await fetch('/api/teams', { cache: 'no-store' });
             if (res.ok) {
                 const data = await res.json();
                 setTeams(data);
-                // If no team selected yet, select the first one
-                if (!selectedTeam && data.length > 0) {
-                     setSelectedTeam(data[0]);
-                } else if (selectedTeam) {
-                    // Update currently selected team data to keep distinct sync
-                    const updated = data.find(t => t._id === selectedTeam._id);
-                    if (updated) setSelectedTeam(updated);
-                }
+                
+                // Update selected team using functional state to avoid stale closure
+                setSelectedTeam(prevSelected => {
+                    if (!prevSelected && data.length > 0) {
+                        return data[0];
+                    }
+                    if (prevSelected) {
+                        const updated = data.find(t => t._id === prevSelected._id);
+                        return updated || prevSelected;
+                    }
+                    return prevSelected;
+                });
             }
         } catch (error) {
             console.error("Failed to fetch teams:", error);
@@ -77,9 +85,18 @@ export default function SquadPage() {
     // Derived state for the selected team
     const currentTeamTheme = selectedTeam ? getTeamTheme(selectedTeam.name, selectedTeam.logoUrl) : {};
     
-    // Calculate stats
-    const items = selectedTeam?.squad || [];
-    const playersCount = items.length;
+    // Calculate stats & filter players
+    const allItems = selectedTeam?.squad || [];
+    const filteredItems = allItems.filter(p => 
+        p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        (p.role && p.role.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
+    const playersCount = allItems.length;
+
+    const handlePlayerClick = (player) => {
+        setSelectedPlayerForModal(player);
+        setIsModalOpen(true);
+    };
     
     // Use DB provided value for remaining purse
     // Fallback to 0 if undefined to avoid NaN
@@ -88,7 +105,7 @@ export default function SquadPage() {
     // Check if team has a 'totalPurse' field, otherwise estimate or calculate
     // Since we don't know the initial Total Purse from just 'purseLeft', 
     // we can calculate 'Spent' by summing player sold prices.
-    const amountSpent = items.reduce((acc, player) => acc + (player.soldFor || 0), 0);
+    const amountSpent = allItems.reduce((acc, player) => acc + (player.soldFor || 0), 0);
 
     if (loading) {
         return <LoadingScreen message="Fetching Squad Rosters..." />;
@@ -102,6 +119,12 @@ export default function SquadPage() {
                 setSelectedTeam={setSelectedTeam}
                 formatPoints={formatPoints}
                 getTeamTheme={getTeamTheme}
+                searchQuery={searchQuery}
+                setSearchQuery={setSearchQuery}
+                onPlayerClick={handlePlayerClick}
+                isModalOpen={isModalOpen}
+                selectedPlayer={selectedPlayer}
+                setIsModalOpen={setIsModalOpen}
             />
         );
     }
@@ -250,6 +273,8 @@ export default function SquadPage() {
                                             <input 
                                                 type="text" 
                                                 placeholder="Search player..." 
+                                                value={searchQuery}
+                                                onChange={(e) => setSearchQuery(e.target.value)}
                                                 className="pl-4 pr-10 py-2 bg-white border border-slate-200 rounded-lg text-sm focus:ring-primary focus:border-primary w-64 transition-all"
                                             />
                                         </div>
@@ -257,8 +282,12 @@ export default function SquadPage() {
                                 </div>
 
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                                    {items.length > 0 ? items.map((player, idx) => (
-                                        <div key={idx} className="bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group">
+                                    {filteredItems.length > 0 ? filteredItems.map((player, idx) => (
+                                        <div 
+                                            key={idx} 
+                                            onClick={() => handlePlayerClick(player)}
+                                            className="bg-white rounded-2xl overflow-hidden border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group cursor-pointer"
+                                        >
                                             <div className="relative aspect-[4/3] bg-gradient-to-b from-slate-200 to-slate-100 overflow-hidden">
                                                 {/* Placeholder or Logic for Captain if data exists */}
                                                  {/* <div className="absolute top-3 left-3 z-10">
@@ -268,7 +297,12 @@ export default function SquadPage() {
                                                 </div> */}
                                                 
                                                 {player.photoUrl ? (
-                                                    <div className="w-full h-full bg-cover bg-center transition-transform duration-700 group-hover:scale-110" style={{ backgroundImage: `url(${player.photoUrl})` }}></div>
+                                                    <img 
+                                                        src={player.photoUrl} 
+                                                        alt={player.name} 
+                                                        referrerPolicy="no-referrer"
+                                                        className="w-full h-full object-contain object-bottom transition-transform duration-700 group-hover:scale-110" 
+                                                    />
                                                 ) : (
                                                     <div className="w-full h-full flex items-center justify-center">
                                                         <span className="material-symbols-outlined text-6xl text-slate-300">person</span>
@@ -300,11 +334,18 @@ export default function SquadPage() {
                                     )) : (
                                         <div className="col-span-full py-12 text-center text-slate-400 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
                                             <span className="material-symbols-outlined text-4xl mb-2">sports_cricket</span>
-                                            <p>No players in this squad yet.</p>
+                                            <p>{searchQuery ? 'No matching players found.' : 'No players in this squad yet.'}</p>
                                         </div>
                                     )}
                                 </div>
                             </div>
+
+                            {/* Player Statistics Modal */}
+                            <PlayerModal 
+                                player={selectedPlayer}
+                                isOpen={isModalOpen}
+                                onClose={() => setIsModalOpen(false)}
+                            />
                         </>
                     ) : (
                         <div className="flex-1 flex flex-col items-center justify-center text-slate-400">

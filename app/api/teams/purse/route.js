@@ -1,8 +1,8 @@
-// app/api/teams/purse/route.js
-
 import { NextResponse } from "next/server";
 import connectDB from "@/lib/db";
 import { getModel } from "@/lib/getModel";
+
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
   // 1) ensure DB is connected
@@ -24,6 +24,7 @@ export async function GET() {
     return {
       ...team,
       maxBidAllowed,
+      squadCount: owned
     };
   });
 
@@ -35,7 +36,8 @@ export async function GET() {
       remainingPurse: t.purseLeft,
       maxBidAllowed: t.maxBidAllowed,
       owner: t.owner,
-      logoUrl: t.logoUrl
+      logoUrl: t.logoUrl,
+      squadCount: t.squadCount
     })),
     { status: 200 }
   );

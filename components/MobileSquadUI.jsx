@@ -1,20 +1,33 @@
 'use client';
 import React from 'react';
 import { useRouter } from 'next/navigation';
+import LoadingScreen from '@/components/LoadingScreen';
+import PlayerModal from '@/components/PlayerModal';
 
 const MobileSquadUI = ({ 
     teams, 
     selectedTeam, 
     setSelectedTeam, 
     formatPoints, 
-    getTeamTheme 
+    getTeamTheme,
+    searchQuery,
+    setSearchQuery,
+    onPlayerClick,
+    isModalOpen,
+    selectedPlayer,
+    setIsModalOpen
 }) => {
     const router = useRouter();
 
     if (!selectedTeam) return null;
 
-    const currentTeamTheme = getTeamTheme(selectedTeam.name);
-    const amountSpent = (selectedTeam.squad || []).reduce((acc, player) => acc + (player.soldFor || 0), 0);
+    const currentTeamTheme = getTeamTheme(selectedTeam.name, selectedTeam.logoUrl);
+    const allPlayers = selectedTeam.squad || [];
+    const filteredPlayers = allPlayers.filter(p => 
+        p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+        (p.role && p.role.toLowerCase().includes(searchQuery.toLowerCase()))
+    );
+    const amountSpent = allPlayers.reduce((acc, player) => acc + (player.soldFor || 0), 0);
     const remainingPurse = selectedTeam.purseLeft ?? 0;
 
     return (
@@ -30,6 +43,16 @@ const MobileSquadUI = ({
                         <span className="text-[10px] font-bold text-primary uppercase tracking-widest">Squad Center</span>
                     </div>
                 </div>
+                <div className="relative">
+                    <input 
+                        type="text" 
+                        placeholder="Search..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-24 focus:w-40 transition-all duration-300 pl-8 pr-2 py-1.5 bg-slate-100 border-none rounded-full text-xs"
+                    />
+                    <span className="material-icons-round absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
+                </div>
             </header>
 
             {/* Team Selector (Horizontal Scroll) */}
@@ -37,7 +60,7 @@ const MobileSquadUI = ({
                 <div className="flex gap-4 min-w-max">
                     {teams.map((team) => {
                         const isSelected = selectedTeam?._id === team._id;
-                        const theme = getTeamTheme(team.name);
+                        const theme = getTeamTheme(team.name, team.logoUrl);
                         return (
                             <button
                                 key={team._id}
@@ -98,17 +121,22 @@ const MobileSquadUI = ({
 
                 {/* Squad List Section Title */}
                 <div className="flex items-center justify-between px-1">
-                    <h2 className="font-bold text-slate-900">Squad List ({selectedTeam.squad?.length || 0})</h2>
+                    <h2 className="font-bold text-slate-900">Squad List ({allPlayers.length})</h2>
                 </div>
 
                 {/* Squad Grid */}
                 <div className="grid grid-cols-2 gap-4">
-                    {(selectedTeam.squad || []).map((player, idx) => (
-                        <div key={idx} className="bg-white rounded-xl overflow-hidden border border-gray-100 shadow-sm">
+                    {filteredPlayers.map((player, idx) => (
+                        <div 
+                            key={idx} 
+                            onClick={() => onPlayerClick(player)}
+                            className="bg-white rounded-xl overflow-hidden border border-gray-100 shadow-sm active:scale-95 transition-transform"
+                        >
                             <div className="h-32 bg-gradient-to-b from-slate-200 to-slate-50 relative flex items-end justify-center">
                                 {player.photoUrl ? (
                                     <img 
                                         alt={player.name} 
+                                        referrerPolicy="no-referrer"
                                         className="h-28 object-contain drop-shadow-md" 
                                         src={player.photoUrl} 
                                     />
@@ -130,13 +158,20 @@ const MobileSquadUI = ({
                             </div>
                         </div>
                     ))}
-                    {(!selectedTeam.squad || selectedTeam.squad.length === 0) && (
+                    {(filteredPlayers.length === 0) && (
                         <div className="col-span-2 py-10 text-center text-slate-400">
-                            No players in this squad yet.
+                            {searchQuery ? 'No matching players found.' : 'No players in this squad yet.'}
                         </div>
                     )}
                 </div>
             </main>
+
+            {/* Player Statistics Modal */}
+            <PlayerModal 
+                player={selectedPlayer}
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+            />
 
             {/* Bottom Navigation */}
             <nav className="fixed bottom-0 w-full bg-white/95 backdrop-blur-xl border-t border-slate-200 px-6 py-2 flex justify-around items-center z-50 pb-7 shadow-[0_-10px_20px_rgba(0,0,0,0.05)]">

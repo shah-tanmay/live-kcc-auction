@@ -242,8 +242,14 @@ function parseExcelFile(filePath, historyMap = {}) {
           }
         }
         if (fileId) {
+          // Reverting to lh3 format as requested by user
           photoUrl = `https://lh3.googleusercontent.com/d/${fileId}`;
+          console.log(`📷 Photo: ${name} -> ${driveUrl} -> ID: ${fileId} -> ${photoUrl}`);
+        } else {
+             console.warn(`⚠️  No File ID found for ${name}: ${driveUrl}`);
         }
+      } else if (driveUrl) {
+          console.warn(`⚠️  Invalid Drive URL for ${name}: ${driveUrl}`);
       }
 
       const manualStats = manualStatsMap[normalizedName] || {};
@@ -263,6 +269,8 @@ function parseExcelFile(filePath, historyMap = {}) {
           wickets: manualStats.wickets || 0,
           avg: manualStats.avg || 0,
           sr: manualStats.sr || 0,
+          innings: manualStats.innings || 0,
+          economy: manualStats.economy || 0,
         },
         unSold: false,
         isSold: false,
@@ -377,17 +385,16 @@ async function seed2026() {
     const teams = parseTeamsJSON(TEAMS_JSON);
 
     // Adjust purse for mock mode
-    if (isMockMode) {
-      teams.forEach(team => {
-        team.purseLeft = 200000; // Mock mode default
-      });
-    }
+    // Adjust purse for all modes (Real & Mock)
+    teams.forEach(team => {
+      team.purseLeft = 200000;
+    });
 
     // Display summary
     console.log("\n📊 Data Summary:");
     console.log(`   Teams: ${teams.length}`);
     console.log(`   Players: ${players.length}`);
-    console.log(`   Team Purse: ${isMockMode ? "₹2,00,000" : "₹1,00,000"}`);
+    console.log(`   Team Purse: ₹2,00,000`);
     
     if (isVerbose) {
       console.log("\n📋 Teams:");

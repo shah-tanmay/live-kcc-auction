@@ -9,6 +9,131 @@ import MobileAuctionUI from '@/components/MobileAuctionUI';
 import LoadingScreen from '@/components/LoadingScreen';
 import { getTeamTheme } from '@/utils/teamTheme';
 
+const AuctionFinishedScreen = ({ topBids, formatPoints, getTeamTheme, isLoadingTopBids }) => (
+    <div className="min-h-screen bg-[#F3F4F6] font-display text-slate-800 flex flex-col transition-colors duration-300">
+        {/* Top Gradient Nav Bar - From HTML */}
+        <nav className="w-full h-1 bg-gradient-to-r from-slate-900 via-primary to-slate-900 shrink-0"></nav>
+        
+        <main className="flex-grow flex items-center justify-center p-4 md:p-8">
+            <div className="w-full max-w-7xl bg-white rounded-3xl shadow-soft relative overflow-hidden transition-all duration-300 border border-slate-100">
+                {/* Background Elements - Literal Port */}
+                <div className="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-orange-50 to-transparent opacity-50 pointer-events-none"></div>
+                <div className="absolute -top-20 -right-20 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
+                <div className="absolute top-40 -left-20 w-72 h-72 bg-blue-500/5 rounded-full blur-3xl pointer-events-none"></div>
+                
+                <div className="relative z-10 flex flex-col items-center py-16 px-6 md:px-12 text-center w-full">
+                    {/* Status Badge */}
+                    <div className="inline-flex items-center gap-2 px-5 py-2 rounded-full border border-green-500/30 bg-green-50 text-green-700 font-semibold text-sm mb-8 shadow-sm tracking-widest uppercase">
+                        <span className="material-icons-outlined text-base">check_circle</span>
+                        AUCTION CONCLUDED
+                    </div>
+                    
+                    {/* Title Section */}
+                    <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-2 text-slate-900">
+                        KCC <span className="text-primary">Season 5</span>
+                    </h1>
+                    <h2 className="text-2xl md:text-3xl font-bold text-slate-500 mb-6 font-display">
+                        Official Player Auction
+                    </h2>
+                    
+                    {/* Description */}
+                    <p className="max-w-2xl mx-auto text-slate-600 text-lg mb-10 leading-relaxed font-body">
+                        The hammer has fallen, and the squads are locked! Franchises have battled it out to secure the league's finest talent. Explore the record-breaking bids and final team compositions below.
+                    </p>
+                    
+                    {/* Action Buttons */}
+                    <button 
+                        onClick={() => window.location.href = '/squad'}
+                        className="group relative inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-slate-900 border border-slate-200 rounded-xl font-bold text-lg shadow-sm hover:shadow-md hover:border-primary/50 transition-all duration-300 transform hover:-translate-y-1"
+                    >
+                        <span>View Squads</span>
+                        <span className="material-icons-outlined group-hover:translate-x-1 transition-transform text-primary text-2xl">groups</span>
+                    </button>
+
+                    {/* Divider */}
+                    <div className="w-full max-w-xs h-px bg-gradient-to-r from-transparent via-slate-200 to-transparent my-16"></div>
+
+                    {/* Top Acquisitions Section */}
+                    <div className="w-full">
+                        <div className="flex items-center justify-center gap-3 mb-10">
+                            <span className="material-icons-outlined text-primary text-3xl">emoji_events</span>
+                            <h3 className="text-3xl font-bold text-slate-800 uppercase tracking-tight">Top 5 Acquisitions</h3>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 text-left max-w-6xl mx-auto">
+                            {isLoadingTopBids ? (
+                                Array(5).fill(0).map((_, i) => (
+                                    <div key={i} className={`bg-white rounded-2xl p-1 border ${i === 0 ? 'border-2 border-primary/20 shadow-lg' : 'border border-slate-100 shadow-md'} animate-pulse`}>
+                                        <div className="h-full bg-slate-50 rounded-xl p-5 flex flex-col items-center">
+                                            <div className={`${i === 0 ? 'w-20 h-20' : 'w-16 h-16'} rounded-full bg-slate-200 mb-4`}></div>
+                                            <div className="h-4 w-3/4 bg-slate-200 rounded mb-2"></div>
+                                            <div className="h-3 w-1/2 bg-slate-200 rounded mb-4"></div>
+                                            <div className="h-px w-full bg-slate-200 my-2"></div>
+                                            <div className="h-8 w-1/2 bg-slate-200 rounded mt-2"></div>
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (
+                                topBids.slice(0, 5).map((bid, i) => {
+                                    const theme = getTeamTheme(bid.teamName);
+                                    const isFirst = i === 0;
+                                    return (
+                                        <div key={i} className={isFirst 
+                                            ? "bg-white rounded-2xl p-1 border-2 border-primary/20 shadow-lg relative overflow-hidden group hover:shadow-glow transition-all duration-300 transform hover:-translate-y-2"
+                                            : "bg-white rounded-2xl p-1 border border-slate-100 shadow-md relative overflow-hidden group hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
+                                        }>
+                                            <div className={isFirst 
+                                                ? "absolute top-0 right-0 bg-primary text-white text-xs font-bold px-3 py-1 rounded-bl-lg z-20"
+                                                : "absolute top-0 right-0 bg-slate-200 text-slate-600 text-xs font-bold px-3 py-1 rounded-bl-lg z-20"
+                                            }>#{i + 1}</div>
+                                            <div className="h-full bg-slate-50/50 rounded-xl p-5 flex flex-col items-center">
+                                                <div className={isFirst 
+                                                    ? "w-20 h-20 rounded-full bg-slate-100 mb-4 overflow-hidden border-2 border-white shadow-sm relative shrink-0"
+                                                    : "w-16 h-16 rounded-full bg-slate-100 mb-4 overflow-hidden border-2 border-white shadow-sm shrink-0"
+                                                }>
+                                                    <img src={bid.player?.photoUrl || '/player_placeholder.png'} alt={bid.player?.name} className="w-full h-full object-cover" />
+                                                    {isFirst && <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>}
+                                                </div>
+                                                <h4 className="font-bold text-lg text-slate-900 mb-1 text-center leading-tight uppercase tracking-tight">{bid.player?.name}</h4>
+                                                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">{bid.player?.role}</p>
+                                                <div className="w-full border-t border-slate-200 my-2"></div>
+                                                <div className="flex flex-col items-center gap-2 w-full mt-2">
+                                                    <span className={isFirst ? "text-2xl font-black text-primary" : "text-xl font-black text-slate-800"}>{formatPoints(bid.amount)}</span>
+                                                    <div className="flex items-center gap-2 bg-white border border-slate-100 rounded-full px-3 py-1 shadow-sm">
+                                                        {theme.logo ? (
+                                                            <div className="w-4 h-4 rounded-full overflow-hidden shrink-0 border border-slate-50">
+                                                                <img src={theme.logo} alt="" className="w-full h-full object-contain" />
+                                                            </div>
+                                                        ) : (
+                                                            <div className={`w-3.5 h-3.5 rounded-full ${theme.bg}`}></div> 
+                                                        )}
+                                                        <span className="text-[10px] font-black text-slate-600 uppercase tracking-tight whitespace-nowrap">{bid.teamName}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    );
+                                })
+                            )}
+                        </div>
+                    </div>
+                </div>
+                {/* Bottom Gradient Fade */}
+                <div className="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-white to-transparent pointer-events-none"></div>
+            </div>
+        </main>
+        
+        <footer className="py-6 text-center text-slate-400 text-sm shrink-0">
+            <p>© KCC Season 5. All rights reserved.</p>
+        </footer>
+    </div>
+);
+
+
+
+
+
+
 export default function AuctionUI() {
     const [currentBid, setCurrentBid] = useState('No Bids Yet');
     const [currentBidTeamName, setCurrentBidTeamName] = useState('No Team Yet');
@@ -21,6 +146,8 @@ export default function AuctionUI() {
     const [unsoldPlayers, setUnsoldPlayers] = useState([]);
     const [remainingPlayersCount, setRemainingPlayers] = useState();
     const [isLoading, setIsLoading] = useState(true);
+    const [isLoadingTopBids, setIsLoadingTopBids] = useState(false);
+    const [isFinished, setIsFinished] = useState(false);
     
     // Simulation Mode State
     const [isMobile, setIsMobile] = useState(false);
@@ -53,6 +180,7 @@ export default function AuctionUI() {
 
     const getTopBids = async () => {
         try {
+            setIsLoadingTopBids(true);
             const res = await fetch('/api/players/sold/top');
             if (res.ok) {
                 const data = await res.json();
@@ -60,6 +188,8 @@ export default function AuctionUI() {
             }
         } catch (error) {
             console.error("Failed to fetch top bids:", error);
+        } finally {
+            setIsLoadingTopBids(false);
         }
     };
 
@@ -102,6 +232,11 @@ export default function AuctionUI() {
              }
 
              setIsLoading(false);
+
+             // Finish Listener
+             onValue(ref(db, 'auction/isFinished'), (snapshot) => {
+                if (snapshot.exists()) setIsFinished(snapshot.val());
+             });
         };
         init();
 
@@ -183,6 +318,19 @@ export default function AuctionUI() {
 
     const currentTeamTheme = getTeamTheme(playerSold ? playerSold.teamName : currentBidTeamName);
 
+    if (isFinished) {
+        return (
+            <div className="min-h-screen bg-[#F3F4F6] selection:bg-primary selection:text-white overflow-x-hidden">
+                 <AuctionFinishedScreen 
+                    topBids={topBids} 
+                    formatPoints={formatPoints} 
+                    getTeamTheme={getTeamTheme} 
+                    isLoadingTopBids={isLoadingTopBids} 
+                />
+            </div>
+        );
+    }
+
     if (isMobile) {
         return (
             <>
@@ -200,6 +348,7 @@ export default function AuctionUI() {
                     getTeamTheme={getTeamTheme}
                     router={router}
                     isLoading={isLoading}
+                    isFinished={isFinished}
                 />
                 
             </>
@@ -266,34 +415,55 @@ export default function AuctionUI() {
                     <>
                         {/* Team Purses Sidebar */}
                         <aside className="hidden lg:flex lg:col-span-3 bg-white/80 backdrop-blur-md rounded-2xl border border-slate-200 shadow-sm flex-col overflow-hidden h-full z-10">
-                            <div className="p-4 border-b border-slate-100 bg-slate-50/80 sticky top-0">
+                            <div className="p-4 border-b border-slate-100 bg-slate-50/80 sticky top-0 flex justify-between items-center">
                                 <h2 className="font-display font-bold text-slate-800 flex items-center gap-2 text-sm uppercase tracking-wide">
-                                    <span className="material-symbols-outlined text-primary">account_balance_wallet</span>
+                                    <span className="material-symbols-outlined text-primary text-xl">account_balance_wallet</span>
                                     Team Purses
                                 </h2>
+                                <span className="text-[10px] font-black text-slate-400 uppercase bg-white px-2 py-0.5 rounded border border-slate-100">{purseData.length} Teams</span>
                             </div>
-                            <div className="flex-1 overflow-y-auto p-3 space-y-2.5 custom-scrollbar">
-                                {purseData.map((team, idx) => {
-                                    const theme = getTeamTheme(team.name, team.logoUrl);
-                                    return (
-                                        <div key={idx} className="flex items-center justify-between p-3 rounded-xl bg-white border border-slate-100 shadow-sm hover:border-primary/20 transition-colors group">
-                                            <div className="flex items-center gap-3 overflow-hidden">
-                                                {theme.logo ? (
-                                                    <div className="size-9 rounded-lg bg-white overflow-hidden shadow-inner border border-slate-100 flex items-center justify-center p-0.5 shrink-0">
-                                                        <img src={theme.logo} alt={team.name} className="w-full h-full object-contain" />
+                            <div className="flex-1 overflow-y-auto p-3 custom-scrollbar">
+                                <div className="grid grid-cols-1 xl:grid-cols-2 gap-2.5">
+                                    {purseData.map((team, idx) => {
+                                        const theme = getTeamTheme(team.name, team.logoUrl);
+                                        return (
+                                            <div key={idx} className="flex flex-col p-3 rounded-xl bg-white border border-slate-100 shadow-sm hover:border-primary/20 transition-all group hover:shadow-md h-full justify-between">
+                                                <div className="flex items-center gap-2.5 mb-2 overflow-hidden">
+                                                    {theme.logo ? (
+                                                        <div className="size-10 rounded-xl bg-white overflow-hidden shadow-inner border border-slate-100 flex items-center justify-center p-1 shrink-0">
+                                                            <img 
+                                                                src={theme.logo} 
+                                                                alt={team.name} 
+                                                                referrerPolicy="no-referrer"
+                                                                className="w-full h-full object-contain" 
+                                                            />
+                                                        </div>
+                                                    ) : (
+                                                        <div className={`size-10 rounded-xl ${theme.bg} ${theme.color} flex items-center justify-center font-black text-xs shadow-inner shrink-0`}>{theme.char}</div>
+                                                    )}
+                                                    <div className="flex flex-col min-w-0">
+                                                        <span className="font-bold text-xs text-slate-700 group-hover:text-primary transition-colors truncate leading-tight uppercase tracking-tight">{team.name}</span>
+                                                        <span className="text-[9px] font-bold text-slate-400 uppercase leading-none mt-0.5">{team.squadCount}/9</span>
                                                     </div>
-                                                ) : (
-                                                    <div className={`size-9 rounded-lg ${theme.bg} ${theme.color} flex items-center justify-center font-black text-sm shadow-inner shrink-0`}>{theme.char}</div>
-                                                )}
-                                                <div className="flex flex-col min-w-0">
-                                                    <span className="font-bold text-sm text-slate-700 group-hover:text-primary transition-colors truncate">{team.name}</span>
-                                                    <span className="text-[0.6rem] text-slate-400 uppercase font-bold truncate">Max Bid: {formatPoints(team.maxBidAllowed)}</span>
+                                                    {team.squadCount >= 9 && (
+                                                        <span className="ml-auto bg-slate-900 text-white text-[8px] font-black px-1.5 py-0.5 rounded uppercase tracking-tighter shrink-0">FULL</span>
+                                                    )}
+                                                </div>
+                                                
+                                                <div className="space-y-1.5">
+                                                    <div className="flex items-center justify-between">
+                                                        <span className="text-[8px] font-black text-slate-400 uppercase">Purse</span>
+                                                        <span className="font-display font-black text-sm text-slate-900 leading-none">{formatPoints(team.remainingPurse)}</span>
+                                                    </div>
+                                                    <div className="pt-1.5 border-t border-slate-100 flex flex-col gap-0.5">
+                                                        <span className="text-[8px] font-black text-blue-500 uppercase">Max Bid</span>
+                                                        <span className="font-display font-black text-[0.85rem] text-blue-600 leading-none">{formatPoints(team.maxBidAllowed)}</span>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <span className="font-display font-bold text-slate-900 ml-2">{formatPoints(team.remainingPurse)}</span>
-                                        </div>
-                                    );
-                                })}
+                                        );
+                                    })}
+                                </div>
                             </div>
                         </aside>
 
@@ -347,27 +517,35 @@ export default function AuctionUI() {
                                                 </span>
                                             )}
                                         </div>
-                                        <h2 className="text-4xl lg:text-6xl font-display font-black text-slate-900 uppercase leading-[0.9] tracking-tighter">
+                                        <h2 className="text-3xl lg:text-5xl font-display font-black text-slate-900 uppercase leading-[0.9] tracking-tighter">
                                             {currentPlayer?.name || 'Waiting...'} 
                                         </h2>
                                     </div>
                                     <div className="mt-auto">
-                                        <div className="grid grid-cols-4 gap-2 lg:gap-6 mb-4 max-w-md">
-                                            <div>
+                                        <div className="grid grid-cols-3 gap-2 lg:gap-4 mb-4 w-full">
+                                            <div className="text-center p-2 rounded-xl bg-slate-50 border border-slate-100">
                                                 <p className="text-[0.6rem] uppercase tracking-widest text-slate-400 font-bold mb-0.5">Mat</p>
                                                 <p className="text-2xl font-black text-slate-800">{currentPlayer?.stats?.matches || '-'}</p>
                                             </div>
-                                            <div>
+                                            <div className="text-center p-2 rounded-xl bg-slate-50 border border-slate-100">
+                                                <p className="text-[0.6rem] uppercase tracking-widest text-slate-400 font-bold mb-0.5">Inns</p>
+                                                <p className="text-2xl font-black text-slate-800">{currentPlayer?.stats?.innings || '-'}</p>
+                                            </div>
+                                            <div className="text-center p-2 rounded-xl bg-slate-50 border border-slate-100">
                                                 <p className="text-[0.6rem] uppercase tracking-widest text-slate-400 font-bold mb-0.5">Runs</p>
                                                 <p className="text-2xl font-black text-slate-800">{currentPlayer?.stats?.runs || '-'}</p>
                                             </div>
-                                            <div>
+                                            <div className="text-center p-2 rounded-xl bg-slate-50 border border-slate-100">
                                                 <p className="text-[0.6rem] uppercase tracking-widest text-slate-400 font-bold mb-0.5">SR</p>
                                                 <p className="text-2xl font-black text-slate-800">{currentPlayer?.stats?.sr || '-'}</p>
                                             </div>
-                                            <div>
+                                            <div className="text-center p-2 rounded-xl bg-slate-50 border border-slate-100">
                                                 <p className="text-[0.6rem] uppercase tracking-widest text-slate-400 font-bold mb-0.5">Wkts</p>
                                                 <p className="text-2xl font-black text-slate-800">{currentPlayer?.stats?.wickets || '-'}</p>
+                                            </div>
+                                            <div className="text-center p-2 rounded-xl bg-slate-50 border border-slate-100">
+                                                <p className="text-[0.6rem] uppercase tracking-widest text-slate-400 font-bold mb-0.5">Econ</p>
+                                                <p className="text-2xl font-black text-slate-800">{currentPlayer?.stats?.economy || '-'}</p>
                                             </div>
                                         </div>
                                         <div className="flex flex-col gap-2 pt-3 border-t border-slate-100 pr-8">
@@ -390,8 +568,19 @@ export default function AuctionUI() {
                                         {/* Status Overlays */}
                                         {playerSold && (
                                             <div className="absolute inset-0 z-20 bg-green-900/40 backdrop-blur-sm flex items-center justify-center animate-in fade-in zoom-in duration-500">
-                                                <div className="bg-white p-4 rounded-3xl shadow-2xl transform rotate-6 border-4 border-green-500">
-                                                    <div className="text-green-600 font-black text-6xl tracking-tighter uppercase">SOLD</div>
+                                                <div className="flex flex-col items-center gap-4">
+                                                    <div className="bg-white p-4 rounded-3xl shadow-2xl transform rotate-6 border-4 border-green-500">
+                                                        <div className="text-green-600 font-black text-6xl tracking-tighter uppercase">SOLD</div>
+                                                    </div>
+                                                    <div className="bg-slate-900/90 backdrop-blur-md px-6 py-3 rounded-2xl border border-white/20 shadow-xl flex items-center gap-3 animate-in slide-in-from-bottom-4 duration-500 delay-200">
+                                                        {playerSold.teamLogo && (
+                                                            <img src={playerSold.teamLogo} alt="" referrerPolicy="no-referrer" className="size-8 object-contain" />
+                                                        )}
+                                                        <div className="text-left">
+                                                            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Sold To</p>
+                                                            <p className="text-xl font-black text-white leading-none uppercase tracking-tight">{playerSold.teamName}</p>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         )}
@@ -407,6 +596,7 @@ export default function AuctionUI() {
                                         </span>
                                         <img 
                                             alt="Player" 
+                                            referrerPolicy="no-referrer"
                                             className="absolute bottom-0 right-0 h-[115%] w-auto max-w-none object-contain drop-shadow-2xl z-10 transition-transform duration-700 group-hover:scale-105 origin-bottom-right md:right-[-10px]" 
                                             src={currentPlayer.photoUrl} 
                                         />
@@ -437,8 +627,8 @@ export default function AuctionUI() {
                                         <tbody className="divide-y divide-slate-100">
                                             {topBids.length > 0 ? topBids.slice(0, 5).map((bid, i) => (
                                                 <tr key={i} className="hover:bg-slate-50 transition-colors">
-                                                    <td className="px-5 py-3 font-semibold text-slate-700">{bid.player}</td>
-                                                    <td className="px-5 py-3 text-slate-500 text-xs font-bold uppercase">{bid.team || '-'}</td>
+                                                    <td className="px-5 py-3 font-semibold text-slate-700">{typeof bid.player === 'object' ? bid.player.name : bid.player}</td>
+                                                    <td className="px-5 py-3 text-slate-500 text-xs font-bold uppercase">{bid.teamName || bid.team || '-'}</td>
                                                     <td className="px-5 py-3 text-right font-black text-slate-900">{formatPoints(bid.amount)}</td>
                                                 </tr>
                                             )) : (
@@ -556,7 +746,12 @@ function PreAuctionLobby({ teams }) {
                                     <div className="flex items-start justify-between mb-5">
                                         {theme.logo ? (
                                             <div className="size-14 rounded-2xl bg-white overflow-hidden shadow-inner border border-slate-100 flex items-center justify-center p-1 group-hover:scale-110 transition-transform duration-300">
-                                                <img src={theme.logo} alt={team.name} className="w-full h-full object-contain" />
+                                                <img 
+                                                    src={theme.logo} 
+                                                    alt={team.name} 
+                                                    referrerPolicy="no-referrer"
+                                                    className="w-full h-full object-contain" 
+                                                />
                                             </div>
                                         ) : (
                                             <div className={`size-14 rounded-2xl flex items-center justify-center font-black text-2xl shadow-inner group-hover:scale-110 transition-transform duration-300 border border-white/10 ${theme.bg} ${theme.color}`}>

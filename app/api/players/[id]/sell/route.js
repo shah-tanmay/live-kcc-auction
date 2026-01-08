@@ -40,6 +40,10 @@ export async function POST(request, { params }) {
     }
 
     const winningTeam = highestBid.team;
+    if (!winningTeam || !winningTeam.squad) {
+      throw { status: 500, message: "Highest bid team data is incomplete or could not be populated" };
+    }
+
     const salePrice = highestBid.amount;
 
     // 5) Update player
