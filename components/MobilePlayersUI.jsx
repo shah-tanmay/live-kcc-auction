@@ -221,7 +221,7 @@ export default function MobilePlayersUI({ players, refreshData }) {
                     <div className="size-10 rounded-2xl bg-primary/10 flex items-center justify-center mb-0.5">
                         <span className="material-icons-round text-2xl">person_search</span>
                     </div>
-                    <span className="text-[10px] font-black uppercase tracking-widest">Pool</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest">Players</span>
                 </button>
                 <button 
                     onClick={() => router.push('/squad')}

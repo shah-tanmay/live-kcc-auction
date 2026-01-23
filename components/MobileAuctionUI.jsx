@@ -171,14 +171,16 @@ const MobileAuctionUI = ({
                         ) : (
                             <>
                                 {/* Live Status Indicator */}
-                                <div className="flex items-center justify-center gap-2 py-1">
-                                    <span className="relative flex h-3 w-3">
-                                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                                        <span className="relative inline-flex rounded-full h-3 w-3 bg-primary"></span>
-                                    </span>
-                                    <span className="text-xs font-bold text-gray-500 uppercase tracking-widest">
-                                        {playerSold ? 'PLAYER SOLD' : unSold ? 'PLAYER UNSOLD' : 'Live Bidding In Progress'}
-                                    </span>
+                                <div className="flex items-center justify-center gap-2 py-3">
+                                    <div className={`flex items-center gap-2 px-4 py-1.5 rounded-full shadow-sm border ${playerSold ? 'bg-green-50 border-green-200 text-green-600' : unSold ? 'bg-slate-50 border-slate-200 text-slate-500' : 'bg-red-50 border-red-200 text-red-600 animate-pulse'}`}>
+                                        <span className="relative flex h-2 w-2">
+                                            <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${playerSold ? 'bg-green-400' : unSold ? 'bg-slate-400' : 'bg-red-400'}`}></span>
+                                            <span className={`relative inline-flex rounded-full h-2 w-2 ${playerSold ? 'bg-green-500' : unSold ? 'bg-slate-500' : 'bg-red-500'}`}></span>
+                                        </span>
+                                        <span className="text-[10px] font-black uppercase tracking-[0.15em]">
+                                            {playerSold ? 'PLAYER SOLD' : unSold ? 'PLAYER UNSOLD' : 'Live Bidding In Progress'}
+                                        </span>
+                                    </div>
                                 </div>
 
                                 {/* Current Bid Card */}
@@ -342,7 +344,7 @@ const MobileAuctionUI = ({
                                         {purseData.map((team, idx) => {
                                             const theme = getTeamTheme(team.name, team.logoUrl);
                                             return (
-                                                <div key={idx} className="bg-slate-50 p-3 rounded-2xl border border-gray-100 flex flex-col gap-2 shadow-sm relative overflow-hidden group">
+                                                <div key={idx} className={`p-3 rounded-2xl border flex flex-col gap-2 shadow-sm relative overflow-hidden group transition-all ${team.squadCount >= 9 ? 'bg-slate-100 opacity-50 grayscale-[0.8] border-slate-200 pointer-events-none' : 'bg-slate-50 border-gray-100 active:scale-95'}`}>
                                                     <div className="flex items-center gap-2">
                                                         {theme.logo ? (
                                                             <div className="w-8 h-8 rounded-lg bg-white overflow-hidden border border-gray-100 flex items-center justify-center p-0.5 shrink-0 shadow-inner">
@@ -449,7 +451,7 @@ const MobileAuctionUI = ({
                             <div className="size-10 rounded-2xl bg-slate-50 flex items-center justify-center mb-0.5">
                                 <span className="material-icons-round text-2xl">person_search</span>
                             </div>
-                            <span className="text-[10px] font-black uppercase tracking-widest">Pool</span>
+                            <span className="text-[10px] font-black uppercase tracking-widest">Players</span>
                         </button>
                         <button 
                             onClick={() => router.push('/squad')}
@@ -536,7 +538,7 @@ const MobilePreAuctionLobby = ({ teams, getTeamTheme, formatPoints, router, isLo
                         teams.map((team, idx) => {
                             const theme = getTeamTheme(team.name, team.logoUrl);
                             return (
-                                <div key={idx} className="bg-white rounded-3xl p-5 border border-gray-100 shadow-sm flex items-center justify-between group active:scale-95 transition-transform duration-200">
+                                <div key={idx} className={`p-5 border shadow-sm flex items-center justify-between group rounded-3xl transition-all duration-200 ${team.squadCount >= 9 ? 'bg-slate-50 opacity-50 grayscale-[0.8] border-slate-200 pointer-events-none' : 'bg-white border-gray-100 active:scale-95'}`}>
                                     <div className="flex items-center gap-4">
                                         {theme.logo ? (
                                             <div className="size-14 rounded-2xl bg-white overflow-hidden shadow-inner border border-gray-100 flex items-center justify-center p-1">

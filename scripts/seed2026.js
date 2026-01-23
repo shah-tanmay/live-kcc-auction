@@ -24,6 +24,8 @@ const isMockMode = process.argv.includes("--mock");
 const EXCEL_FILE = path.join(__dirname, "..", "KCC Tournament Season #5 (Responses).xlsx");
 const TEAMS_JSON = path.join(__dirname, "teams_2026.json");
 const PLAYERS_JSON = path.join(__dirname, "players_seed_data.json");
+const FINAL_LIST_JSON = path.join(__dirname, "final_player_list_2026.json");
+const NO_STATS_JSON = path.join(__dirname, "no_stats_player.json");
 
 // Select appropriate models based on mode
 // Mock mode: Use standard mock collections (mock_players, mock_teams)
@@ -310,15 +312,75 @@ function parseExcelFile(filePath, historyMap = {}) {
     throw new Error(`Failed to parse Excel file: ${errors.length} errors found`);
   }
 
-  console.log(`✅ Successfully parsed ${players.length} players`);
+  console.log(`✅ Successfully parsed ${players.length} players from Excel`);
+
+  // Load Final List
+  if (!fs.existsSync(FINAL_LIST_JSON)) {
+    throw new Error(`Final player list not found: ${FINAL_LIST_JSON}`);
+  }
+  const finalistRaw = fs.readFileSync(FINAL_LIST_JSON, 'utf8');
+  const finalNames = JSON.parse(finalistRaw);
+  const finalNamesNormalized = new Set(finalNames.map(n => normalize(n)));
+
+  // Filter players to only those in the final list
+  const finalPlayers = players.filter(p => finalNamesNormalized.has(normalize(p.name)));
   
-  // Limit to first 72 players
-  const limitedPlayers = players.slice(0, 72);
-  if (players.length > 72) {
-    console.log(`⚠️  Limiting to first 72 players (dropped ${players.length - 72} players)`);
+  console.log(`\n🔍 Filtering by Final List (${finalNames.length} players):`);
+  console.log(`   Found ${finalPlayers.length} matches out of ${finalNames.length} required.`);
+
+  // Identify missing players (in final list but not in Excel)
+  const foundNames = new Set(finalPlayers.map(p => normalize(p.name)));
+  const missingFromExcel = finalNames.filter(n => !foundNames.has(normalize(n)));
+  
+  if (missingFromExcel.length > 0) {
+    console.warn(`\n⚠️  The following ${missingFromExcel.length} players from the FINAL LIST were not found in the Excel file:`);
+    missingFromExcel.forEach(n => console.warn(`   - ${n}`));
+    console.log(`\n✨ Auto-creating these missing players with default values...`);
+    
+    missingFromExcel.forEach(name => {
+        const player = {
+            name: name,
+            role: "AllRounder",
+            photoUrl: "", // Default to empty if not found in Excel (matching existing logic)
+            battingHand: "Right",
+            bowlingHand: "Right",
+            favTeam: "",
+            basePrice: 4000,
+            stats: {
+                matches: 0,
+                runs: 0,
+                wickets: 0,
+                avg: 0,
+                sr: 0,
+                innings: 0,
+                economy: 0,
+            },
+            unSold: false,
+            isSold: false,
+            soldTo: null,
+            soldFor: 0,
+            lastYearSoldPrice: 0,
+            lastYearSoldTeam: '',
+        };
+        finalPlayers.push(player);
+    });
+  }
+
+  // Check for stats (using matches > 0 as a proxy for having stats)
+  const noStatsPlayers = finalPlayers.filter(p => !p.stats || p.stats.matches === 0);
+  
+  if (noStatsPlayers.length > 0) {
+    console.log(`\n⚠️  Found ${noStatsPlayers.length} players with no stats.`);
+    
+    // Write to JSON
+    fs.writeFileSync(NO_STATS_JSON, JSON.stringify(noStatsPlayers.map(p => p.name), null, 2));
+    console.log(`   📝 Wrote list to ${NO_STATS_JSON}`);
+  } else {
+    // Clear file if no missing stats
+    if (fs.existsSync(NO_STATS_JSON)) fs.unlinkSync(NO_STATS_JSON);
   }
   
-  return limitedPlayers;
+  return finalPlayers;
 }
 
 /**

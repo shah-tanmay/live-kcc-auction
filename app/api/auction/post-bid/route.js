@@ -18,7 +18,7 @@ export async function POST(req) {
   // I will add MockBid to `getModel`.
   const BidModel = getModel('Bid');
 
-  const { playerId, teamId, bidAmount } = await req.json();
+  const { playerId, teamId, bidAmount, isAdminOverride } = await req.json();
 
   if (!playerId || !teamId || typeof bidAmount !== "number") {
     return NextResponse.json(
@@ -48,59 +48,62 @@ export async function POST(req) {
     return NextResponse.json({ error: "Team not found" }, { status: 404 });
   }
 
-  // ✅ Enforce budget cutoff logic & squad limit
-  const playersOwned = team.squad.length;
-  
-  if (playersOwned >= 9) {
-    return NextResponse.json(
-      { error: `Team ${team.name} already has maximum of 9 players. Cannot place more bids.` },
-      { status: 400 }
-    );
-  }
+  // ✅ Admin Override Logic
+  if (!isAdminOverride) {
+      // ✅ Enforce budget cutoff logic & squad limit
+      const playersOwned = team.squad.length;
+      
+      if (playersOwned >= 9) {
+        return NextResponse.json(
+          { error: `Team ${team.name} already has maximum of 9 players. Cannot place more bids.` },
+          { status: 400 }
+        );
+      }
 
-  const totalSlots = 9;
-  const remainingSlots = totalSlots - playersOwned - 1; // -1 for current player
-  const minReserve = remainingSlots > 0 ? remainingSlots * 4000 : 0;
-  const maxBidAllowed = team.purseLeft - minReserve;
+      const totalSlots = 9;
+      const remainingSlots = totalSlots - playersOwned - 1; // -1 for current player
+      const minReserve = remainingSlots > 0 ? remainingSlots * 4000 : 0;
+      const maxBidAllowed = team.purseLeft - minReserve;
 
-  if (bidAmount > maxBidAllowed) {
-    return NextResponse.json(
-      {
-        error: `Bid exceeds max allowed limit. You have ₹${team.purseLeft} total, must reserve ₹${minReserve} for ${remainingSlots} slots. Max allowed: ₹${maxBidAllowed}`,
-      },
-      { status: 400 }
-    );
-  }
+      if (bidAmount > maxBidAllowed) {
+        return NextResponse.json(
+          {
+            error: `Bid exceeds max allowed limit. You have ₹${team.purseLeft} total, must reserve ₹${minReserve} for ${remainingSlots} slots. Max allowed: ₹${maxBidAllowed}`,
+          },
+          { status: 400 }
+        );
+      }
 
-  if (bidAmount < player.basePrice) {
-    return NextResponse.json(
-      {
-        error: `Bid must be greater than or equal to base price of ₹${player.basePrice}`,
-      },
-      { status: 400 }
-    );
-  }
+      if (bidAmount < player.basePrice) {
+        return NextResponse.json(
+          {
+            error: `Bid must be greater than or equal to base price of ₹${player.basePrice}`,
+          },
+          { status: 400 }
+        );
+      }
 
-  const highestBid = await BidModel.findOne({ player: player._id })
-    .sort({ amount: -1 })
-    .exec();
+      const highestBid = await BidModel.findOne({ player: player._id })
+        .sort({ amount: -1 })
+        .exec();
 
-  if (highestBid) {
-    if (bidAmount <= highestBid.amount) {
-      return NextResponse.json(
-        {
-          error: `Bid must be higher than current highest bid of ₹${highestBid.amount}`,
-        },
-        { status: 400 }
-      );
-    }
+      if (highestBid) {
+        if (bidAmount <= highestBid.amount) {
+          return NextResponse.json(
+            {
+              error: `Bid must be higher than current highest bid of ₹${highestBid.amount}`,
+            },
+            { status: 400 }
+          );
+        }
 
-    if (highestBid.team.toString() === team._id.toString()) {
-      return NextResponse.json(
-        { error: "Same team cannot place consecutive bids on this player" },
-        { status: 400 }
-      );
-    }
+        if (highestBid.team.toString() === team._id.toString()) {
+          return NextResponse.json(
+            { error: "Same team cannot place consecutive bids on this player" },
+            { status: 400 }
+          );
+        }
+      }
   }
 
   const bid = new BidModel({

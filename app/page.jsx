@@ -295,6 +295,18 @@ export default function AuctionUI() {
                     await getUnSoldPlayers();
                     await remainingPlayers();
                 }
+            } else {
+                // Status is null - likely an UNDO was performed
+                setPlayerSold(null);
+                setUnsoldData(null);
+                
+                // Refresh data to reflect undone sale
+                await Promise.all([
+                    fetchPurseData(),
+                    remainingPlayers(),
+                    getTopBids(),
+                    getUnSoldPlayers()
+                ]);
             }
         });
 
@@ -385,11 +397,25 @@ export default function AuctionUI() {
                             </button>
                         </div>
                     )}
-                    <div className="flex items-center gap-2">
-                        <span className="material-symbols-outlined text-slate-400">timer</span>
-                        <span className="text-xs font-bold uppercase tracking-widest text-slate-500">
-                            {currentPlayer ? 'Live Bidding In Progress' : 'Status: Pre-Auction'}
-                        </span>
+                    <div className="flex items-center gap-3">
+                        {currentPlayer ? (
+                            <div className="flex items-center gap-2 px-4 py-1.5 bg-red-50 border border-red-200 rounded-full shadow-sm animate-pulse">
+                                <span className="relative flex h-2 w-2">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                                </span>
+                                <span className="text-[11px] font-black uppercase tracking-[0.2em] text-red-600">
+                                    Live Bidding In Progress
+                                </span>
+                            </div>
+                        ) : (
+                            <div className="flex items-center gap-2 px-4 py-1.5 bg-slate-50 border border-slate-200 rounded-full">
+                                <span className="material-symbols-outlined text-slate-400 text-sm">pause_circle</span>
+                                <span className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-500">
+                                    Status: Pre-Auction
+                                </span>
+                            </div>
+                        )}
                     </div>
                 </div>
                 {currentPlayer && (
@@ -427,7 +453,7 @@ export default function AuctionUI() {
                                     {purseData.map((team, idx) => {
                                         const theme = getTeamTheme(team.name, team.logoUrl);
                                         return (
-                                            <div key={idx} className="flex flex-col p-3 rounded-xl bg-white border border-slate-100 shadow-sm hover:border-primary/20 transition-all group hover:shadow-md h-full justify-between">
+                                            <div key={idx} className={`flex flex-col p-3 rounded-xl bg-white border shadow-sm transition-all group h-full justify-between ${team.squadCount >= 9 ? 'opacity-50 grayscale-[0.8] border-slate-200 pointer-events-none' : 'hover:border-primary/20 border-slate-100 hover:shadow-md'}`}>
                                                 <div className="flex items-center gap-2.5 mb-2 overflow-hidden">
                                                     {theme.logo ? (
                                                         <div className="size-10 rounded-xl bg-white overflow-hidden shadow-inner border border-slate-100 flex items-center justify-center p-1 shrink-0">
@@ -594,12 +620,14 @@ export default function AuctionUI() {
                                         <span className="absolute top-10 right-4 font-display font-black text-9xl text-slate-100 -rotate-90 origin-top-right select-none opacity-50">
                                             {currentPlayer.name.split(' ')[0]}
                                         </span>
-                                        <img 
-                                            alt="Player" 
-                                            referrerPolicy="no-referrer"
-                                            className="absolute bottom-0 right-0 h-[115%] w-auto max-w-none object-contain drop-shadow-2xl z-10 transition-transform duration-700 group-hover:scale-105 origin-bottom-right md:right-[-10px]" 
-                                            src={currentPlayer.photoUrl} 
-                                        />
+                                        <div className="absolute inset-0 z-10 flex items-center justify-center p-2">
+                                            <img 
+                                                alt="Player" 
+                                                referrerPolicy="no-referrer"
+                                                className="w-full h-full object-contain drop-shadow-2xl transition-all duration-700 group-hover:scale-105" 
+                                                src={currentPlayer.photoUrl} 
+                                            />
+                                        </div>
                                     </div>
                                 )}
                             </div>
@@ -742,7 +770,7 @@ function PreAuctionLobby({ teams }) {
                         {teams.map((team, idx) => {
                              const theme = getTeamTheme(team.name, team.logoUrl);
                              return (
-                                <div key={team.id || idx} className="bg-white rounded-3xl p-6 border border-slate-100 shadow-sm hover:shadow-xl hover:border-primary/20 hover:-translate-y-1 transition-all duration-300 group">
+                                <div key={team.id || idx} className={`p-6 border shadow-sm transition-all duration-300 group rounded-3xl ${team.squadCount >= 9 ? 'bg-slate-50 opacity-50 grayscale-[0.8] border-slate-200 pointer-events-none' : 'bg-white border-slate-100 hover:shadow-xl hover:border-primary/20 hover:-translate-y-1'}`}>
                                     <div className="flex items-start justify-between mb-5">
                                         {theme.logo ? (
                                             <div className="size-14 rounded-2xl bg-white overflow-hidden shadow-inner border border-slate-100 flex items-center justify-center p-1 group-hover:scale-110 transition-transform duration-300">

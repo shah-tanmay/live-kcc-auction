@@ -22,6 +22,7 @@ export default function AdminDashboard() {
     const [isSimulating, setIsSimulating] = useState(false);
     const [remainingPlayersCount, setRemainingPlayers] = useState(0);
     const [isBidding, setIsBidding] = useState(false);
+    const [isAdminOverride, setIsAdminOverride] = useState(false);
     const isMock = process.env.NEXT_PUBLIC_MOCK_MODE === 'true';
 
     const fetchTeams = async () => {
@@ -97,6 +98,11 @@ export default function AdminDashboard() {
                     setLastAction('UNSOLD');
                     fetchRemainingPlayers();
                 }
+            } else {
+                // Status is null - Undo performed
+                setLastAction(null);
+                fetchTeams();
+                fetchRemainingPlayers();
             }
         });
 
@@ -164,7 +170,8 @@ export default function AdminDashboard() {
                 body: JSON.stringify({
                     playerId: currentPlayer._id,
                     teamId: teamId,
-                    bidAmount: bidValue
+                    bidAmount: bidValue,
+                    isAdminOverride: isAdminOverride
                 })
             });
             const data = await res.json();
@@ -208,6 +215,28 @@ export default function AdminDashboard() {
             await fetch(`/api/players/${currentPlayer._id}/unsold`, { method: 'POST' });
         } catch (e) { console.error(e); }
         finally { setActionLoading(false); }
+    };
+
+    const handleUndo = async () => {
+        if (!currentPlayer?._id || actionLoading) return;
+        if (!confirm('Are you sure you want to UNDO this sale? It will restore the player to the auction and refund the team.')) return;
+        
+        try {
+            setActionLoading(true);
+            const res = await fetch(`/api/players/${currentPlayer._id}/undo`, { method: 'POST' });
+            if (res.ok) {
+                setLastAction(null);
+                await fetchTeams();
+            } else {
+                const data = await res.json();
+                alert(data.error || 'Failed to undo sale');
+            }
+        } catch (e) { 
+            console.error(e); 
+            alert('Error undoing sale');
+        } finally { 
+            setActionLoading(false); 
+        }
     };
 
     // Keyboard Shortcuts
@@ -408,14 +437,23 @@ export default function AdminDashboard() {
                                                     {(lastAction === 'SOLD') && (
                                                         <div className="absolute inset-0 z-20 bg-green-900/40 backdrop-blur-sm flex items-center justify-center animate-in fade-in zoom-in">
                                                             <div className="bg-white p-6 rounded-3xl shadow-2xl transform rotate-6 border-4 border-green-500 flex flex-col items-center gap-4">
-                                                                <div className="text-green-600 font-black text-6xl tracking-tighter uppercase drop-shadow-md">SOLD</div>
-                                                                <button 
-                                                                    onClick={handleNextPlayer} 
-                                                                    className="bg-slate-900 text-white px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 -rotate-6 hover:bg-black transition-colors"
-                                                                >
-                                                                    <span>Next Player</span>
-                                                                    <span className="material-symbols-outlined text-sm">arrow_forward</span>
-                                                                </button>
+                                                                 <div className="text-green-600 font-black text-6xl tracking-tighter uppercase drop-shadow-md">SOLD</div>
+                                                                 <div className="flex gap-2">
+                                                                    <button 
+                                                                        onClick={handleNextPlayer} 
+                                                                        className="bg-slate-900 text-white px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-black transition-colors"
+                                                                    >
+                                                                        <span>Next</span>
+                                                                        <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                                                                    </button>
+                                                                    <button 
+                                                                        onClick={handleUndo} 
+                                                                        className="bg-white text-red-600 border border-red-200 px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 hover:bg-red-50 transition-colors"
+                                                                    >
+                                                                        <span>Undo</span>
+                                                                        <span className="material-symbols-outlined text-sm">undo</span>
+                                                                    </button>
+                                                                 </div>
                                                             </div>
                                                         </div>
                                                     )}
@@ -586,6 +624,21 @@ export default function AdminDashboard() {
                                                                            </button>
                                                                        </div>
                                                                    </div>
+
+                                                                    <div className="mt-3 flex items-center gap-2">
+                                                                        <label className="flex items-center gap-2 cursor-pointer group">
+                                                                            <div className="relative flex items-center">
+                                                                                <input 
+                                                                                    type="checkbox" 
+                                                                                    className="peer sr-only"
+                                                                                    checked={isAdminOverride}
+                                                                                    onChange={(e) => setIsAdminOverride(e.target.checked)}
+                                                                                />
+                                                                                <div className="w-10 h-5 bg-slate-200 rounded-full peer peer-checked:bg-red-500 transition-all after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-5"></div>
+                                                                            </div>
+                                                                            <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400 group-hover:text-red-500 transition-colors">Admin Override (No Checks)</span>
+                                                                        </label>
+                                                                    </div>
                                                                </div>
                                                            </div>
                                                          </div>

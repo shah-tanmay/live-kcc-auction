@@ -21,11 +21,14 @@ export default function AdminLogin() {
     // but for now I will implement basic cookie setting.
     
     // Simulating auth check
-    if (email === 'admin@kcc-auction.com' && password === 'admin123') { // Example credentials
+    const adminEmail = process.env.NEXT_PUBLIC_ADMIN_EMAIL || 'admin@kcc-auction.com';
+    const adminPassword = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || 'admin123';
+
+    if (email === adminEmail && password === adminPassword) {
         Cookies.set('adminToken', 'valid-token', { expires: 1 });
         router.push('/admin/dashboard');
     } else {
-        alert('Invalid credentials (Try: admin@kcc-auction.com / admin123)');
+        alert('Invalid credentials');
         setLoading(false);
     }
   };
