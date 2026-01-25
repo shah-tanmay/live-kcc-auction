@@ -385,6 +385,13 @@ export default function AdminDashboard() {
                 </div>
                 <div className="flex flex-1 justify-end gap-6 items-center">
                     <div className="hidden md:flex items-center gap-6 border-r border-gray-200 pr-6">
+                        <button 
+                            onClick={() => router.push('/admin/reveal-control')}
+                            className="bg-orange-50 text-orange-600 border border-orange-200 px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-2 hover:bg-orange-100 transition-colors"
+                        >
+                            <span className="material-symbols-outlined text-sm">visibility_off</span>
+                            <span>Reveal Control</span>
+                        </button>
                         <div className="flex flex-col items-end">
                             <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Remaining Players</span>
                             <span className="text-xl font-mono font-bold text-primary">{remainingPlayersCount ?? '--'}</span>

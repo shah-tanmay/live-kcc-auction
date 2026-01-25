@@ -8,14 +8,21 @@ export async function GET() {
         await connectDB();
         const Player = getModel('Player');
 
-        // Find all players who are not sold
+        const Team = getModel('Team');
+        const teams = await Team.find({}).lean();
+        const ownerNames = teams.flatMap(t => 
+            t.owner ? t.owner.split(/,|&/).map(s => s.trim()).filter(s => s) : []
+        );
+
+        // Find all players who are not sold and NOT owners
         const validPlayers = await Player.find({
             isSold: { $ne: true },
             unSold: { $ne: true },
+            name: { $nin: ownerNames }
         }).lean();
 
         // Also consider previously unsold players if valid list is empty?
-        const unsoldPlayers = await Player.find({ unSold: true }).lean();
+        const unsoldPlayers = await Player.find({ unSold: true, name: { $nin: ownerNames } }).lean();
 
         let randomPlayer;
 

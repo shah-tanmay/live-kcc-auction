@@ -10,6 +10,7 @@ import { getTeamTheme } from '@/utils/teamTheme';
 
 // Helper to format currency/points
 const formatPoints = (points) => {
+    if (points === null || points === undefined) return '---';
     const val = parseInt(points);
     if (isNaN(val)) return points;
     if (val >= 10000000) return `₹${(val / 10000000).toFixed(2)}Cr`;

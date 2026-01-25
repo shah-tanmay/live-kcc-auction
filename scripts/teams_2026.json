@@ -4,6 +4,7 @@
         "motto": "",
         "logoUrl": "/logos/ravalroyals.jpeg",
         "owner": "Parth Raval",
+        "ownerValuation": 10000,
         "purseLeft": 100000,
         "squad": []
     },
@@ -12,6 +13,7 @@
         "motto": "",
         "logoUrl": "/logos/siddha.jpeg",
         "owner": "Sahil Gugale",
+        "ownerValuation": 10000,
         "purseLeft": 100000,
         "squad": []
     },
@@ -19,7 +21,12 @@
         "name": "House of V.R",
         "motto": "",
         "logoUrl": "/logos/houseofvr.jpeg",
-        "owner": "Viren Palesa, Rushabh Bora",
+        "owner": "Viren Palesa, Rushubh bora",
+        "ownerValuation": 20000,
+        "ownerValuations": {
+            "Viren Palesa": 10000,
+            "Rushubh bora": 10000
+        },
         "purseLeft": 100000,
         "squad": []
     },
@@ -28,6 +35,7 @@
         "motto": "",
         "logoUrl": "/logos/oswalavengers.jpeg",
         "owner": "Chirag Oswal",
+        "ownerValuation": 10000,
         "purseLeft": 100000,
         "squad": []
     },
@@ -36,6 +44,7 @@
         "motto": "",
         "logoUrl": "/logos/samrattitans.jpeg",
         "owner": "Samrat Darda",
+        "ownerValuation": 10000,
         "purseLeft": 100000,
         "squad": []
     },
@@ -44,6 +53,7 @@
         "motto": "Play Bold",
         "logoUrl": "/logos/ajturf.jpg",
         "owner": "Akshay Jain",
+        "ownerValuation": 10000,
         "purseLeft": 100000,
         "squad": []
     },
@@ -52,6 +62,7 @@
         "motto": "Hit Hard",
         "logoUrl": "/logos/boundarysmashers.jpeg",
         "owner": "Sagar Lodha",
+        "ownerValuation": 10000,
         "purseLeft": 100000,
         "squad": []
     },
@@ -60,6 +71,7 @@
         "motto": "",
         "logoUrl": "/logos/dunakhedynamos.jpeg",
         "owner": "Abhishek Dunakhe",
+        "ownerValuation": 10000,
         "purseLeft": 100000,
         "squad": []
     }

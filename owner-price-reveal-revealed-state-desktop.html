@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Owner Price Reveal - Revealed</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#FF6B00",
+                        "primary-light": "#FF8533",
+                        "primary-dark": "#CC5500",
+                        "background-light": "#FFF9F5",
+                        "background-dark": "#1A0F08",
+                    },
+                    fontFamily: {
+                        "display": ["Lexend", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style type="text/tailwindcss">
+        @layer utilities {
+            .price-glow {
+                text-shadow: 0 0 30px rgba(255, 107, 0, 0.6), 0 0 60px rgba(255, 107, 0, 0.3);
+            }
+            .orange-gradient {
+                background: linear-gradient(135deg, #FF6B00 0%, #FF9E5E 100%);
+            }
+            .confetti-piece {
+                @apply absolute w-2 h-2 rounded-sm;
+            }
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display text-[#2D1B10] dark:text-[#FFF5F0] transition-colors duration-300 overflow-x-hidden">
+<div class="relative flex h-auto min-h-screen w-full flex-col group/design-root">
+<div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+<div class="confetti-piece orange-gradient top-10 left-[10%] rotate-12"></div>
+<div class="confetti-piece bg-primary-light top-20 left-[25%] -rotate-12"></div>
+<div class="confetti-piece bg-primary top-40 left-[80%] rotate-45"></div>
+<div class="confetti-piece orange-gradient top-60 left-[5%] -rotate-[30deg]"></div>
+<div class="confetti-piece bg-primary-dark top-[80%] left-[15%] rotate-12"></div>
+<div class="confetti-piece bg-primary top-[70%] left-[85%] -rotate-12"></div>
+<div class="confetti-piece orange-gradient top-[30%] left-[90%] rotate-45"></div>
+<div class="confetti-piece bg-primary-light top-1/2 left-[50%] -translate-x-1/2 -translate-y-1/2 w-4 h-4 opacity-10"></div>
+</div>
+<div class="layout-container flex h-full grow flex-col relative z-10">
+<header class="flex items-center justify-between whitespace-nowrap border-b border-orange-100 dark:border-orange-900/30 px-10 py-3 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md">
+<div class="flex items-center gap-4">
+<div class="size-8 text-primary">
+<svg fill="none" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+<path d="M42.1739 20.1739L27.8261 5.82609C29.1366 7.13663 28.3989 10.1876 26.2002 13.7654C24.8538 15.9564 22.9595 18.3449 20.6522 20.6522C18.3449 22.9595 15.9564 24.8538 13.7654 26.2002C10.1876 28.3989 7.13663 29.1366 5.82609 27.8261L20.1739 42.1739C21.4845 43.4845 24.5355 42.7467 28.1133 40.548C30.3042 39.2016 32.6927 37.3073 35 35C37.3073 32.6927 39.2016 30.3042 40.548 28.1133C42.7467 24.5355 43.4845 21.4845 42.1739 20.1739Z" fill="currentColor"></path>
+</svg>
+</div>
+<h2 class="text-lg font-bold leading-tight tracking-tight">Auction Central</h2>
+</div>
+<div class="flex flex-1 justify-end gap-8">
+<div class="hidden md:flex items-center gap-9">
+<a class="text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Dashboard</a>
+<a class="text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Auction Board</a>
+<a class="text-sm font-medium leading-normal hover:text-primary transition-colors" href="#">Rules</a>
+</div>
+<div class="flex gap-2">
+<button class="flex items-center justify-center rounded-lg h-10 w-10 bg-orange-50 dark:bg-orange-900/20 text-primary px-2.5">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="flex items-center justify-center rounded-lg h-10 w-10 bg-orange-50 dark:bg-orange-900/20 text-primary px-2.5">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<main class="flex-1 flex flex-col items-center justify-center px-4 py-12 @container">
+<div class="max-w-[800px] w-full flex flex-col items-center gap-8">
+<div class="flex flex-col items-center gap-3">
+<div class="w-20 h-20 bg-white dark:bg-[#2D1B10] rounded-2xl shadow-xl shadow-orange-500/10 border-2 border-primary/30 flex items-center justify-center p-4">
+<span class="material-symbols-outlined text-5xl text-primary">sports_kabaddi</span>
+</div>
+<div class="text-center">
+<p class="uppercase tracking-[0.3em] text-[10px] font-black text-primary/70 dark:text-primary/80">City Premier League 2024</p>
+<h4 class="text-xl font-black italic tracking-tighter text-gray-800 dark:text-white">ORANGE TITANS</h4>
+</div>
+</div>
+<div class="flex flex-col items-center gap-4">
+<div class="relative">
+<div class="absolute inset-[-12px] rounded-full orange-gradient opacity-40 blur-md animate-pulse"></div>
+<div class="absolute inset-[-4px] rounded-full bg-primary"></div>
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full h-44 w-44 border-4 border-white dark:border-background-dark relative z-10 shadow-2xl" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBxmkKSNTErxxGuzyJLvczo7KCICuUrBc-cdKhc1dvEiOzMIM5v54DZH6sDlSGlaed0DetNYxMeuQ3otrC4Uhho0hTJlvwCZIH2jL9rxDJI8CYm438YW22epKtm4RJpxE0emibCRNJAZ4GYfBomev8yZMr7PgraTCr967BnxpSQvFd6nIj7GOeWmvORH5w-K_yb-vpI-HfbTtOuh8rQdejz8_M9CgJJXdGb4_2YTE_LwlxjNFhTn3GaUHHs0KMLBI3aH38zPQS5oEA");'>
+</div>
+</div>
+<div class="flex flex-col items-center justify-center mt-2">
+<h3 class="text-3xl font-black leading-tight tracking-tight text-center">Robert Montgomery</h3>
+<p class="text-primary font-bold tracking-widest text-xs uppercase bg-orange-50 dark:bg-orange-900/30 px-4 py-1 rounded-full mt-1">Chief Patron</p>
+</div>
+</div>
+<div class="flex flex-col items-center gap-2 w-full relative">
+<span class="material-symbols-outlined absolute -left-12 top-0 text-primary opacity-40 text-4xl">celebration</span>
+<span class="material-symbols-outlined absolute -right-12 bottom-0 text-primary opacity-40 text-4xl">auto_awesome</span>
+<div class="flex h-9 items-center justify-center gap-x-2 rounded-full orange-gradient px-8 shadow-lg shadow-orange-500/40">
+<span class="material-symbols-outlined text-white text-lg font-bold">verified</span>
+<p class="text-white text-[11px] font-black leading-none tracking-[0.2em]">REVEALED</p>
+</div>
+<div class="flex flex-col items-center mt-6">
+<h1 class="text-gray-400 dark:text-orange-200/40 tracking-[0.4em] text-xs font-black uppercase">Owner's Base Price</h1>
+<div class="flex items-center gap-1">
+<span class="text-primary text-5xl font-black mt-8">$</span>
+<span class="text-primary text-[140px] font-black leading-none tracking-tighter price-glow">
+                                1.25M
+                            </span>
+</div>
+</div>
+</div>
+<div class="flex flex-col items-center gap-6 pt-6">
+<button class="min-w-[280px] px-10 py-5 orange-gradient text-white font-black rounded-2xl shadow-2xl shadow-orange-500/30 hover:scale-105 active:scale-95 transition-all flex items-center justify-center gap-3 text-lg group">
+<span>PROCEED TO BIDDING</span>
+<span class="material-symbols-outlined transition-transform group-hover:translate-x-1">rocket_launch</span>
+</button>
+<a class="flex items-center gap-2 text-sm font-bold text-gray-500 dark:text-gray-400 hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined text-lg">dashboard</span>
+<span class="underline underline-offset-4">Return to Dashboard</span>
+</a>
+</div>
+</div>
+</main>
+<div class="fixed bottom-0 left-0 w-full h-96 pointer-events-none overflow-hidden opacity-30">
+<div class="absolute -bottom-40 -left-20 w-[500px] h-[500px] rounded-full bg-primary/20 blur-[120px]"></div>
+<div class="absolute -bottom-40 -right-20 w-[500px] h-[500px] rounded-full bg-primary/20 blur-[120px]"></div>
+<div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex gap-24 items-end opacity-20">
+<span class="material-symbols-outlined text-[120px] text-primary">hotel_class</span>
+<span class="material-symbols-outlined text-[180px] text-primary">stars</span>
+<span class="material-symbols-outlined text-[120px] text-primary">hotel_class</span>
+</div>
+</div>
+</div>
+</div>
+
+</body></html>

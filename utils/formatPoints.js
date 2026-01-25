@@ -1,9 +1,13 @@
 export function formatPoints(value) {
-  if (value >= 100000) {
-    return `${value / 100000}L`;
-  } else if (value >= 1000) {
-    return `${value / 1000}k`;
+  if (value === null || value === undefined) return '0';
+  const numValue = Number(value);
+  if (isNaN(numValue)) return value?.toString() || '0';
+  
+  if (numValue >= 100000) {
+    return `${numValue / 100000}L`;
+  } else if (numValue >= 1000) {
+    return `${numValue / 1000}k`;
   } else {
-    return value.toString();
+    return numValue.toString();
   }
 }

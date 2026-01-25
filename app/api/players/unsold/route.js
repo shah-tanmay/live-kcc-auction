@@ -9,8 +9,14 @@ export async function GET(request) {
   await connectToDB();
   const Player = getModel('Player');
 
-  // 2) Find all players who haven't been sold yet
-  const unsoldPlayers = await Player.find({ unSold: true })
+  const Team = getModel('Team');
+  const teams = await Team.find({}).lean();
+  const ownerNames = teams.flatMap(t => 
+      t.owner ? t.owner.split(/,|&/).map(s => s.trim()).filter(s => s) : []
+  );
+
+  // 2) Find all players who haven't been sold yet and are NOT owners
+  const unsoldPlayers = await Player.find({ unSold: true, name: { $nin: ownerNames } })
     .select("name role photoUrl basePrice stats") // pick any fields you need
     .lean();
 

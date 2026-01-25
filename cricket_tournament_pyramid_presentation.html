@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cricket Tournament Format - Constructed Pyramid</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #F8F5F2;
+            --bg-gradient: radial-gradient(circle at center, #FDFBF7 0%, #F2EBE5 100%);
+            --text-main: #2D2D2D;
+            --text-muted: #666666;
+            --accent-gold: #C5A059;
+            --accent-brown: #8D7B68;
+            --accent-green: #7A8B69;
+            --accent-charcoal: #373F47;
+            --card-shadow: 0 10px 30px -10px rgba(141, 123, 104, 0.2);
+            --transition-speed: 0.8s;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #1a1a1a;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            color: var(--text-main);
+        }
+
+        /* Presentation Container */
+        #presentation-container {
+            width: 100%;
+            max-width: 1280px;
+            aspect-ratio: 16/9;
+            background: var(--bg-gradient);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            border-radius: 8px;
+        }
+
+        /* Slides */
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease-in-out;
+            padding: 3rem 5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .slide.active {
+            opacity: 1;
+            pointer-events: all;
+            z-index: 10;
+        }
+
+        /* Typography & Common */
+        h1, h2, h3 { color: var(--accent-charcoal); }
+        h1 { font-size: 4rem; font-weight: 800; }
+        h2 { font-size: 2.5rem; font-weight: 600; margin-bottom: 2rem; position: relative; display: inline-block; }
+        h2::after { content: ''; position: absolute; bottom: -8px; left: 0; width: 50%; height: 3px; background: var(--accent-gold); }
+        
+        .badge {
+            padding: 0.5rem 1rem; border-radius: 50px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;
+            display: inline-block; margin-bottom: 0.5rem;
+        }
+        .badge-gold { background: rgba(197, 160, 89, 0.15); color: var(--accent-gold); }
+        .badge-brown { background: rgba(141, 123, 104, 0.15); color: var(--accent-brown); }
+
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            box-shadow: var(--card-shadow);
+            border: 1px solid rgba(255,255,255,0.6);
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        /* 
+           ANIMATION SYSTEM: "From Ends"
+           We define classes that start far left/right and move to center.
+        */
+
+        .anim-left-in { transform: translateX(-100vw); opacity: 0; transition: all 1s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        .active .anim-left-in { transform: translateX(0); opacity: 1; }
+
+        .anim-right-in { transform: translateX(100vw); opacity: 0; transition: all 1s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        .active .anim-right-in { transform: translateX(0); opacity: 1; }
+
+        .anim-fade-up { transform: translateY(30px); opacity: 0; transition: all 0.8s ease-out; }
+        .active .anim-fade-up { transform: translateY(0); opacity: 1; }
+
+        .anim-zoom { transform: scale(0.5); opacity: 0; transition: all 0.8s cubic-bezier(0.2, 0.8, 0.2, 1); }
+        .active .anim-zoom { transform: scale(1); opacity: 1; }
+
+        /* Delays */
+        .d-1 { transition-delay: 0.1s; }
+        .d-2 { transition-delay: 0.3s; }
+        .d-3 { transition-delay: 0.5s; }
+        .d-4 { transition-delay: 0.7s; }
+        .d-5 { transition-delay: 0.9s; }
+
+        /* 
+           PYRAMID LAYOUT SPECIFICS 
+           Layers are horizontal flex containers. Elements slide in from sides.
+        */
+        .layer-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .pyramid-block {
+            width: 280px;
+            padding: 1rem;
+            background: white;
+            border-left: 4px solid var(--accent-gold);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .block-left { text-align: left; border-left: 4px solid var(--accent-brown); border-right: none; }
+        .block-right { text-align: right; border-right: 4px solid var(--accent-gold); border-left: none; flex-direction: row-reverse; }
+
+        /* Specific Slide Styling */
+
+        /* Slide 4 (QF) */
+        .versus-split {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4rem;
+            margin-top: 3rem;
+            width: 100%;
+        }
+        
+        .side-panel {
+            flex: 1;
+            height: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: rgba(255,255,255,0.5);
+            border-radius: 12px;
+        }
+        
+        .vs-circle {
+            width: 80px; height: 80px; background: var(--accent-charcoal); color: var(--accent-gold);
+            border-radius: 50%; display:flex; align-items:center; justify-content:center;
+            font-weight: 800; font-size: 1.5rem; z-index: 5;
+            box-shadow: 0 0 0 10px rgba(255,255,255,0.8);
+        }
+
+        /* Controller */
+        #controller {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: rgba(0,0,0,0.8); border-radius: 100px; padding: 0.5rem 1.5rem;
+            display: flex; gap: 1rem; align-items: center; z-index: 100; backdrop-filter: blur(5px);
+        }
+        .btn-ctrl { background: none; border: none; color: white; cursor: pointer; padding: 0.5rem; }
+        .btn-ctrl:hover { opacity: 0.7; }
+
+    </style>
+</head>
+<body>
+
+<div id="presentation-container">
+    
+    <!-- SLIDE 1: Intro -->
+    <div class="slide active" id="slide-1" style="text-align: center;">
+        <div class="anim-zoom">
+            <div class="badge badge-gold">Official Format</div>
+        </div>
+        <h1 class="anim-fade-up d-1">The Knockout<br>Pyramid</h1>
+        <div style="width: 100px; height: 4px; background: var(--accent-gold); margin: 2rem auto;" class="anim-zoom d-2"></div>
+        <p class="anim-fade-up d-3">Teams enter from the sides.<br>Only one reaches the peak.</p>
+    </div>
+
+    <!-- SLIDE 2: Qual Overview -->
+    <div class="slide" id="slide-2">
+        <h2 class="anim-left-in">The Field</h2>
+        <div style="display: flex; justify-content: center; gap: 2rem; margin-top: 2rem;">
+            <!-- Left Card -->
+            <div class="card anim-left-in d-1" style="flex: 1; max-width: 300px;">
+                <div style="font-size: 3rem; color: var(--accent-brown); font-weight:800;">8</div>
+                <div>Total Teams</div>
+            </div>
+            
+            <!-- Middle -->
+            <div class="card anim-zoom d-2" style="flex: 1; max-width: 300px; transform: scale(1.1); border-color: var(--accent-gold);">
+                <div style="font-size: 3rem; color: var(--accent-gold); font-weight:800;">6</div>
+                <div>Qualified Teams</div>
+            </div>
+
+            <!-- Right Card -->
+            <div class="card anim-right-in d-1" style="flex: 1; max-width: 300px;">
+                <div style="font-size: 3rem; color: var(--accent-charcoal); font-weight:800;">2</div>
+                <div>Top Seeds Advantage</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 3: Direct Advantages -->
+    <div class="slide" id="slide-3">
+        <h2 class="anim-left-in">Top Seeds Advantage</h2>
+        <div class="versus-split">
+            <!-- Left Side: Rank 1 -->
+            <div class="side-panel anim-left-in d-1" style="border-left: 5px solid var(--accent-gold);">
+                <div class="badge badge-gold">Rank 1</div>
+                <h3 style="font-size: 2rem; margin-top: 1rem;">Direct to FINAL</h3>
+                <p style="margin-top: 1rem; width: 70%;">Bypasses all preliminary rounds. Waiting at the summit.</p>
+            </div>
+
+            <!-- Right Side: Rank 2 -->
+            <div class="side-panel anim-right-in d-1" style="border-right: 5px solid var(--accent-brown);">
+                <div class="badge badge-brown">Rank 2</div>
+                <h3 style="font-size: 2rem; margin-top: 1rem;">Direct to QUALIFIER</h3>
+                <p style="margin-top: 1rem; width: 70%;">Skips the Eliminator. One match away from Final.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 4: Quarter Finals -->
+    <div class="slide" id="slide-4">
+        <h2 class="anim-fade-up">Quarter Finals (Base Layer)</h2>
+        
+        <div style="display:flex; flex-direction: column; gap: 2rem; margin-top: 2rem;">
+            <!-- Match 1 Row -->
+            <div class="layer-container">
+                <div class="pyramid-block block-left anim-left-in d-1">
+                    <span>Rank 3</span>
+                    <span style="font-size:1.5rem;">&#8594;</span>
+                </div>
+                <div class="vs-circle anim-zoom d-2" style="width:50px; height:50px; font-size:1rem;">VS</div>
+                <div class="pyramid-block block-right anim-right-in d-1">
+                    <span>Rank 6</span>
+                    <span style="font-size:1.5rem;">&#8592;</span>
+                </div>
+            </div>
+
+            <!-- Match 2 Row -->
+             <div class="layer-container">
+                <div class="pyramid-block block-left anim-left-in d-2">
+                    <span>Rank 4</span>
+                    <span style="font-size:1.5rem;">&#8594;</span>
+                </div>
+                <div class="vs-circle anim-zoom d-3" style="width:50px; height:50px; font-size:1rem;">VS</div>
+                <div class="pyramid-block block-right anim-right-in d-2">
+                    <span>Rank 5</span>
+                    <span style="font-size:1.5rem;">&#8592;</span>
+                </div>
+            </div>
+        </div>
+        <p class="anim-fade-up d-4" style="text-align: center; margin-top: 2rem; color: #888;">Winners proceed to Eliminator</p>
+    </div>
+
+    <!-- SLIDE 5: Eliminator -->
+    <div class="slide" id="slide-5">
+        <div style="text-align: center;">
+            <div class="badge badge-brown anim-fade-up">Survivor Stage</div>
+            <h2 class="anim-fade-up d-1">ELIMINATOR</h2>
+        </div>
+        
+        <div class="versus-split" style="margin-top: 1rem;">
+            <!-- QF 1 Winner Left -->
+            <div class="card anim-left-in d-2" style="width: 350px; background: #fff;">
+                <h3>Winner of QF 1</h3>
+                <div style="font-size: 0.8rem; color: #888; margin-top:0.5rem;">From Left Bracket</div>
+            </div>
+
+            <div class="vs-circle anim-zoom d-3">VS</div>
+
+            <!-- QF 2 Winner Right -->
+            <div class="card anim-right-in d-2" style="width: 350px; background: #fff;">
+                <h3>Winner of QF 2</h3>
+                <div style="font-size: 0.8rem; color: #888; margin-top:0.5rem;">From Right Bracket</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 6: Qualifier -->
+    <div class="slide" id="slide-6">
+        <div style="text-align: center;">
+            <div class="badge badge-gold anim-fade-up">Semi-Final Stage</div>
+            <h2 class="anim-fade-up d-1">THE QUALIFIER</h2>
+        </div>
+
+        <div class="versus-split" style="gap: 2rem;">
+            <!-- Eliminator Winner (Left) -->
+            <div class="card anim-left-in d-2" style="width: 400px; border-left: 5px solid var(--accent-brown);">
+                <h3>Eliminator Winner</h3>
+                <p style="font-size: 0.9rem;">The Challenger</p>
+            </div>
+
+            <div class="vs-circle anim-zoom d-3" style="background: var(--accent-gold); color: white;">VS</div>
+
+            <!-- Rank 2 (Right) -->
+            <div class="card anim-right-in d-2" style="width: 400px; border-right: 5px solid var(--accent-gold);">
+                <h3>Rank 2 Team</h3>
+                <p style="font-size: 0.9rem;">The Defender</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 7: Final -->
+    <div class="slide" id="slide-7" style="background: linear-gradient(to bottom, #f0e6d9, #fff);">
+        <div style="position: absolute; width: 100%; top: 15%; text-align: center;">
+            <svg class="anim-zoom" width="60" height="60" viewBox="0 0 24 24" fill="var(--accent-gold)">
+                <path d="M5 2H19C19.55 2 20 2.45 20 3V5C20 8.87 16.87 12 13 12H11C7.13 12 4 8.87 4 5V3C4 2.45 4.45 2 5 2Z" />
+            </svg>
+            <h1 class="anim-fade-up d-1" style="margin: 0; color: var(--accent-gold);">FINAL</h1>
+        </div>
+
+        <div class="versus-split" style="margin-top: 8rem;">
+            <!-- Rank 1 (Left) -->
+            <div class="card anim-left-in d-2" style="width: 350px; height: 250px; display: flex; flex-direction: column; justify-content: center; background: #2d2d2d; color: white;">
+                <div class="badge badge-gold">Rank 1</div>
+                <h2 style="color: white; margin: 1rem 0;">Dominator</h2>
+            </div>
+            
+            <div style="font-size: 3rem; font-weight: 800; color: #ccc;" class="anim-zoom d-3">VS</div>
+
+            <!-- Qualifier Winner (Right) -->
+            <div class="card anim-right-in d-2" style="width: 350px; height: 250px; display: flex; flex-direction: column; justify-content: center;">
+                <div class="badge badge-brown">Winner of Qualifier</div>
+                <h2 style="margin: 1rem 0;">Challenger</h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 8: THE PYRAMID HERO -->
+    <div class="slide" id="slide-8">
+        <h2 class="anim-fade-up" style="position: absolute; top: 10%; left: 50%; transform: translateX(-50%); font-size:1.5rem; border:none;">Tournament Architecture</h2>
+
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 70%; width: 100%; position: relative; margin-top: 5rem;">
+            
+            <!-- LAYER 4: CHAMPION -->
+            <div style="margin-bottom: 2rem; z-index: 5;" class="anim-zoom d-5">
+                <div style="padding: 1rem 3rem; background: var(--accent-gold); color: white; font-weight: 800; border-radius: 4px; box-shadow: 0 10px 20px rgba(197, 160, 89, 0.4);">
+                    &#9818; CHAMPION
+                </div>
+            </div>
+
+            <!-- LAYER 3: FINAL -->
+            <div class="layer-container">
+                <div class="pyramid-block block-left anim-left-in d-4" style="background: #eee; width: 220px;">Rank 1</div>
+                <div style="width: 2px; height: 40px; background: #ccc;"></div>
+                <div class="pyramid-block block-right anim-right-in d-4" style="background: #eee; width: 220px;">Qualifier Win</div>
+            </div>
+
+            <!-- LAYER 2: QUALIFIER -->
+            <div class="layer-container">
+                <div class="pyramid-block block-left anim-left-in d-3" style="width: 260px;">Eliminator Win</div>
+                <div style="width: 2px; height: 40px; background: #ccc;"></div>
+                <div class="pyramid-block block-right anim-right-in d-3" style="width: 260px;">Rank 2</div>
+            </div>
+
+            <!-- LAYER 1: ELIMINATOR -->
+            <div class="layer-container">
+                <div class="pyramid-block block-left anim-left-in d-2" style="width: 300px;">Winner QF 1</div>
+                <div style="width: 2px; height: 40px; background: #ccc;"></div>
+                <div class="pyramid-block block-right anim-right-in d-2" style="width: 300px;">Winner QF 2</div>
+            </div>
+
+            <!-- LAYER 0: BASE -->
+            <div class="layer-container">
+                <div style="display: flex; gap: 1rem;" class="anim-left-in d-1">
+                    <div class="pyramid-block block-left" style="width: 160px; font-size: 0.8rem;">Rank 3</div>
+                    <div class="pyramid-block block-left" style="width: 160px; font-size: 0.8rem;">Rank 6</div>
+                </div>
+                
+                <div style="width: 50px;"></div>
+
+                <div style="display: flex; gap: 1rem;" class="anim-right-in d-1">
+                    <div class="pyramid-block block-right" style="width: 160px; font-size: 0.8rem;">Rank 4</div>
+                    <div class="pyramid-block block-right" style="width: 160px; font-size: 0.8rem;">Rank 5</div>
+                </div>
+            </div>
+
+            <!-- Triangle Background -->
+            <div style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 0; height: 0; 
+                 border-left: 600px solid transparent; border-right: 600px solid transparent; 
+                 border-bottom: 500px solid rgba(0,0,0,0.03); z-index: 0;" class="anim-fade-up">
+            </div>
+
+        </div>
+    </div>
+
+    <!-- SLIDE 9: Closing -->
+    <div class="slide" id="slide-9" style="text-align: center;">
+        <h1 class="anim-left-in" style="font-size: 3rem;">Build Your Legacy.</h1>
+        <h1 class="anim-right-in d-2" style="font-size: 4rem; color: var(--accent-gold);">Reach the Top.</h1>
+    </div>
+
+</div>
+
+<!-- Controller UI -->
+<div id="controller">
+    <button class="btn-ctrl" onclick="prevSlide()" title="Previous">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <div style="color: #ccc; font-family: monospace; font-size: 0.9rem;" id="page-num">1 / 9</div>
+    <button class="btn-ctrl" onclick="nextSlide()" title="Next">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+    <button class="btn-ctrl" onclick="toggleFullScreen()" title="Fullscreen" style="margin-left: 1rem;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+    </button>
+</div>
+
+<script>
+    let currentSlide = 1;
+    const totalSlides = 9;
+
+    function showSlide(n) {
+        if (n < 1) n = 1;
+        if (n > totalSlides) n = totalSlides;
+        
+        document.querySelector(`.slide.active`).classList.remove('active');
+        currentSlide = n;
+        const newSlide = document.getElementById(`slide-${currentSlide}`);
+        newSlide.classList.add('active');
+        
+        document.getElementById('page-num').innerText = `${currentSlide} / ${totalSlides}`;
+        newSlide.focus();
+    }
+
+    function nextSlide() { if(currentSlide < totalSlides) showSlide(currentSlide + 1); }
+    function prevSlide() { if(currentSlide > 1) showSlide(currentSlide - 1); }
+    function toggleFullScreen() {
+        if (!document.fullscreenElement) { document.documentElement.requestFullscreen(); } 
+        else { if (document.exitFullscreen) { document.exitFullscreen(); } }
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') { nextSlide(); } 
+        else if (e.key === 'ArrowLeft') { prevSlide(); }
+    });
+
+    showSlide(1);
+</script>
+
+</body>
+</html>

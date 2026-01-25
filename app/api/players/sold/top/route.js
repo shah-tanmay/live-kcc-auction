@@ -9,8 +9,17 @@ export async function GET() {
     await connectToDB();
     const Player = getModel('Player');
 
-    // 2) find top 10 sold players by highest sale price
-    const topPlayers = await Player.find({ isSold: true })
+    const Team = getModel('Team');
+    const teams = await Team.find({}).lean();
+    const ownerNames = teams.flatMap(t => 
+        t.owner ? t.owner.split(/,|&/).map(s => s.trim()).filter(s => s) : []
+    );
+
+    // 2) find top 10 sold players by highest sale price (EXCLUDING OWNERS)
+    const topPlayers = await Player.find({ 
+            isSold: true,
+            name: { $nin: ownerNames } 
+        })
         .sort({ soldFor: -1 })
         .limit(10)
         .select('name role photoUrl soldFor')

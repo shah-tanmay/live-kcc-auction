@@ -409,6 +409,7 @@ function parseTeamsJSON(filePath) {
     team.motto = team.motto || "";
     team.owner = team.owner || "";
     team.purseLeft = team.purseLeft || 100000;
+    team.ownerValuation = team.ownerValuation || 0;
     team.squad = [];
   });
 
