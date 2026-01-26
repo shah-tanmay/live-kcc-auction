@@ -7,7 +7,46 @@ import { formatPoints } from '@/utils/formatPoints';
 export default function RevealControl() {
   const [teams, setTeams] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [editingTeamId, setEditingTeamId] = useState(null);
+  const [editValues, setEditValues] = useState({});
   const router = useRouter();
+
+  const startEditing = (team) => {
+      setEditingTeamId(team._id);
+      
+      // Initialize values from team map or split average
+      const owners = team.owner.split(/,|&/).map(s => s.trim());
+      const values = {};
+      
+      owners.forEach(name => {
+         if (team.ownerValuations && team.ownerValuations[name]) {
+             values[name] = team.ownerValuations[name];
+         } else {
+             values[name] = Math.floor(team.ownerValuation / owners.length) || 0;
+         }
+      });
+      setEditValues(values);
+  };
+
+  const savePrices = async (teamId) => {
+      try {
+          const res = await fetch('/api/reveal/update-price', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ teamId, updates: editValues })
+          });
+          
+          if (res.ok) {
+              setEditingTeamId(null);
+              fetchTeams(); // Refresh data
+          } else {
+              alert('Failed to update prices');
+          }
+      } catch (e) {
+          alert('Error updating prices');
+          console.error(e);
+      }
+  };
 
   const fetchTeams = async () => {
     const res = await fetch('/api/teams');
@@ -89,10 +128,42 @@ export default function RevealControl() {
                         </div>
                         
                         <div className="grid grid-cols-1 gap-2 mb-8">
-                            <div className="flex justify-between items-end p-3 rounded-2xl bg-slate-50 border border-slate-100">
-                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Base Valuation</span>
-                                <span className="text-lg font-black text-slate-800">{formatPoints(team.ownerValuation)}</span>
-                            </div>
+                            {editingTeamId === team._id ? (
+                                <div className="flex flex-col gap-2 bg-slate-50 p-3 rounded-2xl border border-slate-100">
+                                    {team.owner.split(/,|&/).map((owner, idx) => {
+                                        const name = owner.trim();
+                                        return (
+                                            <div key={idx} className="flex justify-between items-center gap-2">
+                                                <span className="text-[10px] font-bold text-slate-400 uppercase truncate w-24" title={name}>{name}</span>
+                                                <input 
+                                                    type="number" 
+                                                    value={editValues[name] || ''} 
+                                                    onChange={(e) => setEditValues(prev => ({...prev, [name]: e.target.value}))}
+                                                    className="w-24 px-2 py-1 text-sm font-bold text-slate-800 bg-white border border-slate-200 rounded-lg focus:ring-2 focus:ring-orange-500 outline-none"
+                                                    placeholder="Price"
+                                                />
+                                            </div>
+                                        );
+                                    })}
+                                    <div className="flex gap-2 mt-2">
+                                        <button onClick={() => savePrices(team._id)} className="flex-1 bg-green-500 text-white py-1 rounded-lg text-xs font-bold hover:bg-green-600">Save</button>
+                                        <button onClick={() => setEditingTeamId(null)} className="flex-1 bg-slate-200 text-slate-600 py-1 rounded-lg text-xs font-bold hover:bg-slate-300">Cancel</button>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="flex justify-between items-end p-3 rounded-2xl bg-slate-50 border border-slate-100 relative group/price">
+                                    <div className="flex flex-col">
+                                        <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Total Valuation</span>
+                                        <span className="text-lg font-black text-slate-800">{formatPoints(team.ownerValuation)}</span>
+                                    </div>
+                                    <button 
+                                        onClick={() => startEditing(team)}
+                                        className="absolute top-2 right-2 p-1.5 bg-white rounded-lg border border-slate-200 text-slate-400 hover:text-orange-500 hover:border-orange-200 shadow-sm opacity-0 group-hover/price:opacity-100 transition-all"
+                                    >
+                                        <span className="material-icons-round text-sm">edit</span>
+                                    </button>
+                                </div>
+                            )}
                         </div>
 
                         <div className="mt-auto grid grid-cols-2 gap-3">

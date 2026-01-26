@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KCC Tournament Season 5</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #F8F5F2;
+            --bg-gradient: radial-gradient(circle at center, #FDFBF7 0%, #F2EBE5 100%);
+            --text-main: #2D2D2D;
+            --text-muted: #666666;
+            --accent-gold: #C5A059;
+            --accent-brown: #8D7B68;
+            --accent-charcoal: #373F47;
+            --shadow: 0 15px 40px -5px rgba(141, 123, 104, 0.3);
+            --skew-angle: -10deg;
+            --ease-cinematic: cubic-bezier(0.22, 1, 0.36, 1);
+            --anim-duration: 1.2s;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background-color: #f0e6d9;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        #presentation-container {
+            width: 100%;
+            max-width: 1280px;
+            aspect-ratio: 16/9;
+            background: var(--bg-gradient);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            border-radius: 8px;
+        }
+
+        /* Logo Styling */
+        .kcc-logo {
+            width: 180px; 
+            height: auto;
+            margin-bottom: 2rem;
+            filter: drop-shadow(0 10px 10px rgba(0,0,0,0.2));
+            z-index: 50; 
+            position: relative;
+        }
+        
+        .kcc-logo-blend {
+            mix-blend-mode: multiply;
+            filter: contrast(1.2);
+        }
+
+        /* SVG Connections */
+        #bracket-svg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 10; 
+        }
+        
+        .connector-path {
+            fill: none;
+            stroke: var(--accent-gold);
+            stroke-width: 4;
+            transition: opacity 1s;
+            opacity: 1; 
+            filter: drop-shadow(0 2px 3px rgba(0,0,0,0.2));
+            stroke-linecap: square;
+            stroke-linejoin: miter;
+        }
+        
+        .connector-dot {
+            fill: #fff;
+            stroke: var(--accent-charcoal);
+            stroke-width: 3;
+            r: 5;
+        }
+
+        /* Slides */
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1s ease-in-out;
+            padding: 2rem;
+            z-index: 20; 
+        }
+
+        .slide.active { opacity: 1; pointer-events: all; }
+
+        /* Typography */
+        h1, h2, h3 { color: var(--accent-charcoal); }
+        h1 { font-size: 3.5rem; font-weight: 800; text-transform: uppercase; line-height: 1.1; }
+        h2 { font-size: 2rem; font-weight: 700; margin-bottom: 1rem; }
+        .season-text {
+            font-family: 'Playfair Display', serif;
+            color: var(--accent-gold);
+            font-size: 1.5rem;
+            font-style: italic;
+            margin-top: 1rem;
+            letter-spacing: 1px;
+        }
+
+        /* Skewed Components */
+        .skew-box {
+            transform: skewX(var(--skew-angle));
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: var(--shadow);
+            padding: 1rem 1.5rem;
+            border-left: 5px solid var(--accent-gold);
+            position: relative;
+            overflow: hidden;
+            border-radius: 4px;
+            width: 280px;
+        }
+        
+        .skew-content { transform: skewX(calc(var(--skew-angle) * -1)); } 
+        
+        .box-dark { background: var(--accent-charcoal); color: white; border-color: var(--accent-brown); }
+        .box-gold { border-color: var(--accent-gold); background: linear-gradient(135deg, white 50%, #fdf6e9 100%); }
+        .box-brown { border-color: var(--accent-brown); }
+        .box-final { background: linear-gradient(135deg, var(--accent-gold) 0%, #e8c070 100%); border: none; color:white; }
+
+        .team-row { display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid rgba(0,0,0,0.1); }
+        .team-row:last-child { border-bottom: none; }
+        .team-name { font-weight: 700; font-size: 1rem; }
+        .team-rank { font-size: 0.8rem; opacity: 0.8; font-weight: 600; text-transform: uppercase; }
+
+        .label-tag {
+            font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--accent-brown);
+            margin-bottom: 0.3rem; display: block;
+        }
+        .box-dark .label-tag, .box-final .label-tag { color: rgba(255,255,255,0.8); }
+
+        /* Animation System */
+        .anim-fade { opacity: 0; transform: translateY(30px); transition: all var(--anim-duration) var(--ease-cinematic); }
+        .slide.active .anim-fade { opacity: 1; transform: translateY(0); }
+        
+        .delay-1 { transition-delay: 0.2s; }
+        .delay-2 { transition-delay: 0.4s; }
+        .delay-3 { transition-delay: 0.6s; }
+        .delay-4 { transition-delay: 0.8s; }
+
+        /* Absolute Layout for Summary Slide (Perfect Coordinates) */
+        .abs-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .abs-box {
+            position: absolute;
+            transition: all 0.5s ease-out;
+        }
+
+        /* Controller */
+        #controller {
+            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+            background: rgba(0,0,0,0.8); border-radius: 100px; padding: 0.5rem 1.5rem;
+            display: flex; gap: 1rem; align-items: center; z-index: 100; backdrop-filter: blur(5px);
+        }
+        .btn-ctrl { background: none; border: none; color: white; cursor: pointer; padding: 0.5rem; border-radius: 50%; }
+        .btn-ctrl:hover { background: rgba(255,255,255,0.2); }
+    </style>
+</head>
+<body>
+
+<div id="presentation-container">
+
+    <svg id="bracket-svg" viewBox="0 0 1280 720"><!-- Lines drawn via JS --></svg>
+
+    <!-- SLIDE 1: Title & Logo -->
+    <div class="slide active" id="slide-1" style="display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center;">
+        <img src="kcc_logo.jpg" class="kcc-logo kcc-logo-blend anim-fade" alt="KCC Logo">
+        <div class="anim-fade delay-1">
+            <h1 style="font-size: 5rem;">KCC TOURNAMENT</h1>
+            <div class="season-text">Season 5 &bull; 2026</div>
+        </div>
+        <div style="width: 80px; height: 4px; background: var(--accent-gold); margin: 2rem auto;" class="anim-fade delay-2"></div>
+        <p class="anim-fade delay-3" style="color: var(--accent-brown); letter-spacing: 3px; text-transform: uppercase;">Structure & Format</p>
+    </div>
+
+    <!-- SLIDE 2: QF & Eliminator -->
+    <div class="slide" id="slide-2">
+        <h2 class="anim-fade">Preliminary Knockouts</h2>
+        <div style="display: flex; gap: 4rem; width:100%; height:70%; align-items: center; justify-content: center; margin-top: 2rem;">
+            <div style="display: flex; flex-direction: column; gap: 2rem;">
+                <div class="skew-box box-gold anim-fade delay-1">
+                    <div class="skew-content">
+                        <span class="label-tag">Quarter Final 1</span>
+                        <div class="team-row"><span class="team-name">Rank 3</span> <span class="team-rank">#3</span></div>
+                        <div class="team-row"><span class="team-name">Rank 6</span> <span class="team-rank">#6</span></div>
+                    </div>
+                </div>
+                <div class="skew-box box-gold anim-fade delay-2">
+                    <div class="skew-content">
+                        <span class="label-tag">Quarter Final 2</span>
+                        <div class="team-row"><span class="team-name">Rank 4</span> <span class="team-rank">#4</span></div>
+                        <div class="team-row"><span class="team-name">Rank 5</span> <span class="team-rank">#5</span></div>
+                    </div>
+                </div>
+            </div>
+            <div class="anim-fade delay-3" style="font-size: 4rem; color: #ccc;">&rarr;</div>
+            <div class="skew-box box-dark anim-fade delay-4">
+                <div class="skew-content">
+                    <span class="label-tag">Eliminator</span>
+                    <div class="team-row"><span class="team-name">Winner QF 1</span></div>
+                    <div class="team-row"><span class="team-name">Winner QF 2</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SLIDE 3: Qualifier -->
+    <div class="slide" id="slide-3">
+        <h2 class="anim-fade">The Qualifier</h2>
+        <div style="display:flex; justify-content:center; align-items:center; height:60%; gap:4rem;">
+            <div class="skew-box box-brown anim-fade delay-1" style="transform: skewX(var(--skew-angle)) scale(1.1);">
+                <div class="skew-content">
+                    <span class="label-tag">Advantage Team</span>
+                    <div class="team-row"><span class="team-name" style="font-size: 1.5rem;">Rank 2</span></div>
+                    <div style="font-size: 0.8rem; color: #888;">Direct Entry</div>
+                </div>
+            </div>
+            <div style="font-size: 3rem; font-weight:800; color:var(--accent-gold);" class="anim-fade delay-2">VS</div>
+            <div class="skew-box box-dark anim-fade delay-3">
+                <div class="skew-content">
+                    <span class="label-tag">Challenger</span>
+                    <div class="team-row"><span class="team-name" style="font-size: 1.2rem;">Eliminator Winner</span></div>
+                    <div style="font-size: 0.8rem; color: #aaa;">Survivor</div>
+                </div>
+            </div>
+        </div>
+        <p class="anim-fade delay-4" style="text-align: center;">Winner advances to GRAND FINAL</p>
+    </div>
+
+    <!-- SLIDE 4: MASTER BRACKET (Absolute Positioning) -->
+    <div class="slide" id="slide-4">
+        
+        <div style="position: absolute; top: 1rem; width: 100%; text-align: center; opacity: 0.05;">
+            <h1 style="font-size: 9rem; color: var(--accent-brown); margin:0;">2026</h1>
+        </div>
+
+        <div class="abs-container">
+            <!-- Rank 1: Top Left -->
+            <!-- X=80, Y=150 -->
+            <div class="abs-box skew-box box-final anim-fade delay-1" id="box-rank1" style="background:var(--accent-gold); top:150px; left:80px;">
+                <div class="skew-content">
+                    <span class="label-tag" style="color:white;">Top Seed Advantage</span>
+                    <div class="team-row" style="border-color:rgba(255,255,255,0.3);"><span class="team-name">RANK 1</span></div>
+                    <div style="font-size:0.7rem; margin-top:0.2rem; color:white;">Direct to Final</div>
+                </div>
+            </div>
+
+            <!-- Eliminator: Bottom Left -->
+            <!-- X=80, Y=500 -->
+            <div class="abs-box skew-box box-brown anim-fade delay-2" id="box-elim" style="background:white; border-left: 5px solid var(--accent-brown); top:500px; left:80px;">
+                <div class="skew-content">
+                    <span class="label-tag">Eliminator</span>
+                    <div class="team-row"><span class="team-name">Winner QF1</span></div>
+                    <div class="team-row"><span class="team-name">Winner QF2</span></div>
+                </div>
+            </div>
+
+            <!-- Qualifier: Mid Center -->
+            <!-- X=480, Y=350 -->
+            <div class="abs-box skew-box box-gold anim-fade delay-3" id="box-qual" style="background:white; top:350px; left:480px;">
+                <div class="skew-content">
+                    <span class="label-tag">Qualifier</span>
+                    <div class="team-row"><span class="team-name">Rank 2 Team</span></div>
+                    <div class="team-row"><span class="team-name">Winner Eliminator</span></div>
+                </div>
+            </div>
+
+            <!-- Final: Mid Right -->
+            <!-- X=880, Y=250 -->
+            <div class="abs-box skew-box box-final anim-fade delay-4" id="box-final" style="width: 350px; padding: 2rem; top:250px; left:880px; z-index:30;">
+                <div class="skew-content">
+                    <span class="label-tag">THE CHAMPIONSHIP</span>
+                    <div class="team-row" style="border-color:rgba(255,255,255,0.3);"><span class="team-name" style="font-size:1.5rem;">RANK 1</span></div>
+                    <div class="team-row" style="border-color:rgba(255,255,255,0.3);"><span class="team-name" style="font-size:1.5rem;">Winner Qual</span></div>
+                </div>
+            </div>
+            
+            <img src="kcc_logo.jpg" class="abs-box kcc-logo-blend" style="width:90px; top:450px; left:1000px; opacity:0.8;">
+        </div>
+
+    </div>
+
+    <!-- SLIDE 5: Closing -->
+    <div class="slide" id="slide-5" style="display: flex; justify-content: center; align-items: center; background: var(--bg-gradient);">
+         <div style="text-align: center;">
+             <img src="kcc_logo.jpg" class="kcc-logo kcc-logo-blend anim-fade" alt="KCC Logo">
+             <h1 class="anim-fade delay-1" style="color: var(--accent-charcoal); margin: 1rem 0;">KCC 2026</h1>
+             <p class="anim-fade delay-2" style="color: var(--accent-brown); font-size: 1.2rem;">One Champion.</p>
+         </div>
+    </div>
+
+</div>
+
+<!-- Controller -->
+<div id="controller">
+    <button class="btn-ctrl" onclick="prevSlide()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M15 18l-6-6 6-6"/></svg></button>
+    <div style="color: #ccc; font-family: monospace; font-size: 0.9rem;" id="page-num">1 / 5</div>
+    <button class="btn-ctrl" onclick="nextSlide()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M9 18l6-6-6-6"/></svg></button>
+    <button class="btn-ctrl" onclick="toggleFullScreen()" style="margin-left: 1rem;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+    </button>
+</div>
+
+<script>
+    let currentSlide = 1;
+    const totalSlides = 5;
+
+    function drawLines() {
+        const svg = document.getElementById('bracket-svg');
+        svg.innerHTML = ''; 
+
+        if (currentSlide === 4) {
+             // Precise Coordinates based on absolute positioning
+             // Box Size: ~280x?? 
+             // Rank 1: Left 80, Top 150. Right Edge ~360. Mid-Y ~200.
+             // Final: Left 880, Top 250. Left Edge 880. Top Input ~280. Bot Input ~350.
+             
+             // PATH 1: Rank 1 -> Final (Top)
+             // Start: (360, 200) -> Right to 830 -> Down to 280 -> Right to 880
+             // Correction: Visual "Right Edge" is affected by skew. Skew -10deg means top is right-shifted, bottom left-shifted.
+             // Center is safe. Right edge approx box_width + left.
+             // Let's assume connection points:
+             // Rank 1 Out: 360, 190
+             // Final In Top: 880, 290
+             
+             const p1 = document.createElementNS("http://www.w3.org/2000/svg", "path");
+             p1.setAttribute("d", "M 360 190 L 830 190 L 830 290 L 880 290");
+             p1.setAttribute("class", "connector-path delay-1");
+             p1.style.stroke = "var(--accent-charcoal)";
+             svg.appendChild(p1);
+             
+             // Dot Rank 1
+             const d1 = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+             d1.setAttribute("cx", "360"); d1.setAttribute("cy", "190"); d1.setAttribute("class", "connector-dot");
+             svg.appendChild(d1);
+
+
+             // PATH 2: Eliminator -> Qualifier
+             // Elim: Left 80, Top 500. Out: (360, 550)
+             // Qual: Left 480, Top 350. In: (480, 420)
+             // Path: 360,550 -> Right to 420 -> Up to 420 -> Right to 480
+             const p2 = document.createElementNS("http://www.w3.org/2000/svg", "path");
+             p2.setAttribute("d", "M 360 550 L 420 550 L 420 420 L 480 420");
+             p2.setAttribute("class", "connector-path delay-2");
+             svg.appendChild(p2);
+             
+             const d2 = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+             d2.setAttribute("cx", "360"); d2.setAttribute("cy", "550"); d2.setAttribute("class", "connector-dot");
+             svg.appendChild(d2);
+             const d3 = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+             d3.setAttribute("cx", "480"); d3.setAttribute("cy", "420"); d3.setAttribute("class", "connector-dot");
+             svg.appendChild(d3);
+
+
+             // PATH 3: Qualifier -> Final (Bottom)
+             // Qual Out: (760, 400)
+             // Final In Bot: (880, 360)
+             // Path: 760,400 -> Right to 830 -> Up/Down to 360 -> Right to 880
+             const p3 = document.createElementNS("http://www.w3.org/2000/svg", "path");
+             p3.setAttribute("d", "M 760 400 L 830 400 L 830 360 L 880 360");
+             p3.setAttribute("class", "connector-path delay-3");
+             svg.appendChild(p3);
+
+             const d4 = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+             d4.setAttribute("cx", "760"); d4.setAttribute("cy", "400"); d4.setAttribute("class", "connector-dot");
+             svg.appendChild(d4);
+             const d5 = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+             d5.setAttribute("cx", "880"); d5.setAttribute("cy", "360"); d5.setAttribute("class", "connector-dot");
+             svg.appendChild(d5);
+             
+             // Final IN Top Dot (for Rank 1)
+             const d6 = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+             d6.setAttribute("cx", "880"); d6.setAttribute("cy", "290"); d6.setAttribute("class", "connector-dot");
+             svg.appendChild(d6);
+        }
+    }
+
+    function showSlide(n) {
+        if (n < 1) n = 1;
+        if (n > totalSlides) n = totalSlides;
+        const active = document.querySelector('.slide.active');
+        if(active) active.classList.remove('active');
+        currentSlide = n;
+        document.getElementById(`slide-${currentSlide}`).classList.add('active');
+        document.getElementById('page-num').innerText = `${currentSlide} / ${totalSlides}`;
+        drawLines();
+    }
+
+    function nextSlide() { if(currentSlide < totalSlides) showSlide(currentSlide + 1); }
+    function prevSlide() { if(currentSlide > 1) showSlide(currentSlide - 1); }
+    function toggleFullScreen() {
+        if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+        else if (document.exitFullscreen) document.exitFullscreen();
+    }
+    
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') nextSlide();
+        else if (e.key === 'ArrowLeft') prevSlide();
+    });
+    
+    setTimeout(drawLines, 500);
+</script>
+
+</body>
+</html>

@@ -19,6 +19,10 @@ export default function RevealSuspense({ team, ownerPhotos, onRevealSuccess }) {
   const photos = ownerPhotos && ownerPhotos.length > 0 ? ownerPhotos : [photoPlaceholder];
   const hasMultipleOwners = photos.length > 1;
 
+  // Specific fix for teams with photos that need full visibility (no cropping)
+  const useContain = team.name.includes("Boundary Smashers") || team.name.includes("Oswal Avengers");
+  const objectFitClass = useContain ? "object-contain" : "object-cover";
+
   const handleSubmit = async () => {
     if (!password) return;
     setLoading(true);
@@ -121,7 +125,7 @@ export default function RevealSuspense({ team, ownerPhotos, onRevealSuccess }) {
                   <div className="w-full h-72 bg-slate-100 overflow-hidden flex">
                       {photos.map((url, idx) => (
                           <div key={idx} className={`h-full ${hasMultipleOwners ? 'w-1/2' : 'w-full'} border-r border-white/20 last:border-0 relative group/img`}>
-                             <img src={url} referrerPolicy="no-referrer" className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700" alt={team.owner} />
+                             <img src={url} referrerPolicy="no-referrer" className={`w-full h-full ${objectFitClass} grayscale hover:grayscale-0 transition-all duration-700`} alt={team.owner} />
                           </div>
                       ))}
                   </div>
@@ -219,7 +223,7 @@ export default function RevealSuspense({ team, ownerPhotos, onRevealSuccess }) {
                 <div className="h-64 relative overflow-hidden bg-slate-100 flex">
                     {photos.map((url, idx) => (
                         <div key={idx} className={`h-full ${hasMultipleOwners ? 'w-1/2' : 'w-full'} border-r border-white/20 last:border-0 relative`}>
-                           <img src={url} referrerPolicy="no-referrer" className="w-full h-full object-cover grayscale brightness-110" alt={team.owner} />
+                           <img src={url} referrerPolicy="no-referrer" className={`w-full h-full ${objectFitClass} grayscale brightness-110`} alt={team.owner} />
                         </div>
                     ))}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent pointer-events-none"></div>

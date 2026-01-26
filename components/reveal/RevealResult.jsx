@@ -106,9 +106,13 @@ export default function RevealResult({ team, ownerPhotos }) {
                                 {(() => {
                                     const photoPlaceholder = "https://placehold.co/400x400/f3f4f6/a1a1aa?text=No+Photo";
                                     const dispPhotos = ownerPhotos && ownerPhotos.length > 0 ? ownerPhotos : [photoPlaceholder];
+                                    
+                                    const useContain = team.name.includes("Boundary Smashers") || team.name.includes("Oswal Avengers");
+                                    const objectFitClass = useContain ? "object-contain" : "object-cover";
+
                                     return dispPhotos.map((url, idx, arr) => (
                                         <div key={idx} className={`h-full ${arr.length > 1 ? 'w-1/2' : 'w-full'} border-r border-slate-100 last:border-0 relative`}>
-                                            <img src={url} referrerPolicy="no-referrer" className="w-full h-full object-cover transition-transform duration-500 hover:scale-110" alt="Owner" />
+                                            <img src={url} referrerPolicy="no-referrer" className={`w-full h-full ${objectFitClass} transition-transform duration-500 hover:scale-110`} alt="Owner" />
                                         </div>
                                     ));
                                 })()}
