@@ -92,7 +92,7 @@ export default function RevealResult({ team, ownerPhotos }) {
                             <img src={team.logoUrl} referrerPolicy="no-referrer" alt="Team Logo" className="w-full h-full object-contain" />
                         </div>
                         <div className="text-center">
-                            <p className="uppercase tracking-[0.3em] text-[10px] font-black text-[#FF6B00]/70">City Premier League 2026</p>
+                            <p className="uppercase tracking-[0.3em] text-[10px] font-black text-[#FF6B00]/70">KCC SEASON-5, 2026</p>
                             <h4 className="text-xl font-black italic tracking-tighter text-gray-800">{team.name}</h4>
                         </div>
                     </div>
