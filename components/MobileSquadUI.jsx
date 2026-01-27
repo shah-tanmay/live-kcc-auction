@@ -126,15 +126,16 @@ const MobileSquadUI = ({
 
                 {/* Squad Grid */}
                 <div className="grid grid-cols-2 gap-4">
-                    {filteredPlayers.map((player, idx) => (
+                    {filteredPlayers.map((player) => (
                         <div 
-                            key={idx} 
+                            key={player._id} 
                             onClick={() => onPlayerClick(player)}
                             className="bg-white rounded-xl overflow-hidden border border-gray-100 shadow-sm active:scale-95 transition-transform"
                         >
                             <div className="h-32 bg-gradient-to-b from-slate-200 to-slate-50 relative flex items-end justify-center">
                                 {player.photoUrl ? (
                                     <img 
+                                        key={player._id}
                                         alt={player.name} 
                                         referrerPolicy="no-referrer"
                                         className="h-28 object-contain drop-shadow-md" 

@@ -8,6 +8,7 @@ export async function GET() {
   const Player = getModel('Player');
   const players = await Player.find()
     .populate("soldTo", "name logoUrl")
+    .sort({ name: 1 })
     .lean();
   
   return new Response(JSON.stringify(players), {

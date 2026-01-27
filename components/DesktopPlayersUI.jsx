@@ -153,7 +153,7 @@ export default function DesktopPlayersUI({ players }) {
                                             <div className="flex items-center gap-4">
                                                 <div className="size-14 rounded-2xl bg-slate-100 overflow-hidden border border-slate-200 group-hover:scale-105 transition-transform duration-300 flex items-center justify-center">
                                                     {player.photoUrl ? (
-                                                        <img src={player.photoUrl} alt={player.name} referrerPolicy="no-referrer" className="w-full h-full object-cover" />
+                                                        <img key={player._id} src={player.photoUrl} alt={player.name} referrerPolicy="no-referrer" className="w-full h-full object-cover" />
                                                     ) : (
                                                         <div className="w-full h-full bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center text-slate-500 font-black text-xl shadow-inner uppercase tracking-tighter">
                                                             {player.name[0]}

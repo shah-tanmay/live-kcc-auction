@@ -111,7 +111,8 @@ export default function MobilePlayersUI({ players, refreshData }) {
                     <div 
                         key={player._id} 
                         onClick={() => handlePlayerClick(player)}
-                        className="bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm relative group cursor-pointer active:scale-95 transition-transform"
+                        className="bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm relative group cursor-pointer active:scale-95 transition-transform isolation-auto"
+                        style={{ transform: 'translateZ(0)' }}
                     >
                         <div className={`h-44 bg-gradient-to-b ${getRoleGradient(player.role)} relative flex items-end justify-center pt-8`}>
                             {player.isSold ? (
@@ -129,7 +130,15 @@ export default function MobilePlayersUI({ players, refreshData }) {
                             )}
                             
                             {player.photoUrl ? (
-                                <img src={player.photoUrl} alt={player.name} referrerPolicy="no-referrer" className="h-40 object-contain drop-shadow-2xl filter contrast-125 transition-transform group-hover:scale-110 duration-500" />
+                                <img 
+                                    key={player._id}
+                                    src={player.photoUrl} 
+                                    alt={player.name} 
+                                    referrerPolicy="no-referrer" 
+                                    className="h-40 object-contain drop-shadow-2xl filter contrast-125 transition-transform group-hover:scale-110 duration-500" 
+                                    loading="eager"
+                                    decoding="async"
+                                />
                             ) : (
                                 <div className="h-40 w-full flex items-center justify-center relative">
                                     <div className="size-24 rounded-full bg-white/30 backdrop-blur-md flex items-center justify-center border-2 border-white/50 shadow-xl">
@@ -142,8 +151,8 @@ export default function MobilePlayersUI({ players, refreshData }) {
                             )}
                         </div>
 
-                        <div className="p-3 relative">
-                            <div className="absolute -top-10 left-3 right-3 bg-white/95 backdrop-blur-md rounded-xl p-3 shadow-lg border border-gray-50 flex flex-col min-w-0">
+                        <div className="p-3 relative z-20">
+                            <div className="absolute -top-10 left-3 right-3 bg-white/95 backdrop-blur-md rounded-xl p-3 shadow-lg border border-gray-50 flex flex-col min-w-0 z-30">
                                 <p className="text-[9px] text-gray-400 font-bold uppercase tracking-wider">{player.role}</p>
                                 <h3 className="font-extrabold text-gray-900 text-sm leading-tight truncate">{player.name}</h3>
                             </div>
