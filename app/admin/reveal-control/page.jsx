@@ -166,21 +166,33 @@ export default function RevealControl() {
                             )}
                         </div>
 
-                        <div className="mt-auto grid grid-cols-2 gap-3">
-                            <button 
-                                onClick={() => window.open(`/reveal/${team.name.toLowerCase().replace(/[^a-z0-9]/g, '-')}`, '_blank')}
-                                className="bg-white border-2 border-slate-100 hover:border-blue-500/20 hover:bg-blue-50 text-slate-500 hover:text-blue-600 px-4 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 group/btn"
-                            >
-                                <span className="material-icons-round text-lg group-hover/btn:scale-110 transition-transform">visibility</span>
-                                <span>Preview</span>
-                            </button>
-                            {team.isRevealed && (
+                        <div className="mt-auto flex flex-col gap-3">
+                            <div className="grid grid-cols-2 gap-3">
                                 <button 
-                                    onClick={() => handleReset(team._id)} 
-                                    className="bg-red-50 hover:bg-red-500 text-red-500 hover:text-white border-2 border-red-50 hover:border-red-600 px-4 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 group/btn2"
+                                    onClick={() => window.open(`/reveal/${team.name.toLowerCase().replace(/[^a-z0-9]/g, '-')}`, '_blank')}
+                                    className="bg-white border-2 border-slate-100 hover:border-blue-500/20 hover:bg-blue-50 text-slate-500 hover:text-blue-600 px-4 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 group/btn"
                                 >
-                                    <span className="material-icons-round text-lg group-hover/btn2:rotate-90 transition-transform">undo</span>
-                                    <span>Reset</span>
+                                    <span className="material-icons-round text-lg group-hover/btn:scale-110 transition-transform">visibility</span>
+                                    <span>Preview</span>
+                                </button>
+                                {team.isRevealed && (
+                                    <button 
+                                        onClick={() => handleReset(team._id)} 
+                                        className="bg-red-50 hover:bg-red-500 text-red-500 hover:text-white border-2 border-red-50 hover:border-red-600 px-4 py-3 rounded-2xl text-xs font-black uppercase tracking-widest transition-all flex items-center justify-center gap-2 group/btn2"
+                                    >
+                                        <span className="material-icons-round text-lg group-hover/btn2:rotate-90 transition-transform">undo</span>
+                                        <span>Reset</span>
+                                    </button>
+                                )}
+                            </div>
+                            
+                            {team.name.toLowerCase().includes('boundary') && (
+                                <button 
+                                    onClick={() => window.open(`/reveal/boundary-smashers`, '_blank')}
+                                    className="w-full bg-slate-50 border border-slate-100 hover:bg-slate-100 text-slate-400 hover:text-slate-600 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest transition-all flex items-center justify-center gap-2"
+                                >
+                                    <span className="material-icons-round text-sm">link</span>
+                                    <span>Legacy Link (Smashers)</span>
                                 </button>
                             )}
                         </div>

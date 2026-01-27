@@ -107,7 +107,7 @@ export default function RevealResult({ team, ownerPhotos }) {
                                     const photoPlaceholder = "https://placehold.co/400x400/f3f4f6/a1a1aa?text=No+Photo";
                                     const dispPhotos = ownerPhotos && ownerPhotos.length > 0 ? ownerPhotos : [photoPlaceholder];
                                     
-                                    const useContain = team.name.includes("Boundary Smashers") || team.name.includes("Oswal Avengers");
+                                    const useContain = team.name.includes("Boundary Smashers") || team.name.includes("Boundary Bashers") || team.name.includes("Oswal Avengers");
                                     const objectFitClass = useContain ? "object-contain" : "object-cover";
 
                                     return dispPhotos.map((url, idx, arr) => (

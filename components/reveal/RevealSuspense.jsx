@@ -20,7 +20,7 @@ export default function RevealSuspense({ team, ownerPhotos, onRevealSuccess }) {
   const hasMultipleOwners = photos.length > 1;
 
   // Specific fix for teams with photos that need full visibility (no cropping)
-  const useContain = team.name.includes("Boundary Smashers") || team.name.includes("Oswal Avengers");
+  const useContain = team.name.includes("Boundary Smashers") || team.name.includes("Boundary Bashers") || team.name.includes("Oswal Avengers");
   const objectFitClass = useContain ? "object-contain" : "object-cover";
 
   const handleSubmit = async () => {

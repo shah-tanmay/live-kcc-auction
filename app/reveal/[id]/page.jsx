@@ -21,9 +21,15 @@ export default async function RevealPage({ params }) {
   // 2. If not found by ID, try finding by name/slug
   if (!teamDoc) {
       try {
+          let adjustedId = id;
+          // Alias check: if the user asks for boundary-smashers, we still want to show Boundary Bashers
+          if (id.toLowerCase() === 'boundary-smashers') {
+              adjustedId = 'boundary-bashers';
+          }
+
           // Convert "raval-royals" -> "Raval Royals" logic
           // Split by hyphens or underscores
-          const slugParts = id.split(/[-_]/).filter(p => p.length > 0);
+          const slugParts = adjustedId.split(/[-_]/).filter(p => p.length > 0);
           
           if (slugParts.length > 0) {
               // Create a regex that allows any non-word character (space, dot, etc) between parts
