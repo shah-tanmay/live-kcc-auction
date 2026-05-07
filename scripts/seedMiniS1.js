@@ -514,6 +514,18 @@ async function main() {
   const insertedTeams = await TeamMiniS1.insertMany(teams);
   console.log(`✅ ${insertedTeams.length} teams inserted`);
 
+  // Pre-sell owners to their teams
+  players.forEach(p => {
+    const matchedTeam = insertedTeams.find(t => t.owner.toLowerCase().includes(p.name.toLowerCase()) || p.name.toLowerCase().includes(t.owner.toLowerCase()));
+    if (matchedTeam && matchedTeam.ownerValuation > 0) {
+      p.isSold = true;
+      p.unSold = false;
+      p.soldTo = matchedTeam._id;
+      p.soldFor = matchedTeam.ownerValuation;
+      console.log(`  🤝 Pre-sold owner: ${p.name} to ${matchedTeam.name} for ${p.soldFor}`);
+    }
+  });
+
   console.log("\n📥 Inserting players...");
   const insertedPlayers = await PlayerMiniS1.insertMany(players);
   console.log(`✅ ${insertedPlayers.length} players inserted`);

@@ -4,8 +4,8 @@
         "motto": "",
         "logoUrl": "/logos/acemasters.jpg",
         "owner": "Dharmesh Jain",
-        "ownerValuation": 10000,
-        "purseLeft": 200000,
+        "ownerValuation": 5000,
+        "purseLeft": 195000,
         "squad": []
     },
     {
@@ -14,7 +14,7 @@
         "logoUrl": "/logos/ajturf.jpg",
         "owner": "Akshay Jain",
         "ownerValuation": 10000,
-        "purseLeft": 200000,
+        "purseLeft": 190000,
         "squad": []
     },
     {
@@ -22,8 +22,8 @@
         "motto": "",
         "logoUrl": "/logos/siddha.jpeg",
         "owner": "Sahil Gugale",
-        "ownerValuation": 10000,
-        "purseLeft": 200000,
+        "ownerValuation": 12000,
+        "purseLeft": 188000,
         "squad": []
     },
     {
@@ -32,7 +32,7 @@
         "logoUrl": "/logos/solanki.jpg",
         "owner": "Ansh Solanki",
         "ownerValuation": 10000,
-        "purseLeft": 200000,
+        "purseLeft": 190000,
         "squad": []
     },
     {
@@ -40,8 +40,8 @@
         "motto": "",
         "logoUrl": "/logos/boundarysmashers.jpeg",
         "owner": "Sagar Lodha",
-        "ownerValuation": 10000,
-        "purseLeft": 200000,
+        "ownerValuation": 35000,
+        "purseLeft": 165000,
         "squad": []
     }
 ]
