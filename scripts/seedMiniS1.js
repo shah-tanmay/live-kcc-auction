@@ -352,7 +352,7 @@ function parseExcel(statsMap) {
       statsMatchedFrom = "";
       statsMatchConfidence = "none";
       console.log(`  ❌ No stats found for "${rawName}"`);
-      noStats.push({ name: rawName, phone: phoneNumber });
+      noStats.push({ name: rawName, phone: phoneNumber, stats: { matches: 0, runs: 0, wickets: 0, avg: 0, sr: 0, innings: 0, economy: 0 } });
     }
 
     players.push({
@@ -414,7 +414,7 @@ function parseExcel(statsMap) {
         statsMatchedFrom = "";
         statsMatchConfidence = "none";
         console.log(`  ❌ No stats for manual player: "${mp.name}"`);
-        noStats.push({ name: mp.name, phone: mp.phoneNumber || "" });
+        noStats.push({ name: mp.name, phone: mp.phoneNumber || "", stats: { matches: 0, runs: 0, wickets: 0, avg: 0, sr: 0, innings: 0, economy: 0 } });
       }
 
       players.push({

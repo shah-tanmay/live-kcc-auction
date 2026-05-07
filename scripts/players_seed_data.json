@@ -911,5 +911,29 @@
             "innings": 70,
             "economy": 5.84
         }
+    },
+    {
+        "name": "Jayantilal oswal",
+        "stats": {
+            "matches": 21,
+            "runs": 22,
+            "wickets": 10,
+            "avg": 2.44,
+            "sr": 45.83,
+            "innings": 13,
+            "economy": 14
+        }
+    },
+    {
+        "name": "Sambhav Rathod",
+        "stats": {
+            "matches": 29,
+            "runs": 70,
+            "wickets": 13,
+            "avg": 3.89,
+            "sr": 79.55,
+            "innings": 21,
+            "economy": 7.69
+        }
     }
 ]

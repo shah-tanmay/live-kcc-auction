@@ -1,74 +1,210 @@
 [
   {
     "name": "Girsh M Rathod",
-    "phone": "9021321791"
+    "phone": "9021321791",
+    "stats": {
+      "matches": 0,
+      "runs": 0,
+      "wickets": 0,
+      "avg": 0,
+      "sr": 0,
+      "innings": 0,
+      "economy": 0
+    }
   },
   {
     "name": "SAURAV THAKKAR",
-    "phone": "8888169145"
+    "phone": "8888169145",
+    "stats": {
+      "matches": 0,
+      "runs": 0,
+      "wickets": 0,
+      "avg": 0,
+      "sr": 0,
+      "innings": 0,
+      "economy": 0
+    }
   },
   {
     "name": "Om Thakkar",
-    "phone": "7745842365"
+    "phone": "7745842365",
+    "stats": {
+      "matches": 0,
+      "runs": 0,
+      "wickets": 0,
+      "avg": 0,
+      "sr": 0,
+      "innings": 0,
+      "economy": 0
+    }
   },
   {
     "name": "Suprit Shah",
-    "phone": "8087227037"
+    "phone": "8087227037",
+    "stats": {
+      "matches": 0,
+      "runs": 0,
+      "wickets": 0,
+      "avg": 0,
+      "sr": 0,
+      "innings": 0,
+      "economy": 0
+    }
   },
   {
     "name": "Dilip Jain",
-    "phone": "9028590888"
-  },
-  {
-    "name": "Jayantilal oswal",
-    "phone": "9370557020"
+    "phone": "9028590888",
+    "stats": {
+      "matches": 0,
+      "runs": 0,
+      "wickets": 0,
+      "avg": 0,
+      "sr": 0,
+      "innings": 0,
+      "economy": 0
+    }
   },
   {
     "name": "Pooran",
-    "phone": "9766930340"
+    "phone": "9766930340",
+    "stats": {
+      "matches": 0,
+      "runs": 0,
+      "wickets": 0,
+      "avg": 0,
+      "sr": 0,
+      "innings": 0,
+      "economy": 0
+    }
   },
   {
     "name": "Yash mehta",
-    "phone": "8554899541"
+    "phone": "8554899541",
+    "stats": {
+      "matches": 0,
+      "runs": 0,
+      "wickets": 0,
+      "avg": 0,
+      "sr": 0,
+      "innings": 0,
+      "economy": 0
+    }
   },
   {
     "name": "Datta Kamble",
-    "phone": "7219349690"
+    "phone": "7219349690",
+    "stats": {
+      "matches": 0,
+      "runs": 0,
+      "wickets": 0,
+      "avg": 0,
+      "sr": 0,
+      "innings": 0,
+      "economy": 0
+    }
   },
   {
     "name": "Rahul Subhash jain",
-    "phone": "8793245995"
+    "phone": "8793245995",
+    "stats": {
+      "matches": 0,
+      "runs": 0,
+      "wickets": 0,
+      "avg": 0,
+      "sr": 0,
+      "innings": 0,
+      "economy": 0
+    }
   },
   {
     "name": "Ankit punmiya",
-    "phone": "9766490160"
+    "phone": "9766490160",
+    "stats": {
+      "matches": 0,
+      "runs": 0,
+      "wickets": 0,
+      "avg": 0,
+      "sr": 0,
+      "innings": 0,
+      "economy": 0
+    }
   },
   {
     "name": "Anand Mutha",
-    "phone": "9822651988"
-  },
-  {
-    "name": "Sambhav Rathod",
-    "phone": "9545498007"
+    "phone": "9822651988",
+    "stats": {
+      "matches": 0,
+      "runs": 0,
+      "wickets": 0,
+      "avg": 0,
+      "sr": 0,
+      "innings": 0,
+      "economy": 0
+    }
   },
   {
     "name": "Samkit Vijay Bothara",
-    "phone": "8484955552"
+    "phone": "8484955552",
+    "stats": {
+      "matches": 0,
+      "runs": 0,
+      "wickets": 0,
+      "avg": 0,
+      "sr": 0,
+      "innings": 0,
+      "economy": 0
+    }
   },
   {
     "name": "Utsav Sethiya",
-    "phone": "7875744731"
+    "phone": "7875744731",
+    "stats": {
+      "matches": 0,
+      "runs": 0,
+      "wickets": 0,
+      "avg": 0,
+      "sr": 0,
+      "innings": 0,
+      "economy": 0
+    }
   },
   {
     "name": "Sanyam Bora",
-    "phone": "7721904894"
+    "phone": "7721904894",
+    "stats": {
+      "matches": 0,
+      "runs": 0,
+      "wickets": 0,
+      "avg": 0,
+      "sr": 0,
+      "innings": 0,
+      "economy": 0
+    }
   },
   {
     "name": "RJ",
-    "phone": ""
+    "phone": "",
+    "stats": {
+      "matches": 0,
+      "runs": 0,
+      "wickets": 0,
+      "avg": 0,
+      "sr": 0,
+      "innings": 0,
+      "economy": 0
+    }
   },
   {
     "name": "Dynano (RJ) bhai",
-    "phone": ""
+    "phone": "",
+    "stats": {
+      "matches": 0,
+      "runs": 0,
+      "wickets": 0,
+      "avg": 0,
+      "sr": 0,
+      "innings": 0,
+      "economy": 0
+    }
   }
 ]
