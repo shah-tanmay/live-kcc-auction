@@ -1,4 +1,14 @@
 // server.js
+
+// ─── DNS override — must be first ─────────────────────────────────────────────
+// ISPs in India often block DNS SRV record lookups, which mongodb+srv:// requires.
+// Forcing Google's public DNS (8.8.8.8) resolves this before Next.js or Mongoose
+// make any network calls.
+import dns from "dns";
+dns.setServers(["8.8.8.8", "8.8.4.4", "1.1.1.1"]);
+dns.setDefaultResultOrder("ipv4first");
+// ──────────────────────────────────────────────────────────────────────────────
+
 import { createServer } from "http";
 import { Server as IOServer } from "socket.io";
 import next from "next";

@@ -30,7 +30,7 @@ const AuctionFinishedScreen = ({ topBids, formatPoints, getTeamTheme, isLoadingT
                     
                     {/* Title Section */}
                     <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight mb-2 text-slate-900">
-                        KCC <span className="text-primary">Season 5</span>
+                        KCC <span className="text-primary">Mini Season 1</span>
                     </h1>
                     <h2 className="text-2xl md:text-3xl font-bold text-slate-500 mb-6 font-display">
                         Official Player Auction
@@ -124,7 +124,7 @@ const AuctionFinishedScreen = ({ topBids, formatPoints, getTeamTheme, isLoadingT
         </main>
         
         <footer className="py-6 text-center text-slate-400 text-sm shrink-0">
-            <p>© KCC Season 5. All rights reserved.</p>
+            <p>© KCC Mini Tournament Season 1. All rights reserved.</p>
         </footer>
     </div>
 );
@@ -380,7 +380,7 @@ export default function AuctionUI() {
                         <img src="/kcc_logo.jpg" alt="KCC Logo" className="h-full w-full object-contain drop-shadow-md hover:scale-105 transition-transform duration-300" />
                     </div>
                     <div className="flex flex-col">
-                        <h1 className="font-display font-black text-xl lg:text-2xl uppercase tracking-tighter text-slate-900 leading-none">KCC Season 5</h1>
+                        <h1 className="font-display font-black text-xl lg:text-2xl uppercase tracking-tighter text-slate-900 leading-none">KCC Mini Season 1</h1>
                         <p className="text-[0.65rem] font-bold text-primary uppercase tracking-[0.2em] mt-1.5">Live Auction Feed</p>
                     </div>
                 </div>
@@ -720,11 +720,11 @@ function PreAuctionLobby({ teams }) {
                         Auction Starting Soon
                     </div>
                     <h1 className="font-display font-black text-4xl lg:text-7xl text-slate-900 tracking-tighter leading-none">
-                        KCC Season 5
+                        KCC Mini Season 1
                         <span className="block text-xl lg:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-slate-400 via-slate-600 to-slate-400 mt-2 tracking-tight">Official Player Auction</span>
                     </h1>
                     <p className="text-slate-500 font-medium text-sm lg:text-lg max-w-2xl mx-auto leading-relaxed px-4">
-                        Welcome to the official auction for KCC Season 5. Get ready as franchises battle it out to build their dream squads. The bidding will commence shortly.
+                        Welcome to the KCC Mini Tournament Season 1 auction. Get ready as franchises battle it out to build their dream squads. The bidding will commence shortly.
                     </p>
                     
                     <button 

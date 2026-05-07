@@ -48,7 +48,7 @@ export default function AdminLogin() {
                     </div>
                     <div className="text-center">
                         <h1 className="text-2xl font-bold tracking-tight text-slate-800">Admin Portal</h1>
-                        <p className="text-slate-500 text-sm mt-1 font-medium">Season 5 Auction Management</p>
+                        <p className="text-slate-500 text-sm mt-1 font-medium">Mini Tournament Season 1 — Admin</p>
                     </div>
                 </div>
                 <form onSubmit={handleLogin} className="space-y-6">

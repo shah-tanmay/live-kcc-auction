@@ -7,7 +7,12 @@
     "dev": "node server.js",
     "build": "next build",
     "start": "NODE_ENV=production node server.js",
-    "lint": "next lint"
+    "lint": "next lint",
+    "seed:2026": "node scripts/seed2026.js",
+    "seed:2026:reset": "node scripts/seed2026.js --reset",
+    "seed:mini_s1": "node scripts/seedMiniS1.js",
+    "seed:mini_s1:dry": "node scripts/seedMiniS1.js --dry-run",
+    "seed:mini_s1:reset": "node scripts/seedMiniS1.js --reset"
   },
   "dependencies": {
     "@emotion/cache": "^11.14.0",

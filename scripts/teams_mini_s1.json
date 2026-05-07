@@ -1,0 +1,47 @@
+[
+    {
+        "name": "ACE MASTERS",
+        "motto": "",
+        "logoUrl": "/logos/acemasters.jpg",
+        "owner": "Dharmesh Jain",
+        "ownerValuation": 10000,
+        "purseLeft": 200000,
+        "squad": []
+    },
+    {
+        "name": "AJ TURF TITANS",
+        "motto": "",
+        "logoUrl": "/logos/ajturf.jpg",
+        "owner": "Akshay Jain",
+        "ownerValuation": 10000,
+        "purseLeft": 200000,
+        "squad": []
+    },
+    {
+        "name": "SIDDHA STRIKERS",
+        "motto": "",
+        "logoUrl": "/logos/siddha.jpeg",
+        "owner": "Sahil Gugale",
+        "ownerValuation": 10000,
+        "purseLeft": 200000,
+        "squad": []
+    },
+    {
+        "name": "SOLANKI SMASHERS",
+        "motto": "",
+        "logoUrl": "/logos/solanki.jpg",
+        "owner": "Ansh Solanki",
+        "ownerValuation": 10000,
+        "purseLeft": 200000,
+        "squad": []
+    },
+    {
+        "name": "MYSTERY TEAM",
+        "motto": "Owner Revealed at End",
+        "logoUrl": "",
+        "owner": "Mystery Owner",
+        "ownerValuation": 10000,
+        "purseLeft": 200000,
+        "squad": []
+    }
+]

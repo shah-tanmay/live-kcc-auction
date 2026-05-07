@@ -1,0 +1,80 @@
+[
+  {
+    "playerName": "Trushank Rathod",
+    "matchedStatsName": "trushank",
+    "stats": {
+      "matches": 74,
+      "runs": 1027,
+      "wickets": 46,
+      "avg": 18.02,
+      "sr": 156.08,
+      "innings": 71,
+      "economy": 5.59
+    }
+  },
+  {
+    "playerName": "Gaurav Sarani",
+    "matchedStatsName": "gaurav rajkumar sarani",
+    "stats": {
+      "matches": 24,
+      "runs": 14,
+      "wickets": 5,
+      "avg": 10.22,
+      "sr": 136,
+      "innings": 21,
+      "economy": 10.11
+    }
+  },
+  {
+    "playerName": "RONIT Balai",
+    "matchedStatsName": "ronit",
+    "stats": {
+      "matches": 15,
+      "runs": 9,
+      "wickets": 8,
+      "avg": 1.5,
+      "sr": 31.03,
+      "innings": 9,
+      "economy": 9.23
+    }
+  },
+  {
+    "playerName": "Ankush",
+    "matchedStatsName": "ankush s upadhyay",
+    "stats": {
+      "matches": 68,
+      "runs": 131,
+      "wickets": 32,
+      "avg": 5.24,
+      "sr": 65.17,
+      "innings": 41,
+      "economy": 7.03
+    }
+  },
+  {
+    "playerName": "Tarun Ghumnani",
+    "matchedStatsName": "tarun rajkumar ghumnani",
+    "stats": {
+      "matches": 5,
+      "runs": 0,
+      "wickets": 5,
+      "avg": 0,
+      "sr": 0,
+      "innings": 2,
+      "economy": 10.17
+    }
+  },
+  {
+    "playerName": "Onkar balasaheb Pasalkar",
+    "matchedStatsName": "onkar pasalkar",
+    "stats": {
+      "matches": 11,
+      "runs": 11,
+      "wickets": 3,
+      "avg": 1.57,
+      "sr": 37.93,
+      "innings": 0,
+      "economy": 8.64
+    }
+  }
+]

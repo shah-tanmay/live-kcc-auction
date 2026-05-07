@@ -365,7 +365,7 @@ export default function AdminDashboard() {
                         <img src="/kcc_logo.jpg" alt="Logo" className="w-full h-full object-contain" />
                     </div>
                     <div className="flex flex-col">
-                        <h2 className="text-slate-900 text-lg font-bold leading-none tracking-tight">KCC Season 5 Auction</h2>
+                        <h2 className="text-slate-900 text-lg font-bold leading-none tracking-tight">KCC Mini Season 1 — Auction</h2>
                         <div className="flex items-center gap-2 mt-1">
                             <span className="size-2 rounded-full bg-green-500 animate-pulse"></span>
                             <span className="text-xs text-slate-500 font-medium tracking-wide uppercase">Admin Console • Live</span>

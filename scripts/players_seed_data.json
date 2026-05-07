@@ -492,6 +492,18 @@
         }
     },
     {
+        "name": "Bhavin m shah",
+        "stats": {
+            "matches": 33,
+            "innings": 21,
+            "runs": 57,
+            "sr": 66.28,
+            "avg": 3.35,
+            "wickets": 13,
+            "economy": 8.31
+        }
+    },
+    {
         "name": "Kalpesh oswal",
         "stats": {
             "matches": 278,
@@ -873,6 +885,31 @@
             "avg": 0,
             "wickets": 0,
             "economy": 0
+        }
+    },
+    {
+        "name": "Mayur Kantilal jain",
+        "aliases": ["Mayurr jain", "Mayurr Jain"],
+        "stats": {
+            "matches": 81,
+            "runs": 767,
+            "wickets": 34,
+            "avg": 13.7,
+            "sr": 114.65,
+            "innings": 70,
+            "economy": 5.84
+        }
+    },
+    {
+        "name": "Mayurr jain",
+        "stats": {
+            "matches": 81,
+            "runs": 767,
+            "wickets": 34,
+            "avg": 13.7,
+            "sr": 114.65,
+            "innings": 70,
+            "economy": 5.84
         }
     }
 ]

@@ -1,4 +1,9 @@
+import { NextResponse } from "next/server";
+import mongoose from "mongoose";
+import connectToDB from "@/lib/db";
+import { getModel } from "@/lib/getModel";
 import { sellPlayerToTeam } from "@/lib/services/auctionService";
+
 
 export async function POST(request, { params }) {
   await connectToDB();

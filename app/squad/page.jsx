@@ -139,7 +139,7 @@ export default function SquadPage() {
                         <img src="/kcc_logo.jpg" alt="KCC Logo" className="h-full w-full object-contain drop-shadow-md hover:scale-105 transition-transform duration-300" />
                     </div>
                     <div>
-                        <h1 className="font-display font-black text-xl lg:text-2xl uppercase tracking-tighter text-slate-900 leading-none">KCC Season 5</h1>
+                        <h1 className="font-display font-black text-xl lg:text-2xl uppercase tracking-tighter text-slate-900 leading-none">KCC Mini Season 1</h1>
                         <p className="text-[0.65rem] font-bold text-primary uppercase tracking-[0.2em]">Squad Center</p>
                     </div>
                 </div>
