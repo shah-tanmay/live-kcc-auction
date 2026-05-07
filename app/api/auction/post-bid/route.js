@@ -53,14 +53,14 @@ export async function POST(req) {
       // ✅ Enforce budget cutoff logic & squad limit
       const playersOwned = team.squad.length;
       
-      if (playersOwned >= 9) {
+      if (playersOwned >= 10) {
         return NextResponse.json(
-          { error: `Team ${team.name} already has maximum of 9 players. Cannot place more bids.` },
+          { error: `Team ${team.name} already has maximum of 10 players. Cannot place more bids.` },
           { status: 400 }
         );
       }
 
-      const totalSlots = 9;
+      const totalSlots = 10;
       const remainingSlots = totalSlots - playersOwned - 1; // -1 for current player
       const minReserve = remainingSlots > 0 ? remainingSlots * 4000 : 0;
       const maxBidAllowed = team.purseLeft - minReserve;

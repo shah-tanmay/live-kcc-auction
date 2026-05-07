@@ -530,6 +530,17 @@ async function main() {
   const insertedPlayers = await PlayerMiniS1.insertMany(players);
   console.log(`✅ ${insertedPlayers.length} players inserted`);
 
+  console.log("\n🔗 Linking sold players to teams' squad...");
+  for (const player of insertedPlayers) {
+    if (player.isSold && player.soldTo) {
+      await TeamMiniS1.updateOne(
+        { _id: player.soldTo },
+        { $push: { squad: player._id } }
+      );
+    }
+  }
+  console.log(`✅ Squad linking complete`);
+
   console.log("\n" + "=".repeat(55));
   console.log("🎉 Seeding complete!");
   console.log("=".repeat(55));

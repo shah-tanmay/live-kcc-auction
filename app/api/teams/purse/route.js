@@ -15,7 +15,7 @@ export async function GET() {
     .lean();
 
   teams = teams.map((team) => {
-    const totalSlots = 9;
+    const totalSlots = 10;
     const owned = team.squad.length;
     // One slot is for the player currently up for bidding
     const remainingSlots = totalSlots - owned - 1;

@@ -13,7 +13,7 @@ export async function GET(request, { params }) {
     return NextResponse.json({ error: "Team not found" }, { status: 404 });
   }
 
-  const totalSlots = 9;
+  const totalSlots = 10;
   const owned = team.squad.length;
   // One slot is for the player currently up for bidding
   const remainingSlots = totalSlots - owned - 1;
