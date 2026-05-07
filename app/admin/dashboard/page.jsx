@@ -721,7 +721,7 @@ export default function AdminDashboard() {
                                     const isHighest = team.name === currentBidTeam;
                                     const theme = getTeamTheme(team.name, team.logoUrl);
                                     return (
-                                        <div key={team.id} className={`w-full text-left p-3 rounded-2xl border transition-all group shadow-sm flex flex-col justify-between ${isHighest ? 'bg-white border-2 border-primary/40 shadow-lg shadow-blue-100 ring-2 ring-primary/5' : 'bg-white hover:bg-gray-50 border-gray-100 hover:border-gray-200'} ${team.squadCount >= 9 ? 'opacity-75' : ''}`}>
+                                        <div key={team.id} className={`w-full text-left p-3 rounded-2xl border transition-all group shadow-sm flex flex-col justify-between ${isHighest ? 'bg-white border-2 border-primary/40 shadow-lg shadow-blue-100 ring-2 ring-primary/5' : 'bg-white hover:bg-gray-50 border-gray-100 hover:border-gray-200'} ${team.squadCount >= 10 ? 'opacity-75' : ''}`}>
                                             <div className="flex items-start justify-between mb-2">
                                                 <div className="flex items-center gap-2.5 min-w-0">
                                                     {theme.logo ? (
@@ -740,7 +740,7 @@ export default function AdminDashboard() {
                                                     )}
                                                     <div className="flex flex-col min-w-0">
                                                         <h4 className="text-slate-900 font-bold text-xs truncate leading-tight uppercase tracking-tight">{team.name}</h4>
-                                                        <span className="text-[8px] font-bold text-slate-400 uppercase">{team.squadCount}/9 Players</span>
+                                                        <span className="text-[8px] font-bold text-slate-400 uppercase">{team.squadCount}/10 Players</span>
                                                     </div>
                                                 </div>
                                                 {team.squadCount >= 9 && (
@@ -763,7 +763,7 @@ export default function AdminDashboard() {
                                                 <div className="text-[9px] text-primary font-black bg-blue-50 py-1.5 rounded-lg text-center border border-blue-100 uppercase tracking-tighter">
                                                     Highest Bidder
                                                 </div>
-                                            ) : team.squadCount >= 9 ? (
+                                            ) : team.squadCount >= 10 ? (
                                                 <div className="text-[9px] text-slate-400 font-black bg-slate-100 py-1.5 rounded-lg text-center border border-slate-200 uppercase tracking-tighter cursor-not-allowed">
                                                     Squad Full
                                                 </div>

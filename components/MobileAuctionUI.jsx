@@ -362,9 +362,9 @@ const MobileAuctionUI = ({
                                                         )}
                                                         <div className="flex flex-col min-w-0">
                                                             <span className="font-bold text-gray-800 text-[11px] truncate leading-tight">{team.name}</span>
-                                                            <span className="text-[8px] font-bold text-gray-400 uppercase mt-0.5">{team.squadCount}/9 Players</span>
+                                                            <span className="text-[8px] font-bold text-gray-400 uppercase mt-0.5">{team.squadCount}/10 Players</span>
                                                         </div>
-                                                        {team.squadCount >= 9 && (
+                                                        {team.squadCount >= 10 && (
                                                             <span className="ml-auto bg-slate-900 text-white text-[7px] font-black px-1.5 py-0.5 rounded uppercase tracking-tighter shrink-0">FULL</span>
                                                         )}
                                                     </div>

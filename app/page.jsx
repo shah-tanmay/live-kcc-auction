@@ -453,7 +453,7 @@ export default function AuctionUI() {
                                     {purseData.map((team, idx) => {
                                         const theme = getTeamTheme(team.name, team.logoUrl);
                                         return (
-                                            <div key={idx} className={`flex flex-col p-3 rounded-xl bg-white border shadow-sm transition-all group h-full justify-between ${team.squadCount >= 9 ? 'opacity-50 grayscale-[0.8] border-slate-200 pointer-events-none' : 'hover:border-primary/20 border-slate-100 hover:shadow-md'}`}>
+                                            <div key={idx} className={`flex flex-col p-3 rounded-xl bg-white border shadow-sm transition-all group h-full justify-between ${team.squadCount >= 10 ? 'opacity-50 grayscale-[0.8] border-slate-200 pointer-events-none' : 'hover:border-primary/20 border-slate-100 hover:shadow-md'}`}>
                                                 <div className="flex items-center gap-2.5 mb-2 overflow-hidden">
                                                     {theme.logo ? (
                                                         <div className="size-10 rounded-xl bg-white overflow-hidden shadow-inner border border-slate-100 flex items-center justify-center p-1 shrink-0">
@@ -469,9 +469,9 @@ export default function AuctionUI() {
                                                     )}
                                                     <div className="flex flex-col min-w-0">
                                                         <span className="font-bold text-xs text-slate-700 group-hover:text-primary transition-colors truncate leading-tight uppercase tracking-tight">{team.name}</span>
-                                                        <span className="text-[9px] font-bold text-slate-400 uppercase leading-none mt-0.5">{team.squadCount}/9</span>
+                                                        <span className="text-[9px] font-bold text-slate-400 uppercase leading-none mt-0.5">{team.squadCount}/10</span>
                                                     </div>
-                                                    {team.squadCount >= 9 && (
+                                                    {team.squadCount >= 10 && (
                                                         <span className="ml-auto bg-slate-900 text-white text-[8px] font-black px-1.5 py-0.5 rounded uppercase tracking-tighter shrink-0">FULL</span>
                                                     )}
                                                 </div>
@@ -770,7 +770,7 @@ function PreAuctionLobby({ teams }) {
                         {teams.map((team, idx) => {
                              const theme = getTeamTheme(team.name, team.logoUrl);
                              return (
-                                <div key={team.id || idx} className={`p-6 border shadow-sm transition-all duration-300 group rounded-3xl ${team.squadCount >= 9 ? 'bg-slate-50 opacity-50 grayscale-[0.8] border-slate-200 pointer-events-none' : 'bg-white border-slate-100 hover:shadow-xl hover:border-primary/20 hover:-translate-y-1'}`}>
+                                <div key={team.id || idx} className={`p-6 border shadow-sm transition-all duration-300 group rounded-3xl ${team.squadCount >= 10 ? 'bg-slate-50 opacity-50 grayscale-[0.8] border-slate-200 pointer-events-none' : 'bg-white border-slate-100 hover:shadow-xl hover:border-primary/20 hover:-translate-y-1'}`}>
                                     <div className="flex items-start justify-between mb-5">
                                         {theme.logo ? (
                                             <div className="size-14 rounded-2xl bg-white overflow-hidden shadow-inner border border-slate-100 flex items-center justify-center p-1 group-hover:scale-110 transition-transform duration-300">
