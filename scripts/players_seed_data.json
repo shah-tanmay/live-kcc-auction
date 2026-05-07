@@ -5,7 +5,7 @@
             "matches": 6,
             "runs": 54,
             "wickets": 1,
-            "avg": 13.50,
+            "avg": 13.5,
             "sr": 96.43,
             "innings": 6,
             "economy": 9.33
@@ -65,10 +65,10 @@
             "matches": 8,
             "innings": 5,
             "runs": 21,
-            "sr": 91.30,
+            "sr": 91.3,
             "avg": 5.25,
             "wickets": 2,
-            "economy": 8.60
+            "economy": 8.6
         }
     },
     {
@@ -125,7 +125,7 @@
             "matches": 42,
             "innings": 36,
             "runs": 222,
-            "sr": 112.20,
+            "sr": 112.2,
             "avg": 8.22,
             "wickets": 15,
             "economy": 6.62
@@ -164,7 +164,7 @@
             "sr": 144.97,
             "avg": 18.51,
             "wickets": 30,
-            "economy": 5.30
+            "economy": 5.3
         }
     },
     {
@@ -222,7 +222,7 @@
             "innings": 9,
             "runs": 9,
             "sr": 31.03,
-            "avg": 1.50,
+            "avg": 1.5,
             "wickets": 8,
             "economy": 9.23
         }
@@ -318,9 +318,9 @@
             "innings": 10,
             "runs": 64,
             "sr": 120.75,
-            "avg": 12.80,
+            "avg": 12.8,
             "wickets": 5,
-            "economy": 11.30
+            "economy": 11.3
         }
     },
     {
@@ -438,7 +438,7 @@
             "innings": 31,
             "runs": 155,
             "sr": 101.31,
-            "avg": 6.20,
+            "avg": 6.2,
             "wickets": 14,
             "economy": 6.89
         }
@@ -474,7 +474,7 @@
             "innings": 22,
             "runs": 441,
             "sr": 135.69,
-            "avg": 31.50,
+            "avg": 31.5,
             "wickets": 13,
             "economy": 6.66
         }
@@ -509,7 +509,7 @@
             "matches": 278,
             "innings": 250,
             "runs": 3173,
-            "sr": 138.50,
+            "sr": 138.5,
             "avg": 16.03,
             "wickets": 145,
             "economy": 7.93
@@ -524,7 +524,7 @@
             "sr": 86.74,
             "avg": 7.63,
             "wickets": 36,
-            "economy": 7.40
+            "economy": 7.4
         }
     },
     {
@@ -642,7 +642,7 @@
             "innings": 26,
             "runs": 418,
             "sr": 181.74,
-            "avg": 19.90,
+            "avg": 19.9,
             "wickets": 14,
             "economy": 11.03
         }
@@ -738,7 +738,7 @@
             "innings": 107,
             "runs": 1170,
             "sr": 140.29,
-            "avg": 15.60,
+            "avg": 15.6,
             "wickets": 65,
             "economy": 8.27
         }
@@ -749,7 +749,7 @@
             "matches": 82,
             "innings": 43,
             "runs": 164,
-            "sr": 87.70,
+            "sr": 87.7,
             "avg": 5.47,
             "wickets": 24,
             "economy": 7.83
@@ -774,7 +774,7 @@
             "innings": 70,
             "runs": 767,
             "sr": 114.65,
-            "avg": 13.70,
+            "avg": 13.7,
             "wickets": 34,
             "economy": 5.84
         }
@@ -845,7 +845,7 @@
             "matches": 53,
             "innings": 40,
             "runs": 220,
-            "sr": 89.80,
+            "sr": 89.8,
             "avg": 6.67,
             "wickets": 19,
             "economy": 6.61
@@ -889,7 +889,10 @@
     },
     {
         "name": "Mayur Kantilal jain",
-        "aliases": ["Mayurr jain", "Mayurr Jain"],
+        "aliases": [
+            "Mayurr jain",
+            "Mayurr Jain"
+        ],
         "stats": {
             "matches": 81,
             "runs": 767,
@@ -934,6 +937,162 @@
             "sr": 79.55,
             "innings": 21,
             "economy": 7.69
+        }
+    },
+    {
+        "name": "Girsh M Rathod",
+        "stats": {
+            "matches": 14,
+            "runs": 26,
+            "wickets": 12,
+            "avg": 4.33,
+            "sr": 66,
+            "innings": 7,
+            "economy": 5.24
+        }
+    },
+    {
+        "name": "SAURAV THAKKAR",
+        "stats": {
+            "matches": 14,
+            "runs": 164,
+            "wickets": 1,
+            "avg": 12.62,
+            "sr": 128.13,
+            "innings": 14,
+            "economy": 7.5
+        }
+    },
+    {
+        "name": "Om Thakkar",
+        "stats": {
+            "matches": 14,
+            "runs": 162,
+            "wickets": 7,
+            "avg": 13.5,
+            "sr": 112.5,
+            "innings": 13,
+            "economy": 3.79
+        }
+    },
+    {
+        "name": "Suprit Shah",
+        "stats": {
+            "matches": 97,
+            "runs": 88,
+            "wickets": 56,
+            "avg": 22.67,
+            "sr": 144.36,
+            "innings": 88,
+            "economy": 6.62
+        }
+    },
+    {
+        "name": "Dilip Jain",
+        "stats": {
+            "matches": 188,
+            "runs": 2358,
+            "wickets": 102,
+            "avg": 17.47,
+            "sr": 161.18,
+            "innings": 169,
+            "economy": 7.22
+        }
+    },
+    {
+        "name": "Pooran",
+        "stats": {
+            "matches": 108,
+            "runs": 639,
+            "wickets": 67,
+            "avg": 9.26,
+            "sr": 107.39,
+            "innings": 93,
+            "economy": 8.5
+        }
+    },
+    {
+        "name": "Datta Kamble",
+        "stats": {
+            "matches": 5,
+            "runs": 43,
+            "wickets": 1,
+            "avg": 14.33,
+            "sr": 119.44,
+            "innings": 4,
+            "economy": 8.66
+        }
+    },
+    {
+        "name": "Rahul Subhash jain",
+        "stats": {
+            "matches": 160,
+            "runs": 862,
+            "wickets": 88,
+            "avg": 9.07,
+            "sr": 107.21,
+            "innings": 119,
+            "economy": 8.29
+        }
+    },
+    {
+        "name": "Ankit punmiya",
+        "stats": {
+            "matches": 125,
+            "runs": 1001,
+            "wickets": 71,
+            "avg": 10.88,
+            "sr": 104.93,
+            "innings": 113,
+            "economy": 6.78
+        }
+    },
+    {
+        "name": "Anand Mutha",
+        "stats": {
+            "matches": 156,
+            "runs": 708,
+            "wickets": 55,
+            "avg": 8.85,
+            "sr": 121.03,
+            "innings": 107,
+            "economy": 11.87
+        }
+    },
+    {
+        "name": "Samkit Vijay Bothara",
+        "stats": {
+            "matches": 29,
+            "runs": 313,
+            "wickets": 18,
+            "avg": 14.23,
+            "sr": 136.68,
+            "innings": 24,
+            "economy": 8.73
+        }
+    },
+    {
+        "name": "Utsav Sethiya",
+        "stats": {
+            "matches": 48,
+            "runs": 843,
+            "wickets": 8,
+            "avg": 30.11,
+            "sr": 209.7,
+            "innings": 48,
+            "economy": 13.41
+        }
+    },
+    {
+        "name": "Sanyam Bora",
+        "stats": {
+            "matches": 55,
+            "runs": 462,
+            "wickets": 25,
+            "avg": 18.48,
+            "sr": 188.57,
+            "innings": 38,
+            "economy": 10.9
         }
     }
 ]
